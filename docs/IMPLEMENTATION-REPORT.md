@@ -126,8 +126,8 @@ as not yet implemented on his side.
    are the depth-boundary pair his own container-branch fix already handles. His
    suiteRevision-6 cell is "not run by author" until he posts a record and its source
    digest.
-2. **The consumer rails now carry the full reference corpus.** `ts-verify`,
-   `py-verify` and MCP server rail `_aee.py` each vendor all 153 vectors
+2. **The consumer rails now carry the full reference corpus.** The TypeScript rail,
+   the standalone Python rail and the MCP server rail each vendor all 153 vectors
    byte-for-byte (`VENDOR-STAMP.json` pins the source spec digest, upstream commit
    and a content digest; a consumer-side drift gate fails CI on any change without a
    re-vendor). "pass" means the rail implements the rule, is parity-tested on it, and
