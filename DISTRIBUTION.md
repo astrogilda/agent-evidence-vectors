@@ -172,10 +172,10 @@ valuable there than one that agreed.
 | Go module | `github.com/astrogilda/agent-evidence-vectors`, verifier at `cmd/aee-verify` | live |
 | Releases | git tags, with a GitHub Release object per tag; `v0.10.1` is current | live |
 | Signed corpus digests | `release/CORPUS-DIGESTS.txt`, one line per corpus, with a detached signature, an RFC 3161 token and an OpenTimestamps proof beside it | live, derived |
-| Archival DOI | minted per release once the archive integration is enabled | not yet minted |
+| Archival DOI | concept DOI `10.5281/zenodo.22758687`, which resolves to the newest archived release; `10.5281/zenodo.22758688` is the version DOI for `v0.10.1` | live |
 | Package registries | no package of this corpus is published anywhere today | none |
 | Mirrors | none | none |
 
-Nothing in the three rows at the bottom is a plan stated as a fact. When a DOI
-exists it goes in that cell with the DOI itself, and until then the cell says
-what is true.
+Nothing in the two rows at the bottom is a plan stated as a fact. Each cell says
+what is true today, and a mirror or a package is written there only once it
+exists.

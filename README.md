@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/astrogilda/agent-evidence-vectors/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/astrogilda/agent-evidence-vectors/ci.yml?branch=main&label=build" alt="build status"></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="license Apache-2.0">
+  <a href="https://doi.org/10.5281/zenodo.22758687"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22758687.svg" alt="DOI 10.5281/zenodo.22758687"></a>
   <img src="https://img.shields.io/badge/AEE%20vectors-272-e8951c" alt="272 AEE conformance vectors">
   <img src="https://img.shields.io/badge/AI%20Agent%20Action%20vectors-53-e8951c" alt="53 AI Agent Action conformance vectors">
   <img src="https://img.shields.io/badge/artifact--binding%20vectors-8-e8951c" alt="8 artifact-binding conformance vectors">
@@ -194,6 +195,29 @@ maintainer's machine at tag time, and CI verifies without the ability to sign.
 the field publishes, with the command that re-derives it and a positive control.
 That page makes an absence claim, and an absence claim is the easiest kind to get
 wrong.
+
+## Cite this
+
+Every release is archived on Zenodo. The concept DOI
+[10.5281/zenodo.22758687](https://doi.org/10.5281/zenodo.22758687) always resolves to the newest
+archived release; a version DOI names one release and never moves, and
+[10.5281/zenodo.22758688](https://doi.org/10.5281/zenodo.22758688) is the one for `v0.10.1`.
+Cite the version DOI, the suite revision and the corpus digest together, for the
+reason [`DISTRIBUTION.md`](DISTRIBUTION.md) gives: a citation that names only the
+repository names a moving target. [`CITATION.cff`](CITATION.cff) carries the
+concept DOI and GitHub renders a citation from it.
+
+```bibtex
+@software{gilda_agent_evidence_vectors,
+  author    = {Gilda, Sankalp},
+  title     = {agent-evidence-vectors: conformance vectors for agent execution evidence},
+  version   = {0.10.1},
+  publisher = {Zenodo},
+  year      = {2026},
+  doi       = {10.5281/zenodo.22758688},
+  url       = {https://doi.org/10.5281/zenodo.22758688}
+}
+```
 
 ## Arriving from somewhere else
 
