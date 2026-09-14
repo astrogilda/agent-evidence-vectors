@@ -35,6 +35,14 @@ permissions:
 jobs:
   upgrade:
     runs-on: ubuntu-latest
+    # The pull-request step pushes a branch and opens the request with the
+    # workflow token, so this job needs write on contents and on pull requests.
+    # The top-level grant stays read: nothing else in the file writes. The first
+    # scheduled run (2026-09-14, run 34818068691) failed with 403 on the push for
+    # want of exactly this block.
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
