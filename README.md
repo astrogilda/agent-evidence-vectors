@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/astrogilda/agent-evidence-vectors/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/astrogilda/agent-evidence-vectors/ci.yml?branch=main&label=build" alt="build status"></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="license Apache-2.0">
+  <a href="https://pypi.org/project/agent-evidence-vectors/"><img src="https://img.shields.io/pypi/v/agent-evidence-vectors?label=PyPI&color=3775a9" alt="agent-evidence-vectors on PyPI"></a>
   <a href="https://doi.org/10.5281/zenodo.22758687"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22758687.svg" alt="DOI 10.5281/zenodo.22758687"></a>
   <img src="https://img.shields.io/badge/AEE%20vectors-272-e8951c" alt="272 AEE conformance vectors">
   <img src="https://img.shields.io/badge/AI%20Agent%20Action%20vectors-53-e8951c" alt="53 AI Agent Action conformance vectors">
@@ -14,7 +15,64 @@
   <img src="https://img.shields.io/badge/predicate-in--toto%20AEE%20v0.7-6f57c2" alt="in-toto AEE v0.7 predicate">
 </p>
 
-A recomputable execution attestation toolkit for two in-toto predicates:
+## Run the suite against your verifier
+
+Add one step to the workflow that builds your verifier:
+
+```yaml
+- uses: astrogilda/agent-evidence-vectors@v0.11.0
+  with:
+    verifier: ./path/to/your-verifier --json
+```
+
+Or replay the corpus from a shell, with nothing cloned:
+
+```bash
+uvx agent-evidence-vectors --verifier './path/to/your-verifier --json'
+```
+
+Both run the harness described under "The verification pipeline" against your
+verifier through the external-implementation contract: the harness invokes
+`<cmd> <vector-file>`, reads the verdict from the exit status and the condition
+codes from the last line of stdout, and hands the key policy to the process in
+`AEE_SUBSTRATE_KEYS`. Your verifier has to speak that contract and nothing
+else. The reference rail replays the same vectors beside it, and the report
+records where the two agree, where they disagree, and where your verifier
+reached the corpus's verdict under a different condition code.
+
+The action pins the corpus to the release you name in `uses:`, installs the
+suite from that checkout, and then:
+
+- Writes the job summary: a totals row, one row per vector that disagreed
+  with the corpus, and the suite notes.
+- Uploads the report JSON as the artifact `agent-evidence-vectors-results`.
+  The report is the same `conformance-report.json` the harness writes locally,
+  and a scoreboard in another repository pulls it by that name.
+- Fails the job when any vector disagreed or the suite raised a refusal.
+
+Inputs, all optional except the first:
+
+| Input | What it does |
+| --- | --- |
+| `verifier` | Command line of the verifier under test. The first token is probed for the predicate type and must be on `PATH` or a path relative to the workspace. |
+| `corpus` | The shipped corpus to replay. Defaults to `vectors`, the Adversarial Execution Evidence corpus the reference rail judges. `agent-evidence-vectors --list-corpora` prints every name. |
+| `tag` | A release to replay other than the one the action itself is pinned to, such as `v0.11.0`. The default is the action's own ref. |
+| `artifact-name` | The results artifact's name. Change it only when the action runs more than once in one workflow. |
+| `report-path` | Where the report is written, relative to the workspace. |
+
+Outputs: `report` (the report's path), `vectors` and `conform` (the totals),
+and `result` (`pass` or `fail`), so a later step can act on the count rather
+than re-read the file.
+
+The package is stdlib-only and carries every corpus, so `pip install
+agent-evidence-vectors` on a machine with no network access to this repository
+is a complete install. `agent-evidence-vectors --self-test` runs the reference
+rail against its own oracle, which is the first thing to run when a result
+looks wrong.
+
+## What the suite judges
+
+This is a recomputable execution attestation toolkit for two in-toto predicates:
 **Adversarial Execution Evidence**, predicate version 0.7, and **AI Agent
 Action**, predicate version 0.1, proposed in
 [in-toto/attestation#588](https://github.com/in-toto/attestation/pull/588).
@@ -218,61 +276,6 @@ concept DOI and GitHub renders a citation from it.
   url       = {https://doi.org/10.5281/zenodo.22758688}
 }
 ```
-
-## Run it in your CI
-
-Add one step to a workflow in the repository that builds your verifier:
-
-```yaml
-- uses: astrogilda/agent-evidence-vectors@v0.11.0
-  with:
-    verifier: ./path/to/your-verifier --json
-```
-
-The same replay from a shell, with nothing cloned:
-
-```bash
-uvx agent-evidence-vectors --verifier './path/to/your-verifier --json'
-```
-
-Both run the harness described under "The verification pipeline" against your
-verifier through the external-implementation contract: the harness invokes
-`<cmd> <vector-file>`, reads the verdict from the exit status and the condition
-codes from the last line of stdout, and hands the key policy to the process in
-`AEE_SUBSTRATE_KEYS`. Your verifier has to speak that contract and nothing
-else. The reference rail replays the same vectors beside it, and the report
-records where the two agree, where they disagree, and where your verifier
-reached the corpus's verdict under a different condition code.
-
-The action pins the corpus to the release you name in `uses:`, installs the
-suite from that checkout, and then:
-
-- Writes the job summary: a totals row, one row per vector that disagreed
-  with the corpus, and the suite notes.
-- Uploads the report JSON as the artifact `agent-evidence-vectors-results`.
-  The report is the same `conformance-report.json` the harness writes locally,
-  and a scoreboard in another repository pulls it by that name.
-- Fails the job when any vector disagreed or the suite raised a refusal.
-
-Inputs, all optional except the first:
-
-| Input | What it does |
-| --- | --- |
-| `verifier` | Command line of the verifier under test. The first token is probed for the predicate type and must be on `PATH` or a path relative to the workspace. |
-| `corpus` | The shipped corpus to replay. Defaults to `vectors`, the Adversarial Execution Evidence corpus the reference rail judges. `agent-evidence-vectors --list-corpora` prints every name. |
-| `tag` | A release to replay other than the one the action itself is pinned to, such as `v0.11.0`. The default is the action's own ref. |
-| `artifact-name` | The results artifact's name. Change it only when the action runs more than once in one workflow. |
-| `report-path` | Where the report is written, relative to the workspace. |
-
-Outputs: `report` (the report's path), `vectors` and `conform` (the totals),
-and `result` (`pass` or `fail`), so a later step can act on the count rather
-than re-read the file.
-
-The package is stdlib-only and carries every corpus, so `pip install
-agent-evidence-vectors` on a machine with no network access to this repository
-is a complete install. `agent-evidence-vectors --self-test` runs the reference
-rail against its own oracle, which is the first thing to run when a result
-looks wrong.
 
 ## Arriving from somewhere else
 
