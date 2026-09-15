@@ -771,3 +771,36 @@ jobs:
         run: |
           python3 scripts/reading-differential.py --workers 8
           python3 scripts/reading-differential-test.py
+
+  # The action a relying party adds to its own workflow, run here against the
+  # shipped verifier, the way theupdateframework/tuf-conformance runs its own
+  # action in its own CI. Nothing else exercises action.yml before a consumer
+  # does: the release workflow proves the wheel and the Python job proves the
+  # harness, and a composite action that wires the two together could still
+  # name an input wrong or write the report where the upload step does not
+  # look. The verifier is built into the workspace first because the action
+  # resolves a relative first token from there.
+  action:
+    runs-on: ubicloud-standard-2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - name: build the shipped verifier into the workspace
+        run: go build -o ./aee-verify ./cmd/aee-verify
+      - name: the action replays the corpus against it
+        id: replay
+        uses: ./
+        with:
+          verifier: ./aee-verify -json
+      - name: the outputs carry the totals
+        env:
+          RESULT: ${{ steps.replay.outputs.result }}
+          VECTORS: ${{ steps.replay.outputs.vectors }}
+          CONFORM: ${{ steps.replay.outputs.conform }}
+        run: |
+          echo "result=$RESULT vectors=$VECTORS conform=$CONFORM"
+          test "$RESULT" = pass
+          test "$VECTORS" -gt 0
+          test "$CONFORM" = "$VECTORS"
