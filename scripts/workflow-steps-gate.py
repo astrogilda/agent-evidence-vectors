@@ -32,6 +32,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 from collections.abc import Callable
 from typing import Any, NamedTuple
 
@@ -109,23 +110,42 @@ def golangci_lint(inputs: dict[str, Any]) -> Local:
 def own_action(inputs: dict[str, Any]) -> Local:
     """Mirror `uses: ./`, this repository's composite action, from the checkout.
 
-    The action installs the package from its own checkout and replays one
-    corpus against the verifier named in its inputs; the harness it runs is
-    packaging/run_vectors.py, which is on disk here. The mirror runs that file
-    with the same inputs, so a verifier that the action would fail is failed
-    here first. The job summary and the artifact upload are the runner's and
-    are not mirrored.
+    The action installs the package from its own checkout and replays one corpus
+    against the verifier named in its inputs, then derives its outputs from the
+    report. Both halves are mirrored here, and the second half matters as much
+    as the first: a step later in the workflow reads this action's outputs, and
+    a mirror that replayed the corpus but produced no outputs would leave that
+    step comparing against empty strings and failing a push the remote accepts.
+
+    The harness is packaging/run_vectors.py and the output arithmetic is
+    scripts/action-summary.py -- the same file the action itself runs, not a
+    second copy of it here, so the mirror cannot drift from what it mirrors.
+
+    The installation step is the runner's: it pip-installs the package into the
+    job's environment, and the harness it installs is the file on disk here.
+    The job summary is written to a scratch file, and the artifact upload is
+    not mirrored at all.
     """
     verifier = str(inputs.get("verifier", "")).strip()
     if not verifier:
         return Local(None, "the action was used without a verifier input")
     corpus = str(inputs.get("corpus", "") or "vectors")
     report = str(inputs.get("report-path", "") or "agent-evidence-vectors-report.json")
+    report_path = "/tmp/" + pathlib.Path(report).name
+    # The replay's status is captured rather than allowed to abort the block:
+    # the action writes its summary and its outputs for a failing run too, and
+    # the mirror has to reach the same place. The status is re-raised at the end
+    # so a failing replay still fails this step, as the action's last step does.
     return Local(
+        "status=0\n"
         "python3 packaging/run_vectors.py"
         f" --corpus {shlex.quote(corpus)}"
         f" --verifier {shlex.quote(verifier)}"
-        f" --report {shlex.quote('/tmp/' + pathlib.Path(report).name)}",
+        f" --report {shlex.quote(report_path)} || status=$?\n"
+        f"echo report={shlex.quote(report_path)} >> \"$GITHUB_OUTPUT\"\n"
+        f"REPORT={shlex.quote(report_path)} STATUS=\"$status\" CORPUS={shlex.quote(corpus)} \\\n"
+        "  python3 scripts/action-summary.py\n"
+        'exit "$status"\n',
         "",
     )
 
@@ -206,6 +226,13 @@ class Step(NamedTuple):
     run: str | None
     uses: str
     inputs: dict[str, Any]
+    # `ident` rather than `id`: the step's own `id:`, which is how a later step
+    # names this one's outputs. Empty when the step declares none.
+    ident: str = ""
+    # The step's `env:` block, verbatim. Dropping it used to be silent: a step
+    # whose assertions read variables set here ran with none of them set, which
+    # is a check reporting a verdict on an input it never received.
+    env: dict[str, Any] = {}
 
     @property
     def label(self) -> str:
@@ -227,6 +254,8 @@ def steps_of(doc, path: pathlib.Path):
                 run=step.get("run"),
                 uses=str(step.get("uses") or ""),
                 inputs=step.get("with") or {},
+                ident=str(step.get("id") or ""),
+                env=step.get("env") or {},
             )
 
 
@@ -249,6 +278,96 @@ SHELL = "/bin/bash"
 # the thing it mirrors fails pushes the remote would have accepted -- the job is
 # to match, not to improve. scripts/workflow-steps-gate-test.py pins both halves.
 SHELL_FLAGS = ("-e",)
+
+
+# `${{ ... }}`, the only interpolation Actions performs in an `env:` value.
+EXPRESSION = re.compile(r"\$\{\{(.+?)\}\}")
+STEP_OUTPUT = re.compile(r"^steps\.([A-Za-z0-9_-]+)\.outputs\.([A-Za-z0-9_-]+)$")
+
+
+def expand(value: str, outputs: dict[str, dict[str, str]]) -> tuple[str, str]:
+    """Resolve one `env:` value. Returns (expanded, reason it could not be).
+
+    Two kinds of expression appear in these workflows and they are not treated
+    alike.
+
+    A reference to ANOTHER STEP'S OUTPUT is answered from what that step wrote
+    to $GITHUB_OUTPUT when this gate ran it. If the named step was not run here,
+    or ran and never wrote that name, the value is NOT guessed: the step is
+    declared NOT RUN and the reason says which output was missing. Substituting
+    an empty string instead is how this hole opened -- `test "$RESULT" = pass`
+    against an unset RESULT fails, and a gate that fails a push the remote would
+    accept is a gate its reader learns to bypass.
+
+    ANY OTHER CONTEXT -- `github.*`, `inputs.*`, `secrets.*` -- resolves to the
+    empty string, which is what Actions itself yields for a context value that
+    is absent. The steps here that read one are written for it: the commit-message
+    lint falls back to `HEAD~1..HEAD` when `github.event.before` is empty, and the
+    crosswalk filer prints its body and exits when `$GITHUB_ACTIONS` is not true.
+    """
+    missing = ""
+
+    def one(match: re.Match[str]) -> str:
+        nonlocal missing
+        expression = match.group(1).strip()
+        reference = STEP_OUTPUT.match(expression)
+        if reference is None:
+            return ""
+        step_id, name = reference.groups()
+        recorded = outputs.get(step_id)
+        if recorded is None:
+            missing = (
+                f"its env reads ${{{{ {expression} }}}}, and step `{step_id}` was "
+                "not run here, so this gate has no value for it and will not "
+                "invent one"
+            )
+            return ""
+        if name not in recorded:
+            missing = (
+                f"its env reads ${{{{ {expression} }}}}, and step `{step_id}` ran "
+                f"here without writing `{name}` to $GITHUB_OUTPUT. Either the "
+                "action declares an output its local mirror does not produce, or "
+                "the name is wrong"
+            )
+            return ""
+        return recorded[name]
+
+    return EXPRESSION.sub(one, value), missing
+
+
+def step_environment(
+    step: Step, outputs: dict[str, dict[str, str]], scratch: str
+) -> tuple[dict[str, str], str]:
+    """The environment for one step, or the reason it cannot be assembled.
+
+    Every step is given its own $GITHUB_OUTPUT and $GITHUB_STEP_SUMMARY, the way
+    the runner does, so a step that writes outputs can be read by the next one
+    and a step that writes a summary is not writing to a variable that is unset.
+    """
+    env: dict[str, str] = {
+        "GITHUB_OUTPUT": str(pathlib.Path(scratch) / f"output-{step.job}-{step.position}"),
+        "GITHUB_STEP_SUMMARY": str(pathlib.Path(scratch) / f"summary-{step.job}-{step.position}"),
+    }
+    for key, raw in step.env.items():
+        value, missing = expand(str(raw), outputs)
+        if missing:
+            return env, missing
+        env[str(key)] = value
+    pathlib.Path(env["GITHUB_OUTPUT"]).touch()
+    pathlib.Path(env["GITHUB_STEP_SUMMARY"]).touch()
+    return env, ""
+
+
+def record_outputs(step: Step, env: dict[str, str], outputs: dict[str, dict[str, str]]) -> None:
+    """Keep what a step wrote to $GITHUB_OUTPUT, so a later step can read it."""
+    if not step.ident:
+        return
+    written: dict[str, str] = {}
+    for line in pathlib.Path(env["GITHUB_OUTPUT"]).read_text(encoding="utf-8").splitlines():
+        key, sep, value = line.partition("=")
+        if sep:
+            written[key.strip()] = value
+    outputs[step.ident] = written
 
 
 def run_step(run: str, env: dict) -> subprocess.CompletedProcess:
@@ -320,28 +439,38 @@ def plan(files: list[pathlib.Path]) -> int:
 def execute(files: list[pathlib.Path]) -> int:
     ran = failed = 0
     not_run: list[str] = []
-    env = {**os.environ, "CI": "1", "GITHUB_ACTIONS": ""}
+    base = {**os.environ, "CI": "1", "GITHUB_ACTIONS": ""}
+    # What each step with an `id:` wrote to $GITHUB_OUTPUT, so a later step that
+    # names it in an `env:` value gets the value the runner would have given it.
+    outputs: dict[str, dict[str, str]] = {}
 
-    for path in files:
-        doc = load_yaml(path)
-        print(f"\n=== {path.name} ===")
-        for step in steps_of(doc, path):
-            block, suffix, fault = resolve(step)
-            if fault:
-                failed += 1
-                not_run.append(f"{step.label}  ({suffix})")
-                print(f"  NOT RUN  {step.label}  ({suffix})")
-                continue
-            if block is None:
-                not_run.append(f"{step.label}  ({suffix})")
-                print(f"  NOT RUN  {step.label}  ({suffix})")
-                continue
-            print(f"  RUN   {step.label}{suffix}")
-            proc = run_step(block, env)
-            ran += 1
-            if proc.returncode != 0:
-                failed += 1
-                report_failure(step.label, proc)
+    with tempfile.TemporaryDirectory(prefix="aee-workflow-steps-") as scratch:
+        for path in files:
+            doc = load_yaml(path)
+            print(f"\n=== {path.name} ===")
+            for step in steps_of(doc, path):
+                block, suffix, fault = resolve(step)
+                if fault:
+                    failed += 1
+                    not_run.append(f"{step.label}  ({suffix})")
+                    print(f"  NOT RUN  {step.label}  ({suffix})")
+                    continue
+                if block is None:
+                    not_run.append(f"{step.label}  ({suffix})")
+                    print(f"  NOT RUN  {step.label}  ({suffix})")
+                    continue
+                env, missing = step_environment(step, outputs, scratch)
+                if missing:
+                    not_run.append(f"{step.label}  ({missing})")
+                    print(f"  NOT RUN  {step.label}  ({missing})")
+                    continue
+                print(f"  RUN   {step.label}{suffix}")
+                proc = run_step(block, {**base, **env})
+                ran += 1
+                if proc.returncode != 0:
+                    failed += 1
+                    report_failure(step.label, proc)
+                record_outputs(step, env, outputs)
 
     return summarise("ran", ran, failed, not_run)
 
