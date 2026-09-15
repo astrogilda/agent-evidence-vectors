@@ -106,8 +106,33 @@ def golangci_lint(inputs: dict[str, Any]) -> Local:
     return Local(f"cd {shlex.quote(directory)}\ngolangci-lint run", "")
 
 
+def own_action(inputs: dict[str, Any]) -> Local:
+    """Mirror `uses: ./`, this repository's composite action, from the checkout.
+
+    The action installs the package from its own checkout and replays one
+    corpus against the verifier named in its inputs; the harness it runs is
+    packaging/run_vectors.py, which is on disk here. The mirror runs that file
+    with the same inputs, so a verifier that the action would fail is failed
+    here first. The job summary and the artifact upload are the runner's and
+    are not mirrored.
+    """
+    verifier = str(inputs.get("verifier", "")).strip()
+    if not verifier:
+        return Local(None, "the action was used without a verifier input")
+    corpus = str(inputs.get("corpus", "") or "vectors")
+    report = str(inputs.get("report-path", "") or "agent-evidence-vectors-report.json")
+    return Local(
+        "python3 packaging/run_vectors.py"
+        f" --corpus {shlex.quote(corpus)}"
+        f" --verifier {shlex.quote(verifier)}"
+        f" --report {shlex.quote('/tmp/' + pathlib.Path(report).name)}",
+        "",
+    )
+
+
 MIRRORED: dict[str, Callable[[dict[str, Any]], Local]] = {
     "golangci/golangci-lint-action": golangci_lint,
+    "./": own_action,
 }
 
 # Steps that belong to the runner rather than to the repository. Each reason
@@ -119,6 +144,11 @@ CANNOT_RUN = {
         "inside a checkout of the revision under test"
     ),
     "actions/setup-go": "provisions a Go toolchain on the runner; the one on PATH is used here",
+    "actions/setup-python": "provisions a Python on the runner; the one on PATH is used here",
+    "pypa/gh-action-pypi-publish": (
+        "uploads the built distributions to PyPI under the workflow's OIDC "
+        "identity, which only the runner holds"
+    ),
     "astral-sh/setup-uv": "provisions uv on the runner; the one on PATH is used here",
     "sigstore/cosign-installer": "provisions cosign on the runner; the one on PATH is used here",
     "actions/upload-artifact": "writes to the run's artifact store, which is only on the remote",
