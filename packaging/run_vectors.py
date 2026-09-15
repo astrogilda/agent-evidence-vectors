@@ -4233,7 +4233,7 @@ def _run_print_table(
         )
     print(
         f"totals: {t['vectors']} vectors, {t['pass']} pass, {t['fail']} fail{refusals}"
-        f"{parity}; report written to {os.path.relpath(report_path, report_base)}"
+        f"{parity}; report written to {shown_path(report_path, report_base)}"
     )
 
 
@@ -4622,16 +4622,76 @@ def self_test() -> int:
 # ---------------------------------------------------------------------------
 
 
+def shown_path(path: str, base: str) -> str:
+    """A path as printed: relative to the suite's parent when it sits under it.
+
+    Installed from the wheel, the suite's parent is site-packages and a report
+    in the working directory is a chain of `..` from there, so a path that
+    would leave the base is printed as given.
+    """
+    rel = os.path.relpath(path, base)
+    return path if rel.startswith(os.pardir) else rel
+
+
+def installed_layout() -> bool:
+    """True when this module runs from the wheel rather than a checkout."""
+    return os.path.isdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "corpora"))
+
+
+def corpora_root() -> str:
+    """Where the corpora live relative to this file, in either layout.
+
+    Installed from the wheel, this module sits at
+    ``agent_evidence_vectors/run_vectors.py`` and the corpora are packaged
+    beside it under ``corpora/``. In a checkout it sits at
+    ``packaging/run_vectors.py`` and the corpora are siblings of ``packaging/``.
+    The installed layout is checked first because a checkout never carries a
+    ``corpora/`` directory, so the two cannot be confused.
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    if installed_layout():
+        return os.path.join(here, "corpora")
+    return os.path.normpath(os.path.join(here, os.pardir))
+
+
+def shipped_corpora() -> list[str]:
+    """Every corpus directory carrying a MANIFEST.json, by name, sorted.
+
+    Read from disk rather than from a literal so that a corpus added to the
+    repository is listed the moment it lands, and one removed stops being
+    offered the moment it goes.
+    """
+    root = corpora_root()
+    found = []
+    for name in os.listdir(root):
+        if name == "vectors" or name.startswith("vectors-"):
+            if os.path.isfile(os.path.join(root, name, "MANIFEST.json")):
+                found.append(name)
+    return sorted(found)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
+        prog="agent-evidence-vectors",
         description="AEE v0.7 conformance vector harness (differential when an "
-        "external v0.7-capable verifier is supplied; self-contained otherwise)"
+        "external v0.7-capable verifier is supplied; self-contained otherwise)",
     )
-    default_vectors = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, "vectors")
     parser.add_argument(
         "--vectors",
-        default=os.path.normpath(default_vectors),
-        help="suite directory containing MANIFEST.json, accept/, reject/",
+        default=None,
+        help="suite directory containing MANIFEST.json, accept/, reject/ "
+        "(overrides --corpus; default: the shipped corpus --corpus names)",
+    )
+    parser.add_argument(
+        "--corpus",
+        default="vectors",
+        help="name of a shipped corpus directory to replay (default: vectors, the "
+        "Adversarial Execution Evidence corpus this rail judges; see --list-corpora)",
+    )
+    parser.add_argument(
+        "--list-corpora",
+        action="store_true",
+        help="print the shipped corpus names, one per line, and exit",
     )
     parser.add_argument(
         "--verifier",
@@ -4652,8 +4712,19 @@ def main() -> int:
         help="run the built-in reference-rail self-test and exit",
     )
     args = parser.parse_args()
+    if args.list_corpora:
+        for name in shipped_corpora():
+            print(name)
+        return 0
     if args.self_test:
         return self_test()
+    if args.vectors is None:
+        args.vectors = os.path.join(corpora_root(), args.corpus)
+    if args.report is None and installed_layout():
+        # Beside this file is site-packages when the wheel is installed, and a
+        # report written there is one nobody finds. The working directory is
+        # where a relying party's CI looks for it.
+        args.report = "conformance-report.json"
     return run_suite(args)
 
 
