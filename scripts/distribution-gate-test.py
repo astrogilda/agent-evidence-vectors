@@ -124,7 +124,7 @@ def case_tag_behind(root: Path) -> str:
     _edit(
         root,
         CITATION_REL,
-        lambda text: text.replace("version: 0.10.1", "version: 0.11.0", 1),
+        lambda text: text.replace("version: 0.11.0", "version: 0.12.0", 1),
     )
     return "the released version is"
 
@@ -170,17 +170,16 @@ def case_stale_tag_in_prose(root: Path) -> str:
     """A version token in an ordinary sentence, left behind by a release.
 
     The three tag claims are each found by their own regex, so a tag named in a
-    sentence none of them describes -- the reference-consumer line names one, and
-    it is about a different repository -- would be owned by nothing. This breaks
-    that token and nothing else, so it fails only if the shape-based sweep is
-    doing the work.
+    sentence none of them describes -- the releases row of the identifier table
+    names one -- would be owned by nothing. This breaks that token and nothing
+    else, so it fails only if the shape-based sweep is doing the work.
     """
     _edit(
         root,
         PAGE_REL,
         lambda text: text.replace(
-            "holding them to `v0.10.1` of this corpus",
-            "holding them to `v0.9.0` of this corpus",
+            "`v0.11.0` is current",
+            "`v0.9.0` is current",
             1,
         ),
     )
