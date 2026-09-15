@@ -115,57 +115,11 @@ runs:
         REPORT: ${{ steps.replay.outputs.report }}
         STATUS: ${{ steps.replay.outputs.status }}
         CORPUS: ${{ inputs.corpus }}
-      run: |
-        python - <<'PY'
-        import json, os, sys
-
-        report_path = os.environ["REPORT"]
-        status = os.environ.get("STATUS", "1")
-        corpus = os.environ["CORPUS"]
-        summary = open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8")
-        outputs = open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8")
-
-        if not os.path.isfile(report_path):
-            summary.write(
-                f"## agent-evidence-vectors: no report\n\n"
-                f"The harness exited {status} before writing `{report_path}`. "
-                "Read the step log for the refusal.\n"
-            )
-            outputs.write("vectors=0\nconform=0\nresult=fail\n")
-            sys.exit(0)
-
-        with open(report_path, encoding="utf-8") as f:
-            report = json.load(f)
-        totals = report["totals"]
-        clean = status == "0"
-        result = "pass" if clean else "fail"
-        outputs.write(f"vectors={totals['vectors']}\n")
-        outputs.write(f"conform={totals['conform']}\n")
-        outputs.write(f"result={result}\n")
-
-        summary.write(f"## agent-evidence-vectors: {result}\n\n")
-        summary.write(f"Corpus `{corpus}`, rail `{report['rail']}`. {report['externalVerifierProbe']}\n\n")
-        summary.write("| vectors | pass | fail | conform | reason-parity mismatches | suite refusals |\n")
-        summary.write("| ---: | ---: | ---: | ---: | ---: | ---: |\n")
-        summary.write(
-            f"| {totals['vectors']} | {totals['pass']} | {totals['fail']} | {totals['conform']} "
-            f"| {totals['reasonParityMismatch']} | {totals['suiteRefusals']} |\n\n"
-        )
-        failed = [row for row in report.get("vectors", []) if row.get("status") == "FAIL"]
-        if failed:
-            summary.write("| vector | kind | reasons |\n| --- | --- | --- |\n")
-            for row in failed[:50]:
-                reasons = "; ".join(str(r) for r in row.get("reasons", []))[:300]
-                summary.write(f"| `{row.get('id')}` | {row.get('kind')} | {reasons} |\n")
-            if len(failed) > 50:
-                summary.write(f"\n{len(failed) - 50} more failing vectors are in the report.\n")
-        notes = report.get("notes", [])
-        if notes:
-            summary.write("\n<details><summary>suite notes</summary>\n\n")
-            for note in notes:
-                summary.write(f"- {note}\n")
-            summary.write("\n</details>\n")
-        PY
+      # The body is scripts/action-summary.py in this action's own checkout
+      # rather than a heredoc here, so the local workflow mirror can run the
+      # same code and produce the same outputs. A mirror that reimplemented
+      # this arithmetic would agree on the day it was written and drift after.
+      run: python3 "$GITHUB_ACTION_PATH/scripts/action-summary.py"
 
     - name: Upload the report
       if: ${{ !cancelled() }}
