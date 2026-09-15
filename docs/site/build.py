@@ -23,6 +23,7 @@ from pathlib import Path
 
 import markdown
 
+SUMMARY = "Build the static site the Pages workflow publishes."
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 REPO_URL = "https://github.com/astrogilda/agent-evidence-vectors"
 MANIFEST_NAME = "MANIFEST.json"
@@ -182,7 +183,7 @@ def codes_body() -> str:
 
 
 def main(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=SUMMARY)
     parser.add_argument("--out", required=True, type=Path)
     args = parser.parse_args(argv)
     tag = release_tag()
