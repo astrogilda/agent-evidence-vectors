@@ -183,7 +183,7 @@ valuable there than one that agreed.
 | Go module | `github.com/astrogilda/agent-evidence-vectors`, verifier at `cmd/aee-verify` | live |
 | Releases | git tags, with a GitHub Release object per tag; `v0.11.0` is current | live |
 | Signed corpus digests | `release/CORPUS-DIGESTS.txt`, one line per corpus, with a detached signature, an RFC 3161 token and an OpenTimestamps proof beside it | live, derived |
-| Archival DOI | concept DOI `10.5281/zenodo.22758687`, which resolves to the newest archived release; `10.5281/zenodo.22758688` is the version DOI for `v0.10.1` | live |
+| Archival DOI | concept DOI `10.5281/zenodo.22758687`, which resolves to the newest archived release; the record lists a version DOI per release, and `CITATION.cff` carries the concept DOI so a citation stays stable | live |
 | Package registries | PyPI `agent-evidence-vectors`: the harness and every corpus, built and uploaded by the release workflow from the tag, at the tag's version | live |
 | Mirrors | none | none |
 

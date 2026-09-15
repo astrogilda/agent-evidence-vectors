@@ -258,22 +258,24 @@ wrong.
 
 Every release is archived on Zenodo. The concept DOI
 [10.5281/zenodo.22758687](https://doi.org/10.5281/zenodo.22758687) always resolves to the newest
-archived release; a version DOI names one release and never moves, and
-[10.5281/zenodo.22758688](https://doi.org/10.5281/zenodo.22758688) is the one for `v0.10.1`.
-Cite the version DOI, the suite revision and the corpus digest together, for the
-reason [`DISTRIBUTION.md`](DISTRIBUTION.md) gives: a citation that names only the
-repository names a moving target. [`CITATION.cff`](CITATION.cff) carries the
-concept DOI and GitHub renders a citation from it.
+archived release; a version DOI names one release and never moves, and the
+Zenodo record lists one for each release under "Versions". Cite the version
+DOI of the release you ran, the suite revision and the corpus digest together,
+for the reason [`DISTRIBUTION.md`](DISTRIBUTION.md) gives: a citation that names
+only the repository names a moving target. [`CITATION.cff`](CITATION.cff)
+carries the concept DOI, which is why the entry below does too: a release is
+tagged before Zenodo archives it, so no release can carry its own version DOI
+in its own tree. GitHub renders a citation from the same file.
 
 ```bibtex
 @software{gilda_agent_evidence_vectors,
   author    = {Gilda, Sankalp},
   title     = {agent-evidence-vectors: conformance vectors for agent execution evidence},
-  version   = {0.10.1},
+  version   = {0.11.0},
   publisher = {Zenodo},
   year      = {2026},
-  doi       = {10.5281/zenodo.22758688},
-  url       = {https://doi.org/10.5281/zenodo.22758688}
+  doi       = {10.5281/zenodo.22758687},
+  url       = {https://doi.org/10.5281/zenodo.22758687}
 }
 ```
 
