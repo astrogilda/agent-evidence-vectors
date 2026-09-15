@@ -140,3 +140,10 @@ jobs:
         with:
           packages-dir: dist/
           attestations: true
+          # A first upload cannot succeed until the trusted publisher exists on
+          # PyPI, and the fix for that is to re-run this job rather than to cut
+          # a new version. skip-existing keeps the re-run idempotent if a
+          # previous attempt uploaded part of the pair. The step above has
+          # already refused any wheel whose version is not the tag's, so this
+          # cannot quietly pass over a version that needed publishing.
+          skip-existing: true
