@@ -1,0 +1,64 @@
+# agent-evidence-vectors
+
+> A recomputable execution attestation toolkit: a reference verifier and
+> conformance vector corpora for the in-toto Adversarial Execution Evidence
+> predicate (version 0.7, tracked at in-toto/attestation#570) and the AI Agent
+> Action predicate (version 0.1, proposed at in-toto/attestation#588), with
+> further corpora for carriage over SCITT and COSE receipts, artifact binding,
+> the agent capability interface, the agent control standard, anchor-stream
+> verification, and cross-implementation run records.
+
+The model is execute-and-attest, not match-and-assert: a consumer recomputes
+the outcome from carried bytes instead of trusting a producer-asserted verdict.
+Each corpus directory carries a `MANIFEST.json` naming its suite and its
+`corpusDigest`, and each member declares the verdict and the codes a conforming
+verifier must produce. A verifier that answers with an exit status alone fails
+every vector, and each corpus pairs its reject members with accepting twins so
+that one refusing everything scores zero rather than full marks. Every count published in the
+repository is derived from a manifest by a gate, never typed, and this file
+carries none for the same reason: read them from the manifests or from the
+signed `release/CORPUS-DIGESTS.txt`.
+
+## Entry points
+
+- [PyPI package](https://pypi.org/project/agent-evidence-vectors/): `agent-evidence-vectors`, stdlib-only, carrying the harness as the console script of the same name and every corpus as package data; `uvx agent-evidence-vectors --verifier '<cmd>'` replays the AEE corpus against a verifier with nothing cloned, `--corpus <name>` selects another, `--list-corpora` prints the names and `--self-test` runs the reference rail against its own oracle.
+- [GitHub Action](https://github.com/astrogilda/agent-evidence-vectors/blob/main/action.yml): `uses: astrogilda/agent-evidence-vectors@v0.11.0` with a `verifier` input replays the corpus in a consumer's CI, writes a job summary, uploads the report as the artifact `agent-evidence-vectors-results`, and fails the job when any vector disagreed.
+- [README](https://github.com/astrogilda/agent-evidence-vectors/blob/main/README.md): The predicates, the corpora, the external verifier contract the harness speaks, the failure-code registry, and how to verify a release without trusting the maintainer.
+- [Distribution](https://github.com/astrogilda/agent-evidence-vectors/blob/main/DISTRIBUTION.md): The tag to cite, the one-command run, the corpus table, how to cite a run, and how to add a corpus.
+- [Independent runs](https://github.com/astrogilda/agent-evidence-vectors/blob/main/RUNS.md): Every run of a corpus by an implementation this repository did not write, in its author's words, labelled blind or directed as the author labelled it.
+- [Reference verifier](https://github.com/astrogilda/agent-evidence-vectors/tree/main/cmd/aee-verify): The Go command-line verifier; install with `go install github.com/astrogilda/agent-evidence-vectors/cmd/aee-verify@<tag>`. The core package is `aee/`, standard library only.
+- [Harness](https://github.com/astrogilda/agent-evidence-vectors/blob/main/packaging/run_vectors.py): Drives any verifier over a corpus as `<cmd> <vector-file>` and compares codes and recomputed results against the manifest.
+- [Failure codes](https://github.com/astrogilda/agent-evidence-vectors/blob/main/aee/codes.go): The closed code set, compared as a set by the harness; message text carries nothing.
+- [Vendored specification](https://github.com/astrogilda/agent-evidence-vectors/blob/main/spec/predicates/adversarial-execution-evidence.md): The predicate text the suite implements, pinned by `spec/VENDOR-PIN.json`.
+- [Governance](https://github.com/astrogilda/agent-evidence-vectors/blob/main/GOVERNANCE.md), [Contributing](https://github.com/astrogilda/agent-evidence-vectors/blob/main/CONTRIBUTING.md), [Dispositions](https://github.com/astrogilda/agent-evidence-vectors/blob/main/DISPOSITIONS.md): Who decides, what a proposal goes through, and every outside objection with its resolution.
+
+## Corpora
+
+One directory each, each with its own `MANIFEST.json`, `corpusDigest` and generator.
+
+- [vectors/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors): `adversarial-execution-evidence-conformance`, the AEE predicate; the per-revision ledger is `vectors/CHANGES.md`.
+- [vectors-ai-agent-action/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors-ai-agent-action): `ai-agent-action-conformance`, the AI Agent Action predicate plus the canonicalization text this repository proposes for it.
+- [vectors-scitt-cose/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors-scitt-cose): `scitt-cose-carriage-conformance`, carriage of the AEE predicate as a SCITT Transparent Statement under `profiles/scitt-cose.md`.
+- [vectors-artifact-binding/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors-artifact-binding): `artifact-binding-conformance`, the contract in `spec/artifact-binding/v1.md`, over three verdicts.
+- [vectors-aci/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors-aci): `aci`, the agent capability interface levels and their serialization.
+- [vectors-acs-core/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors-acs-core): `acs-core-negative-conformance`, the mandatory profile of the agent control standard, by negative members against vendored text.
+- [vectors-anchor-stream/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors-anchor-stream): `anchor-stream-conformance`, the anchor-stream verification contract published by aos-standard/catalog.
+- [vectors-mcp-record-contract/](https://github.com/astrogilda/agent-evidence-vectors/tree/main/vectors-mcp-record-contract): `cross-run-record-contract`, what a cross-implementation run record has to carry.
+
+## Identifiers
+
+- Release tag: `v0.11.0`, as `CITATION.cff` and `DISTRIBUTION.md` carry it; a git tag with a GitHub Release per tag, and a PyPI release of the same version cut from that tag.
+- Go module: `github.com/astrogilda/agent-evidence-vectors`.
+- Signed corpus digests: [release/CORPUS-DIGESTS.txt](https://github.com/astrogilda/agent-evidence-vectors/blob/main/release/CORPUS-DIGESTS.txt), one line per corpus, with a detached signature, an RFC 3161 token and an OpenTimestamps proof beside it.
+- Archival DOI: concept DOI [10.5281/zenodo.22758687](https://doi.org/10.5281/zenodo.22758687), which resolves to the newest archived release; each release also has its own version DOI, listed on that record. `CITATION.cff` carries the concept DOI so a citation stays stable across releases.
+- [Citation](https://github.com/astrogilda/agent-evidence-vectors/blob/main/CITATION.cff): Cite the repository, the suiteRevision or tag you ran, and the corpusDigest of the corpus you ran.
+
+## Consumers
+
+- [astrogilda/agent-evidence-admission](https://github.com/astrogilda/agent-evidence-admission): Reference admission rails on four policy engines, measured against this corpus at a pinned tag.
+- [astrogilda/aee-vocabulary](https://github.com/astrogilda/aee-vocabulary): The closed vocabulary for the claim terms the predicate carries.
+
+## Optional
+
+- [Security](https://github.com/astrogilda/agent-evidence-vectors/blob/main/SECURITY.md)
+- [License](https://github.com/astrogilda/agent-evidence-vectors/blob/main/LICENSE): Apache-2.0.
