@@ -133,7 +133,7 @@ for it, and without taking this page's word. Four commands settle it.
 
 ```bash
 git clone https://github.com/astrogilda/agent-evidence-vectors && cd agent-evidence-vectors
-git checkout v0.10.1
+git checkout v0.11.0
 
 # 1. the digest list is what the vector files on disk hash to, recomputed
 python3 scripts/release-digests.py --check
@@ -218,6 +218,61 @@ concept DOI and GitHub renders a citation from it.
   url       = {https://doi.org/10.5281/zenodo.22758688}
 }
 ```
+
+## Run it in your CI
+
+Add one step to a workflow in the repository that builds your verifier:
+
+```yaml
+- uses: astrogilda/agent-evidence-vectors@v0.11.0
+  with:
+    verifier: ./path/to/your-verifier --json
+```
+
+The same replay from a shell, with nothing cloned:
+
+```bash
+uvx agent-evidence-vectors --verifier './path/to/your-verifier --json'
+```
+
+Both run the harness described under "The verification pipeline" against your
+verifier through the external-implementation contract: the harness invokes
+`<cmd> <vector-file>`, reads the verdict from the exit status and the condition
+codes from the last line of stdout, and hands the key policy to the process in
+`AEE_SUBSTRATE_KEYS`. Your verifier has to speak that contract and nothing
+else. The reference rail replays the same vectors beside it, and the report
+records where the two agree, where they disagree, and where your verifier
+reached the corpus's verdict under a different condition code.
+
+The action pins the corpus to the release you name in `uses:`, installs the
+suite from that checkout, and then:
+
+- Writes the job summary: a totals row, one row per vector that disagreed
+  with the corpus, and the suite notes.
+- Uploads the report JSON as the artifact `agent-evidence-vectors-results`.
+  The report is the same `conformance-report.json` the harness writes locally,
+  and a scoreboard in another repository pulls it by that name.
+- Fails the job when any vector disagreed or the suite raised a refusal.
+
+Inputs, all optional except the first:
+
+| Input | What it does |
+| --- | --- |
+| `verifier` | Command line of the verifier under test. The first token is probed for the predicate type and must be on `PATH` or a path relative to the workspace. |
+| `corpus` | The shipped corpus to replay. Defaults to `vectors`, the Adversarial Execution Evidence corpus the reference rail judges. `agent-evidence-vectors --list-corpora` prints every name. |
+| `tag` | A release to replay other than the one the action itself is pinned to, such as `v0.11.0`. The default is the action's own ref. |
+| `artifact-name` | The results artifact's name. Change it only when the action runs more than once in one workflow. |
+| `report-path` | Where the report is written, relative to the workspace. |
+
+Outputs: `report` (the report's path), `vectors` and `conform` (the totals),
+and `result` (`pass` or `fail`), so a later step can act on the count rather
+than re-read the file.
+
+The package is stdlib-only and carries every corpus, so `pip install
+agent-evidence-vectors` on a machine with no network access to this repository
+is a complete install. `agent-evidence-vectors --self-test` runs the reference
+rail against its own oracle, which is the first thing to run when a result
+looks wrong.
 
 ## Arriving from somewhere else
 
