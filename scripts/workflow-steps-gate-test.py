@@ -263,8 +263,10 @@ def an_output_of_a_step_that_did_not_run_is_not_run() -> None:
 
 def an_output_the_mirror_never_wrote_is_not_run() -> None:
     """A mirror that stops producing a declared output must say so, not fail."""
+    # The step wrote one output and the reference asks for another. The value
+    # is any string; what is being tested is that `result` is reported missing.
     _, missing = GATE.expand(  # type: ignore[attr-defined]
-        "${{ steps.replay.outputs.result }}", {"replay": {"vectors": "272"}}
+        "${{ steps.replay.outputs.result }}", {"replay": {"vectors": "3"}}
     )
     assert missing and "result" in missing, (
         f"a declared output the mirror did not write was not reported: {missing!r}"
