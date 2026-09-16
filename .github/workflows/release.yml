@@ -135,8 +135,18 @@ jobs:
             echo "wheel ${version} matches tag ${GITHUB_REF_NAME}"
           fi
 
+      # Pinned to v1.14.2 rather than to the release/v1 branch, because a
+      # moving ref is a different action on every run. v1.14.0 was pinned here
+      # first and could not upload this wheel at all: it bundles a Twine older
+      # than core metadata 2.5, which the build backend now emits, so the
+      # upload failed with `'2.5' is not a valid metadata version` after the
+      # trusted-publisher exchange had already succeeded. v1.14.2 carries
+      # Twine v7, whose release notes state it uploads metadata 2.5. The fix
+      # belongs here and not in the build backend: the wheel is correct, and
+      # pinning the metadata version down to suit an old uploader would make
+      # every future consumer read an older wheel than the one we build.
       - name: publish to PyPI
-        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
         with:
           packages-dir: dist/
           attestations: true
