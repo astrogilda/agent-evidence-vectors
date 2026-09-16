@@ -124,7 +124,7 @@ def case_tag_behind(root: Path) -> str:
     _edit(
         root,
         CITATION_REL,
-        lambda text: text.replace("version: 0.11.0", "version: 0.12.0", 1),
+        lambda text: text.replace("version: 0.11.1", "version: 0.12.0", 1),
     )
     return "the released version is"
 
@@ -178,7 +178,7 @@ def case_stale_tag_in_prose(root: Path) -> str:
         root,
         PAGE_REL,
         lambda text: text.replace(
-            "`v0.11.0` is current",
+            "`v0.11.1` is current",
             "`v0.9.0` is current",
             1,
         ),

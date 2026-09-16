@@ -31,9 +31,9 @@ inputs:
     default: "vectors"
   tag:
     description: >-
-      Release of the corpus to replay, as a git tag such as `v0.11.0`. The
-      default is the ref this action was used at, so `uses: ...@v0.11.0` replays
-      the v0.11.0 corpus. Set it to replay a different release than the action
+      Release of the corpus to replay, as a git tag such as `v0.11.1`. The
+      default is the ref this action was used at, so `uses: ...@v0.11.1` replays
+      the v0.11.1 corpus. Set it to replay a different release than the action
       itself was pinned to.
     required: false
     default: ""
