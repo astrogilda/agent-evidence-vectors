@@ -15,6 +15,15 @@
   <img src="https://img.shields.io/badge/predicate-in--toto%20AEE%20v0.7-6f57c2" alt="in-toto AEE v0.7 predicate">
 </p>
 
+## Used by
+
+- [in-toto's AI Agent Action predicate proposal](https://github.com/in-toto/attestation/pull/588/files) names this suite as its conformance corpus, pins release `v0.8.0` by commit and digest, and makes passing it a MUST.
+- Listed in the OECD.AI [Catalogue of Tools and Metrics for Trustworthy AI](https://oecd.ai/en/catalogue/tools/agent-evidence-conformance-suite), published 2026-09-14.
+- [Rul1an/aee-checker](https://github.com/Rul1an/aee-checker/pull/21), an independent Rust verifier written from the specification alone, scores 272/272 on suiteRevision 27 with its build frozen before the corpus moved.
+- [giskard09](https://github.com/a2aproject/a2a-tck/pull/228#issuecomment-5359047401) ran the 57 RFC 8785 vectors blind against argentum-core before opening the generators: 57/57.
+- The maintainer of [VATE](https://github.com/Poke-nushi/Verifiable-Agent-Trust-Envelope/blob/main/docs/interop/aee-native-boundary-review.md) regenerated all 308 generated files byte for byte and recorded 258/258 in his own repository.
+- Curated in [awesome-agent-runtime-security](https://github.com/bureado/awesome-agent-runtime-security/blob/main/README.md) under attestation and recompute-verify, and on the [awesome-ai-security-tools watchlist](https://github.com/scadastrangelove/awesome-ai-security-tools/blob/main/WATCHLIST.md) with `Co-authored-by` credit on the curation commit.
+
 ## Run the suite against your verifier
 
 Add one step to the workflow that builds your verifier:
