@@ -21,6 +21,8 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+# Least privilege at the top; the publish job alone adds id-token, which is
+# what PyPI trusted publishing verifies the workflow identity with.
 permissions:
   contents: read
 
@@ -77,3 +79,71 @@ jobs:
         run: |
           cat release/CORPUS-DIGESTS.txt
           openssl x509 -in spec/tsa-roots.pem -noout -subject -fingerprint -sha256
+
+  # The package on PyPI is cut from the same tag the signed digest list was
+  # verified for, and only after that verification passed: a wheel whose
+  # corpus does not verify is not published. No API token is stored anywhere;
+  # the id-token grant lets PyPI check this workflow's OIDC identity against
+  # the trusted publisher registered for the project, and attestations: true
+  # attaches PEP 740 provenance to every uploaded distribution.
+  publish:
+    needs: verify
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+
+      - name: build the wheel and the sdist
+        run: |
+          rm -rf dist
+          uv build
+
+      # The wheel is exercised from a directory that is not the checkout, so a
+      # path that only resolves inside the repository is caught here and not
+      # by the first relying party. --no-project keeps uv from reading the
+      # checkout's own pyproject.toml through the working directory.
+      - name: the wheel runs from outside the checkout and replays the corpus
+        run: |
+          wheel="$(ls "$PWD"/dist/agent_evidence_vectors-*.whl)"
+          scratch="$(mktemp -d)"
+          cd "$scratch"
+          uv run --no-project --with "$wheel" agent-evidence-vectors --list-corpora
+          uv run --no-project --with "$wheel" agent-evidence-vectors --self-test
+          uv run --no-project --with "$wheel" agent-evidence-vectors --report report.json
+          python3 -c "import json; t = json.load(open('report.json'))['totals']; assert t['fail'] == 0 and t['suiteRefusals'] == 0, t; print(t)"
+
+      # GITHUB_REF_NAME is empty under scripts/workflow-steps-gate.py, which
+      # runs this step before a push; the version check then has no tag to
+      # compare against and says so rather than comparing to an empty string.
+      - name: the wheel's version is the tag's
+        run: |
+          version="$(ls dist/agent_evidence_vectors-*.whl | sed -E 's|.*/agent_evidence_vectors-([^-]+)-.*|\1|')"
+          if [ -z "${GITHUB_REF_NAME:-}" ]; then
+            echo "no tag in this run; the wheel is version ${version}"
+          elif [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "the wheel is version ${version} and the tag is ${GITHUB_REF_NAME}" >&2
+            exit 1
+          else
+            echo "wheel ${version} matches tag ${GITHUB_REF_NAME}"
+          fi
+
+      - name: publish to PyPI
+        uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # release/v1
+        with:
+          packages-dir: dist/
+          attestations: true
+          # A first upload cannot succeed until the trusted publisher exists on
+          # PyPI, and the fix for that is to re-run this job rather than to cut
+          # a new version. skip-existing keeps the re-run idempotent if a
+          # previous attempt uploaded part of the pair. The step above has
+          # already refused any wheel whose version is not the tag's, so this
+          # cannot quietly pass over a version that needed publishing.
+          skip-existing: true

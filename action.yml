@@ -1,0 +1,140 @@
+name: "agent-evidence-vectors"
+description: "Replay the agent-evidence-vectors conformance corpus against your verifier and publish the report"
+author: "Sankalp Gilda"
+
+# The delivery shape is lifted from theupdateframework/tuf-conformance: a
+# composite action a client project points at its own executable, a results
+# JSON uploaded under a fixed artifact name so a scoreboard elsewhere can pull
+# it by name and render a missing consumer as "not found" rather than dropping
+# it, and a job summary a reviewer reads without opening the log. The contract
+# a consumer's verifier speaks is the external-implementation contract in
+# README.md: invoked as `<cmd> <vector-file>`, a verdict in the exit status,
+# and the last stdout line a JSON object carrying the condition codes.
+
+branding:
+  icon: "check-square"
+  color: "purple"
+
+inputs:
+  verifier:
+    description: >-
+      Command line of the verifier under test, for example `./aee-verify -json`.
+      The first token is probed for the predicate type and must be on PATH or a
+      path relative to the workspace.
+    required: true
+  corpus:
+    description: >-
+      Name of the shipped corpus to replay. `vectors` is the Adversarial
+      Execution Evidence corpus the reference rail judges. Run
+      `agent-evidence-vectors --list-corpora` for every name the release carries.
+    required: false
+    default: "vectors"
+  tag:
+    description: >-
+      Release of the corpus to replay, as a git tag such as `v0.11.0`. The
+      default is the ref this action was used at, so `uses: ...@v0.11.0` replays
+      the v0.11.0 corpus. Set it to replay a different release than the action
+      itself was pinned to.
+    required: false
+    default: ""
+  artifact-name:
+    description: >-
+      Name of the uploaded results artifact. A scoreboard pulls the report by
+      this name, so leave the default unless this action runs more than once in
+      one workflow, in which case each run needs its own.
+    required: false
+    default: "agent-evidence-vectors-results"
+  report-path:
+    description: "Where the report JSON is written, relative to the workspace."
+    required: false
+    default: "agent-evidence-vectors-report.json"
+
+outputs:
+  report:
+    description: "Path of the report JSON."
+    value: ${{ steps.replay.outputs.report }}
+  vectors:
+    description: "How many vectors were replayed."
+    value: ${{ steps.summary.outputs.vectors }}
+  conform:
+    description: "How many vectors the verifier conformed on, by verdict and result."
+    value: ${{ steps.summary.outputs.conform }}
+  result:
+    description: "`pass` when every vector passed and the suite raised no refusal, else `fail`."
+    value: ${{ steps.summary.outputs.result }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: "3.13"
+
+    - name: Install the suite
+      shell: bash
+      env:
+        TAG: ${{ inputs.tag }}
+        ACTION_REF: ${{ github.action_ref }}
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        echo "::group::Install agent-evidence-vectors"
+        # The checkout this action runs from IS the release the consumer pinned
+        # in `uses:`, so the default installs it directly; the only fetch is the
+        # build backend. A different tag is fetched from the repository by name.
+        if [ -z "$TAG" ] || [ "$TAG" = "$ACTION_REF" ]; then
+          python -m pip install --quiet "$ACTION_PATH"
+        else
+          python -m pip install --quiet \
+            "agent-evidence-vectors @ git+https://github.com/astrogilda/agent-evidence-vectors@${TAG}"
+        fi
+        agent-evidence-vectors --list-corpora
+        echo "::endgroup::"
+
+    - name: Replay the corpus
+      id: replay
+      shell: bash
+      env:
+        VERIFIER: ${{ inputs.verifier }}
+        CORPUS: ${{ inputs.corpus }}
+        REPORT: ${{ inputs.report-path }}
+      run: |
+        # The exit status is kept rather than acted on here so the report and
+        # the summary are produced for a failing run too; a red run with no
+        # report says nothing about which vector disagreed.
+        status=0
+        agent-evidence-vectors --corpus "$CORPUS" --verifier "$VERIFIER" --report "$REPORT" || status=$?
+        echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+        echo "status=$status" >> "$GITHUB_OUTPUT"
+
+    - name: Write the job summary
+      id: summary
+      if: ${{ !cancelled() }}
+      shell: bash
+      env:
+        REPORT: ${{ steps.replay.outputs.report }}
+        STATUS: ${{ steps.replay.outputs.status }}
+        CORPUS: ${{ inputs.corpus }}
+      # The body is scripts/action-summary.py in this action's own checkout
+      # rather than a heredoc here, so the local workflow mirror can run the
+      # same code and produce the same outputs. A mirror that reimplemented
+      # this arithmetic would agree on the day it was written and drift after.
+      run: python3 "$GITHUB_ACTION_PATH/scripts/action-summary.py"
+
+    - name: Upload the report
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ steps.replay.outputs.report }}
+        overwrite: true
+        retention-days: 30
+
+    - name: Fail the job when the replay did
+      if: ${{ steps.replay.outputs.status != '0' }}
+      shell: bash
+      env:
+        STATUS: ${{ steps.replay.outputs.status }}
+      run: |
+        echo "::error::agent-evidence-vectors exited $STATUS; the job summary names the vectors that disagreed."
+        exit "$STATUS"

@@ -13,7 +13,7 @@ distribution heading, and it would tell a reader nothing they can check.
 
 ## The tag to cite
 
-`v0.10.1`. The same version is in [`CITATION.cff`](CITATION.cff), which is what
+`v0.11.0`. The same version is in [`CITATION.cff`](CITATION.cff), which is what
 GitHub's citation panel reads and what an archive deposit is cut from, and
 `scripts/distribution-gate.py` refuses if this page and that file disagree.
 
@@ -25,14 +25,25 @@ a claim about whatever `main` said on a day nobody recorded.
 ## The one-command run
 
 The module path is `github.com/astrogilda/agent-evidence-vectors`, and the
-verifier is the `cmd/aee-verify` package inside it.
+verifier is the `cmd/aee-verify` package inside it. The harness and every
+corpus are on PyPI as `agent-evidence-vectors`, at the same version as the
+tag, so the run needs no clone:
 
 ```bash
-go install github.com/astrogilda/agent-evidence-vectors/cmd/aee-verify@v0.10.1
+go install github.com/astrogilda/agent-evidence-vectors/cmd/aee-verify@v0.11.0
+uvx agent-evidence-vectors==0.11.0 --verifier "aee-verify --json"
+```
+
+From a checkout, which is the same harness read from the tree:
+
+```bash
 git clone https://github.com/astrogilda/agent-evidence-vectors
-cd agent-evidence-vectors && git checkout v0.10.1
+cd agent-evidence-vectors && git checkout v0.11.0
 python3 packaging/run_vectors.py --verifier "aee-verify --json"
 ```
+
+To run it on every push of your own repository, the section "Run it in your
+CI" in [`README.md`](README.md) gives the `uses:` step.
 
 The external contract that command speaks to is in
 [`README.md`](README.md): a verdict in the exit status, one line of JSON on
@@ -44,8 +55,8 @@ A reference consumer is public at
 [`astrogilda/agent-evidence-admission`](https://github.com/astrogilda/agent-evidence-admission):
 admission rails on four policy engines, each declaring per obligation what it
 enforces, what it only approximates and what it cannot reach, with its CI
-holding them to `v0.10.1` of this corpus pinned by tag and by the commit that
-tag resolved to. It is what a consumer side of this contract looks like when
+holding them to a tagged release of this corpus, pinned by tag and by the
+commit that tag resolved to. It is what a consumer side of this contract looks like when
 somebody has written one down.
 
 **A disagreement is the interesting outcome.** If your verifier and this corpus
@@ -62,7 +73,7 @@ start, without a maintainer's word and without this page's word.
 
 ```bash
 git clone https://github.com/astrogilda/agent-evidence-vectors && cd agent-evidence-vectors
-git checkout v0.10.1
+git checkout v0.11.0
 
 # 1. the digest list is what the vector files on disk hash to, recomputed
 python3 scripts/release-digests.py --check
@@ -170,12 +181,11 @@ valuable there than one that agreed.
 | --- | --- | --- |
 | Source of record | `github.com/astrogilda/agent-evidence-vectors` | live |
 | Go module | `github.com/astrogilda/agent-evidence-vectors`, verifier at `cmd/aee-verify` | live |
-| Releases | git tags, with a GitHub Release object per tag; `v0.10.1` is current | live |
+| Releases | git tags, with a GitHub Release object per tag; `v0.11.0` is current | live |
 | Signed corpus digests | `release/CORPUS-DIGESTS.txt`, one line per corpus, with a detached signature, an RFC 3161 token and an OpenTimestamps proof beside it | live, derived |
-| Archival DOI | concept DOI `10.5281/zenodo.22758687`, which resolves to the newest archived release; `10.5281/zenodo.22758688` is the version DOI for `v0.10.1` | live |
-| Package registries | no package of this corpus is published anywhere today | none |
+| Archival DOI | concept DOI `10.5281/zenodo.22758687`, which resolves to the newest archived release; the record lists a version DOI per release, and `CITATION.cff` carries the concept DOI so a citation stays stable | live |
+| Package registries | PyPI `agent-evidence-vectors`: the harness and every corpus, built and uploaded by the release workflow from the tag, at the tag's version | live |
 | Mirrors | none | none |
 
-Nothing in the two rows at the bottom is a plan stated as a fact. Each cell says
-what is true today, and a mirror or a package is written there only once it
-exists.
+Nothing in the rows at the bottom is a plan stated as a fact. Each cell says
+what is true today, and a mirror is written there only once it exists.
