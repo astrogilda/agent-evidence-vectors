@@ -56,7 +56,7 @@ One directory each, each with its own `MANIFEST.json`, `corpusDigest` and genera
 ## Consumers
 
 - [astrogilda/agent-evidence-admission](https://github.com/astrogilda/agent-evidence-admission): Reference admission rails on four policy engines, measured against this corpus at a pinned tag.
-- [astrogilda/aee-vocabulary](https://github.com/astrogilda/aee-vocabulary): The closed vocabulary for the claim terms the predicate carries.
+- [astrogilda/agent-evidence-vocabulary](https://github.com/astrogilda/agent-evidence-vocabulary): The closed vocabulary for the claim terms the predicate carries.
 
 ## Optional
 
