@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://github.com/astrogilda/agent-evidence-vectors/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/astrogilda/agent-evidence-vectors/ci.yml?branch=main&label=build" alt="build status"></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="license Apache-2.0">
+  <a href="https://pypi.org/project/agent-evidence-vectors/"><img src="https://img.shields.io/pypi/v/agent-evidence-vectors?label=PyPI&color=3775a9" alt="agent-evidence-vectors on PyPI"></a>
   <a href="https://doi.org/10.5281/zenodo.22758687"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22758687.svg" alt="DOI 10.5281/zenodo.22758687"></a>
   <img src="https://img.shields.io/badge/AEE%20vectors-272-e8951c" alt="272 AEE conformance vectors">
   <img src="https://img.shields.io/badge/AI%20Agent%20Action%20vectors-53-e8951c" alt="53 AI Agent Action conformance vectors">
@@ -14,7 +15,73 @@
   <img src="https://img.shields.io/badge/predicate-in--toto%20AEE%20v0.7-6f57c2" alt="in-toto AEE v0.7 predicate">
 </p>
 
-A recomputable execution attestation toolkit for two in-toto predicates:
+## Used by
+
+- [in-toto's AI Agent Action predicate proposal](https://github.com/in-toto/attestation/pull/588/files) names this suite as its conformance corpus, pins release `v0.8.0` by commit and digest, and makes passing it a MUST.
+- Listed in the OECD.AI [Catalogue of Tools and Metrics for Trustworthy AI](https://oecd.ai/en/catalogue/tools/agent-evidence-conformance-suite), published 2026-09-14.
+- [Rul1an/aee-checker](https://github.com/Rul1an/aee-checker/pull/21), an independent Rust verifier written from the specification alone, scores 272/272 on suiteRevision 27 with its build frozen before the corpus moved.
+- [giskard09](https://github.com/a2aproject/a2a-tck/pull/228#issuecomment-5359047401) ran the 57 RFC 8785 vectors blind against argentum-core before opening the generators: 57/57.
+- The maintainer of [VATE](https://github.com/Poke-nushi/Verifiable-Agent-Trust-Envelope/blob/main/docs/interop/aee-native-boundary-review.md) regenerated all 308 generated files byte for byte and recorded 258/258 in his own repository.
+- Curated in [awesome-agent-runtime-security](https://github.com/bureado/awesome-agent-runtime-security/blob/main/README.md) under attestation and recompute-verify, and on the [awesome-ai-security-tools watchlist](https://github.com/scadastrangelove/awesome-ai-security-tools/blob/main/WATCHLIST.md) with `Co-authored-by` credit on the curation commit.
+
+## Run the suite against your verifier
+
+Add one step to the workflow that builds your verifier:
+
+```yaml
+- uses: astrogilda/agent-evidence-vectors@v0.11.0
+  with:
+    verifier: ./path/to/your-verifier --json
+```
+
+Or replay the corpus from a shell, with nothing cloned:
+
+```bash
+uvx agent-evidence-vectors --verifier './path/to/your-verifier --json'
+```
+
+Both run the harness described under "The verification pipeline" against your
+verifier through the external-implementation contract: the harness invokes
+`<cmd> <vector-file>`, reads the verdict from the exit status and the condition
+codes from the last line of stdout, and hands the key policy to the process in
+`AEE_SUBSTRATE_KEYS`. Your verifier has to speak that contract and nothing
+else. The reference rail replays the same vectors beside it, and the report
+records where the two agree, where they disagree, and where your verifier
+reached the corpus's verdict under a different condition code.
+
+The action pins the corpus to the release you name in `uses:`, installs the
+suite from that checkout, and then:
+
+- Writes the job summary: a totals row, one row per vector that disagreed
+  with the corpus, and the suite notes.
+- Uploads the report JSON as the artifact `agent-evidence-vectors-results`.
+  The report is the same `conformance-report.json` the harness writes locally,
+  and a scoreboard in another repository pulls it by that name.
+- Fails the job when any vector disagreed or the suite raised a refusal.
+
+Inputs, all optional except the first:
+
+| Input | What it does |
+| --- | --- |
+| `verifier` | Command line of the verifier under test. The first token is probed for the predicate type and must be on `PATH` or a path relative to the workspace. |
+| `corpus` | The shipped corpus to replay. Defaults to `vectors`, the Adversarial Execution Evidence corpus the reference rail judges. `agent-evidence-vectors --list-corpora` prints every name. |
+| `tag` | A release to replay other than the one the action itself is pinned to, such as `v0.11.0`. The default is the action's own ref. |
+| `artifact-name` | The results artifact's name. Change it only when the action runs more than once in one workflow. |
+| `report-path` | Where the report is written, relative to the workspace. |
+
+Outputs: `report` (the report's path), `vectors` and `conform` (the totals),
+and `result` (`pass` or `fail`), so a later step can act on the count rather
+than re-read the file.
+
+The package is stdlib-only and carries every corpus, so `pip install
+agent-evidence-vectors` on a machine with no network access to this repository
+is a complete install. `agent-evidence-vectors --self-test` runs the reference
+rail against its own oracle, which is the first thing to run when a result
+looks wrong.
+
+## What the suite judges
+
+This is a recomputable execution attestation toolkit for two in-toto predicates:
 **Adversarial Execution Evidence**, predicate version 0.7, and **AI Agent
 Action**, predicate version 0.1, proposed in
 [in-toto/attestation#588](https://github.com/in-toto/attestation/pull/588).
@@ -133,7 +200,7 @@ for it, and without taking this page's word. Four commands settle it.
 
 ```bash
 git clone https://github.com/astrogilda/agent-evidence-vectors && cd agent-evidence-vectors
-git checkout v0.10.1
+git checkout v0.11.0
 
 # 1. the digest list is what the vector files on disk hash to, recomputed
 python3 scripts/release-digests.py --check
@@ -200,22 +267,24 @@ wrong.
 
 Every release is archived on Zenodo. The concept DOI
 [10.5281/zenodo.22758687](https://doi.org/10.5281/zenodo.22758687) always resolves to the newest
-archived release; a version DOI names one release and never moves, and
-[10.5281/zenodo.22758688](https://doi.org/10.5281/zenodo.22758688) is the one for `v0.10.1`.
-Cite the version DOI, the suite revision and the corpus digest together, for the
-reason [`DISTRIBUTION.md`](DISTRIBUTION.md) gives: a citation that names only the
-repository names a moving target. [`CITATION.cff`](CITATION.cff) carries the
-concept DOI and GitHub renders a citation from it.
+archived release; a version DOI names one release and never moves, and the
+Zenodo record lists one for each release under "Versions". Cite the version
+DOI of the release you ran, the suite revision and the corpus digest together,
+for the reason [`DISTRIBUTION.md`](DISTRIBUTION.md) gives: a citation that names
+only the repository names a moving target. [`CITATION.cff`](CITATION.cff)
+carries the concept DOI, which is why the entry below does too: a release is
+tagged before Zenodo archives it, so no release can carry its own version DOI
+in its own tree. GitHub renders a citation from the same file.
 
 ```bibtex
 @software{gilda_agent_evidence_vectors,
   author    = {Gilda, Sankalp},
   title     = {agent-evidence-vectors: conformance vectors for agent execution evidence},
-  version   = {0.10.1},
+  version   = {0.11.0},
   publisher = {Zenodo},
   year      = {2026},
-  doi       = {10.5281/zenodo.22758688},
-  url       = {https://doi.org/10.5281/zenodo.22758688}
+  doi       = {10.5281/zenodo.22758687},
+  url       = {https://doi.org/10.5281/zenodo.22758687}
 }
 ```
 

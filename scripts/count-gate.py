@@ -1140,6 +1140,35 @@ FROZEN: tuple[Frozen, ...] = (
         "track a later corpus would misquote him.",
     ),
     Frozen(
+        "README.md",
+        "the independent Rust verifier's score, as posted",
+        "scores 272/272 on suiteRevision 27",
+        "What one outside build answered against suiteRevision 27, with its own "
+        "author recording that the build was frozen before the corpus moved. The "
+        "revision is named in the same sentence, so the figure is readable "
+        "against the corpus it was measured on rather than against this one.",
+    ),
+    Frozen(
+        "README.md",
+        "the blind RFC 8785 run's figures, as posted",
+        "ran the 57 RFC 8785 vectors blind against argentum-core before opening "
+        "the generators: 57/57",
+        "A blind outside run of the RFC 8785 canonicalization vectors as that "
+        "set stood when it was run. Both the set size and the score belong to "
+        "that run; tracking either against a later corpus would describe a "
+        "rerun nobody performed and would destroy what blind means here.",
+    ),
+    Frozen(
+        "README.md",
+        "the reproduction figure an outside maintainer posted, as posted",
+        "recorded 258/258 in his own repository",
+        "What the VATE maintainer's own regeneration answered on the day he ran "
+        "it, against the corpus as it then stood, transcribed into the adoption "
+        "block. Its denominator is that day's corpus, not this one: restating it "
+        "against a later corpus would attribute a rerun to somebody who never "
+        "performed one, which is the whole point of quoting an outside run.",
+    ),
+    Frozen(
         "vectors-aci/FINDINGS.md",
         "the compliance score the ACI specification asks a reference implementation for",
         "Pass ACI Validator checks with a score of 100/100",

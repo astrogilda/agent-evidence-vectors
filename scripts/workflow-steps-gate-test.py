@@ -34,7 +34,9 @@ import contextlib
 import importlib.util
 import pathlib
 import sys
+import tempfile
 from collections.abc import Callable
+from typing import Any
 
 HERE = pathlib.Path(__file__).resolve().parent
 
@@ -78,6 +80,19 @@ def check(name: str, fn: Callable[[], None]) -> None:
         fn()
     except AssertionError as exc:
         FAILURES.append(f"{name}: {exc}")
+
+
+def _step(run: str, env: dict[str, str] | None = None, ident: str = "") -> Any:
+    """One synthetic step, so the env plumbing can be tested without a workflow."""
+    return GATE.Step(  # type: ignore[attr-defined]
+        job="t", position=0, name="t", run=run, uses="", inputs={}, ident=ident, env=env or {}
+    )
+
+
+@contextlib.contextmanager
+def _scratch():
+    with tempfile.TemporaryDirectory(prefix="aee-gate-test-") as directory:
+        yield directory
 
 
 def run(block: str) -> int:
@@ -203,6 +218,89 @@ def an_absent_linter_is_not_run_rather_than_a_pass() -> None:
     )
 
 
+def a_literal_step_env_reaches_the_block() -> None:
+    """A step's `env:` block used to be dropped on the floor, silently.
+
+    Nothing read it: the gate built one environment for the whole run and never
+    looked at the per-step mapping. A step whose assertions read a variable set
+    there therefore ran with it unset, and `test "$X" = y` against an unset X is
+    a check reporting a verdict on an input it never received.
+    """
+    step = _step(run='test "$GREETING" = hello\n', env={"GREETING": "hello"})
+    with _scratch() as scratch:
+        env, missing = GATE.step_environment(step, {}, scratch)  # type: ignore[attr-defined]
+        assert not missing, missing
+        rc = GATE.run_step(step.run, {"PATH": "/usr/bin:/bin", **env}).returncode  # type: ignore[attr-defined]
+    assert rc == 0, f"the env block did not reach the step (exit {rc})"
+
+
+def a_recorded_step_output_is_supplied() -> None:
+    """The value a previous step wrote to $GITHUB_OUTPUT, as the runner gives it."""
+    recorded = {"replay": {"result": "pass"}}
+    value, missing = GATE.expand("${{ steps.replay.outputs.result }}", recorded)  # type: ignore[attr-defined]
+    assert not missing, missing
+    assert value == "pass", f"the recorded output was not substituted: {value!r}"
+
+
+def an_output_of_a_step_that_did_not_run_is_not_run() -> None:
+    """The regression this file's newest case exists for.
+
+    `ci.yml` asserts on the composite action's outputs. The action was mirrored
+    locally by replaying the corpus and nothing else, so the outputs were never
+    produced, the env values came out empty, and the assertion failed a push the
+    remote accepts. An empty string must never stand in for a value this gate
+    does not have -- the step is declared NOT RUN and the reason names the step.
+    """
+    value, missing = GATE.expand("${{ steps.replay.outputs.result }}", {})  # type: ignore[attr-defined]
+    assert value == "", value
+    assert missing, (
+        "an output of a step that was not run here resolved to the empty string "
+        "with no complaint. The consuming step would then compare against it and "
+        "fail a push the remote would accept, which is how a gate gets bypassed."
+    )
+    assert "replay" in missing, f"the reason does not name the step: {missing!r}"
+
+
+def an_output_the_mirror_never_wrote_is_not_run() -> None:
+    """A mirror that stops producing a declared output must say so, not fail."""
+    # The step wrote one output and the reference asks for another. The value
+    # is any string; what is being tested is that `result` is reported missing.
+    _, missing = GATE.expand(  # type: ignore[attr-defined]
+        "${{ steps.replay.outputs.result }}", {"replay": {"vectors": "3"}}
+    )
+    assert missing and "result" in missing, (
+        f"a declared output the mirror did not write was not reported: {missing!r}"
+    )
+
+
+def an_unsupplied_context_is_empty_as_it_is_on_a_runner() -> None:
+    """`github.*` resolves to the empty string, which is what Actions yields.
+
+    The two steps here that read one are written for it: the commit-message lint
+    falls back to `HEAD~1..HEAD` when `github.event.before` is empty, and the
+    crosswalk filer prints its body and exits where `$GITHUB_ACTIONS` is not
+    true. Declaring those NOT RUN instead would remove two checks that do real
+    work locally, and a mirror blinder than it needs to be is its own defect.
+    """
+    value, missing = GATE.expand("${{ github.event.before }}", {})  # type: ignore[attr-defined]
+    assert value == "" and not missing, (
+        f"expected a silent empty string, got {value!r} / {missing!r}"
+    )
+
+
+def the_action_mirror_produces_the_declared_outputs() -> None:
+    """The mirror runs the action's own summary script, not a copy of its sums."""
+    local = GATE.local_equivalent("./", {"verifier": "./aee-verify -json"})  # type: ignore[attr-defined]
+    assert local.run is not None, local.reason
+    assert "scripts/action-summary.py" in local.run, (
+        "the mirror does not run the action's summary script, so its outputs "
+        f"are a second implementation that will drift: {local.run!r}"
+    )
+    assert "GITHUB_OUTPUT" in local.run, (
+        f"the mirror writes no outputs, so a step reading them cannot run: {local.run!r}"
+    )
+
+
 def main() -> int:
     check("a failing first command is caught", first_command_failing_is_caught)
     check("a failing middle command is caught", middle_command_failing_is_caught)
@@ -214,13 +312,22 @@ def main() -> int:
     check("the pinned linter is mirrored", the_pinned_linter_is_mirrored)
     check("a version mismatch is not run", a_version_mismatch_is_not_run_rather_than_a_pass)
     check("an absent linter is not run", an_absent_linter_is_not_run_rather_than_a_pass)
+    check("a literal step env reaches the block", a_literal_step_env_reaches_the_block)
+    check("a recorded step output is supplied", a_recorded_step_output_is_supplied)
+    check("an output of an unrun step is not run", an_output_of_a_step_that_did_not_run_is_not_run)
+    check(
+        "an output the mirror never wrote is not run",
+        an_output_the_mirror_never_wrote_is_not_run,
+    )
+    check("an unsupplied context is empty", an_unsupplied_context_is_empty_as_it_is_on_a_runner)
+    check("the action mirror produces its outputs", the_action_mirror_produces_the_declared_outputs)
 
     if FAILURES:
         print(f"FAIL: {len(FAILURES)} case(s) do not hold:")
         for line in FAILURES:
             print(f"  {line}")
         return 1
-    print("OK: 10 case(s); the local mirror runs steps the way GitHub Actions does.")
+    print("OK: 16 case(s); the local mirror runs steps the way GitHub Actions does.")
     return 0
 
 
