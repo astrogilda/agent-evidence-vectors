@@ -272,9 +272,12 @@ Zenodo record lists one for each release under "Versions". Cite the version
 DOI of the release you ran, the suite revision and the corpus digest together,
 for the reason [`DISTRIBUTION.md`](DISTRIBUTION.md) gives: a citation that names
 only the repository names a moving target. [`CITATION.cff`](CITATION.cff)
-carries the concept DOI, which is why the entry below does too: a release is
-tagged before Zenodo archives it, so no release can carry its own version DOI
-in its own tree. GitHub renders a citation from the same file.
+carries the concept DOI and, under `identifiers`, the version DOI of the
+release named in its `version` field. The tag never carries that second one:
+a release is tagged before Zenodo archives it, so the DOI is written to the
+default branch after the deposit and the tagged tree records only the
+concept. The entry below cites the concept for the same reason. GitHub
+renders a citation from the same file.
 
 ```bibtex
 @software{gilda_agent_evidence_vectors,

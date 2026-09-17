@@ -20,6 +20,17 @@ authors:
     orcid: 'https://orcid.org/0000-0002-3645-4501'
 repository-code: https://github.com/astrogilda/agent-evidence-vectors
 doi: 10.5281/zenodo.22758687
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22758687
+    description: >-
+      The concept DOI. It always resolves to the newest archived release,
+      so it names the suite rather than any one revision of it.
+  - type: doi
+    value: 10.5281/zenodo.22803129
+    description: >-
+      The version DOI for 0.11.1. It names this release and never moves,
+      which is what a conformance claim cites.
 abstract: >-
   A recomputable execution attestation toolkit for the in-toto adversarial
   execution evidence predicate. The predicate's model is execute-and-attest
