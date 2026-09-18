@@ -790,16 +790,16 @@ than resolved by picking one of them.
 
 Each of those figures moves this column only because a record and the source
 digest that produced it were posted with it. The revision-6 record names checker
-source `sha256:1c3e2e78` and suite commit `7098f4e`, and it is the revision that
+source `sha256:1c3e2e78` and suite commit `6aa7c60`, and it is the revision that
 checker's CI now verifies continuously. That suite commit no longer resolves in a
 fresh clone of this repository, because the history it sat on was rewritten here
 after the record was pinned; the commit that carries the identical tree, and so the
-identical 153 vectors of suiteRevision 6, is `8959bd3`, which is where a
+identical 153 vectors of suiteRevision 6, is `6aa7c60`, which is where a
 reproduction of the record should point until it is repinned.
 
 The v0.7 record splits on exactly that requirement, and the half this suite leans
 on is the half with no digest. The directed build is recorded under checker source
-`sha256:56f440e6…` against suite commit `84ba2271`, and reproduces from the
+`sha256:56f440e6…` against suite commit `4cd65a16`, and reproduces from the
 author's working tree. The blind build does not, and the author says so before
 anyone else could: it was never committed on its own, one commit carrying both the
 v0.7 implementation and the published number, so no tree in that repository hashes
@@ -815,7 +815,7 @@ caveat attached and never without it.
 The most recent reading is against the current corpus. On 2026-08-12, in the same
 thread, the author posted 250/250 at suiteRevision 25 — accepts 55/55, rejects
 193/193, indeterminate 2/2, reason parity 69/193 — against suite commit
-`5019931`, whose manifest carries 250 vectors in exactly that partition and the
+`97ba4ff`, whose manifest carries 250 vectors in exactly that partition and the
 vendored spec digest `759d2383` the run names. It was verified on a clean runner
 at a public CI run that checks the spec digest before it counts anything. It is
 directed, and the author's opening words are why this suite records it that way:

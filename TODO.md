@@ -58,7 +58,7 @@ Still open, and the first is the largest thing on this page:
   `historical_corpus_digest` existed for one caller: `scripts/consumer-lag-gate.py`
   materializes the DEFAULT BRANCH's tree to learn what the consumer rails could actually
   have vendored, and until suiteRevision 28 landed there, that tree carried the retired
-  per-verdict layout. It landed with the push of `2d93dde`, and
+  per-verdict layout. It landed with the push of `7fcaebe`, and
   `scripts/historical-reader-expiry-gate.py` turned red on the very next CI run, which is
   what it was written to do. **The deletion was forced by a check rather than remembered
   by a person, and that is the whole point of the row.** Gone in this commit: both
@@ -267,10 +267,10 @@ under suiteRevision 17.
 
 - [ ] **The pre-push gate reads the revision it was handed and the push sends whatever
   the ref points at when it connects** — observed 2026-09-11. The hook was handed
-  `7c0349d` on stdin, printed `running every workflow shell step against 7c0349d`, ran
+  `b0da972` on stdin, printed `running every workflow shell step against b0da972`, ran
   the full mirror for eighty-nine minutes, and passed. During those eighty-nine minutes a
-  commit landed on `main`. The push then reported `6c2fa6c..7c0349d`, and
-  `gh api repos/.../git/ref/heads/main` came back `7aaf147` -- a commit the gate never
+  commit landed on `main`. The push then reported `93deb47..b0da972`, and
+  `gh api repos/.../git/ref/heads/main` came back `9371c5d` -- a commit the gate never
   read. It went green on the remote, so nothing was lost this time, and that is exactly
   what makes it worth a row: the hook's own header names the FALSE PASS (fix a file,
   do not commit it, and the gate reads the repaired tree while the push carries the
@@ -715,7 +715,7 @@ under suiteRevision 17.
   thirty-one address passages upstream has since rewritten, which the measurement cannot
   classify either way, and they were corrected on reading like the rest.
 
-- [x] **Force reason-map membership on all three coverage sets** (2026-07-26, `cf0d540`) —
+- [x] **Force reason-map membership on all three coverage sets** (2026-07-26, `7a081d4`) —
   the spec already made the three coverage sets a disjoint partition of the manifest's
   classes, but only `bad-819` forced the `assessedClasses` side. Added
   `vb3c92d4ecb62bbfb` and `ved230b46692c0ada`: each puts
@@ -725,14 +725,14 @@ under suiteRevision 17.
   vectors lock the written rule and mutation-prove the rails (reverting the reason-map
   accounting flips both). Corpus now suiteRevision 3, 140 vectors (35 accept + 105 reject);
   full local gate green and remote CI green.
-- [x] **Extend registry decision 14** (2026-07-26, `cf0d540`) — recorded the two new
+- [x] **Extend registry decision 14** (2026-07-26, `7a081d4`) — recorded the two new
   vectors in `vectors/interpretation-decisions.json`, and added a `CHANGES.md`
   suiteRevision-3 section.
-- [x] **Document the registry as a post-run reconciliation surface** (2026-07-26, `cf0d540`) —
+- [x] **Document the registry as a post-run reconciliation surface** (2026-07-26, `7a081d4`) —
   added a note to `docs/interpretation-decisions-open.md` clarifying that the interpretation
   registry is read for post-run reconciliation, not as a pre-implementation answer key.
-- [x] **Correct the CI vector-replay label 138 -> 140** (2026-07-26, `cf0d540`).
-- [x] **Update the multi-implementation report** (2026-07-26, `cf0d540`) —
+- [x] **Correct the CI vector-replay label 138 -> 140** (2026-07-26, `7a081d4`).
+- [x] **Update the multi-implementation report** (2026-07-26, `7a081d4`) —
   `docs/IMPLEMENTATION-REPORT.md` now records the reviewer's re-run as a third
   fully-independent column on the earlier corner-case features (138/138 spec-diff-led,
   132/138 unchanged).

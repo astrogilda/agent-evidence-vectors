@@ -1604,7 +1604,7 @@ rails, and nothing here is a conformance result about that repository.
   depth and in both member-name and value position.
 - **Independent checker status.** `Rul1an/aee-checker` reached **153/153 on this
   revision** (2026-07-28, aee-checker#4), 36/36 accepts and 117/117 rejects, on a
-  record naming checker source `sha256:1c3e2e78` and suite commit `7098f4e`. It
+  record naming checker source `sha256:1c3e2e78` and suite commit `6aa7c60`. It
   is the revision that checker's CI now verifies continuously. The unchanged revision-5
   build scored 151/153 against it: `ok-036` and `bad-742` passed on the
   container-branch counter already in place, and `bad-743` and `bad-744` did not,
@@ -1619,8 +1619,8 @@ rails, and nothing here is a conformance result about that repository.
   below: with the bound at 128, no vector fails that checker for a bound
   difference.
 - **Note on reproducing the record.** The suite commit the record names,
-  `7098f4e`, no longer resolves in a fresh clone of this repository: its history
-  was rewritten here after the record was pinned. `8959bd3` carries the identical tree and
+  `6aa7c60`, no longer resolves in a fresh clone of this repository: its history
+  was rewritten here after the record was pinned. `6aa7c60` carries the identical tree and
   therefore the identical 153 vectors, and is where a reproduction should point
   until the record is repinned.
 

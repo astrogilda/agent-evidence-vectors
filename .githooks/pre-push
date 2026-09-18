@@ -35,7 +35,7 @@
 #
 # That is wrong in both directions, and the second one is the dangerous one:
 #
-#   FALSE REFUSAL, observed 2026-08-04: commit 8de23d9 was clean and could not
+#   FALSE REFUSAL, observed 2026-08-04: commit 5042dd5 was clean and could not
 #   be pushed, because an unrelated agent had a half-finished edit to
 #   aee/commitments.go sitting in the working tree and cmd/mutrun therefore did
 #   not build. The gate refused a commit on the strength of code that commit

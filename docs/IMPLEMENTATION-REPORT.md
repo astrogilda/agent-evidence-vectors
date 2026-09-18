@@ -177,7 +177,7 @@ directed 232/232 is not evidence about the determinacy of the text, and the blin
 
    **The last author-run is suiteRevision 6 at 153/153 (2026-07-28,
    aee-checker#4)**, 36/36 accepts and 117/117 rejects, on a record naming checker
-   source `sha256:1c3e2e78` and suite commit `7098f4e`, and it is the revision that
+   source `sha256:1c3e2e78` and suite commit `6aa7c60`, and it is the revision that
    checker's CI now verifies continuously. The unchanged revision-5 build scored 151/153
    against it: the depth-boundary pair `ok-036` and `bad-742` passed on the counter
    already moved, and `bad-743` and `bad-744` did not, because that build had
@@ -206,7 +206,7 @@ directed 232/232 is not evidence about the determinacy of the text, and the blin
 
    **The blind half of that run carries no source digest, and it is the first of
    the two exceptions the head of this note names.** The directed build is recorded under
-   checker source `sha256:56f440e6` against suite commit `84ba2271` and reproduces
+   checker source `sha256:56f440e6` against suite commit `4cd65a16` and reproduces
    from the author's working tree. The blind build does not: it was never committed
    on its own, one commit carrying both the v0.7 implementation and the published
    number, so no tree in that repository hashes to the build that produced 179/232
@@ -222,7 +222,7 @@ directed 232/232 is not evidence about the determinacy of the text, and the blin
    **The suiteRevision-25 run is 250/250, on 2026-08-12**, posted as a comment on
    in-toto/attestation#570 rather than as a run report in that provenance index.
    At suiteRevision 25 that is accepts 55/55, rejects 193/193 and indeterminate 2/2,
-   with reason parity 69/193, against suite commit `5019931`, whose manifest carries
+   with reason parity 69/193, against suite commit `97ba4ff`, whose manifest carries
    250 vectors in exactly that partition and the vendored spec digest `759d2383` the
    comment names. The run was verified on a clean runner at a public CI run that
    checks the spec digest before it counts anything. It is directed, and the author's
