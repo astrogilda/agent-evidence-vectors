@@ -1,14 +1,20 @@
 # v0.1 per-check report conformance corpus
 
 The conformance set for v0.1 of the per-check reporting format of the W3C
-public-agent-conformance community group, as whole reports: every rejection row
-of the consolidated table backed by a member that must be rejected under that
-row alone and a member that must pass, the two additions of 18 September, the
-rules the freeze list and the editor's restatement carry, and the rules the
-thread settled beside the table. The same manifest carries members of two
-further subject types, the Run object of `draft-arsentev-agent-run-metrics-00`
-and the discovery snapshot of `draft-arsentev-llm-context-discovery-00`, judged
-by their own sentences.
+public-agent-conformance community group, as the editor fixed its scope on
+18 September from the handover of the same day, as whole reports: every
+rejection row of the consolidated table backed by a member that must be
+rejected under that row alone and a member that must pass; rows 13 and 14 under
+the numbering the handover proposes, marked proposed; the two additions of
+18 September; the rules the freeze list and the editor's restatement carry; the
+rules the thread settled beside the table; and the handover's two
+record-definition rules, arity recomputed from the delta and the domain
+declared once at run level. Each row carries its class under the handover's
+sort (consistency, evidence, form), and the five rows the handover left
+unclassified carry a proposed class with the vector pair that shows it. The
+same manifest carries members of two further subject types, the Run object of
+`draft-arsentev-agent-run-metrics-00` and the discovery snapshot of
+`draft-arsentev-llm-context-discovery-00`, judged by their own sentences.
 
 ## The text is vendored and every identifier is a sentence
 
@@ -19,6 +25,16 @@ hashes the bytes; `MANIFEST.json` pins every vendored file by sha256 and names
 its author and source. A reword stops the build rather than re-pointing the
 members that cite the sentence. `INDEX.md` lists every requirement with its
 digest and every member with the row it is rejected under.
+
+## The reading table is members, not prose
+
+A referenced observation carries a locator and a digest and no outcome. Every
+report member carries `resolves`, the store its reader resolves references
+against, keyed by locator, so the three lines of carry-or-reference are each a
+member: resolves with matching digests (the outcome is read and `moved`
+recomputes), resolves with a mismatch (an integrity failure), does not resolve
+(unchecked, and the rows reading `moved` degrade rather than fire). The store
+is part of the member's identity, so a changed store is a changed member.
 
 ## Two readers, held identical
 
@@ -44,7 +60,10 @@ counted in his own corpus at the commit the manifest names, each once as it
 was emitted before the freeze, rejected under the declared-slot rule with its
 cause, and once against v0.1, accepted. `origin/derive_pairs.py` derives the
 pairs from that repository and the checker it pins; the JSON it wrote is
-committed beside it and the generator reads only that.
+committed beside it and the generator reads only that. Each pair's two
+observations are referenced by commit, vector and digest and resolved through
+the member's store, never declared in the reference, and the reports declare
+the disensor domain once, at run level.
 
 ## The appendix and the emitter
 

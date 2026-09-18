@@ -12,7 +12,9 @@ The mutations are chosen so that different parts of the reader answer: a
 flipped byte (identifier and corpus digest), a manifest row expecting the wrong
 requirement (the validator's answer against the manifest's), a member whose
 report loses its roll-up field (a row firing where none was expected), and a
-member whose check-set count is edited (the set-binding row).
+member whose check-set count is edited (the set-binding row), a member whose
+store resolves a reference to other bytes (the reading table's mismatch line),
+and a member whose fixed slot restates the domain (the domain-once row).
 
 Usage: python3 scripts/w3c-rails-parity-test.py
 Exit 0 when every case prints identically on both rails; 1 otherwise.
@@ -49,10 +51,17 @@ def write_manifest(corpus: Path, manifest: dict[str, Any]) -> None:
 
 
 def flip_first_member(corpus: Path) -> None:
-    entry = manifest_of(corpus)["vectors"][0]
+    """Flip one byte inside the first check identity, so the file stays JSON.
+
+    A flip in the structure would test the two parsers' error messages, which
+    differ by design; a flip inside a string value tests what this holds
+    together, the identifier and the corpus digest recomputed by both rails.
+    """
+    entry = next(e for e in manifest_of(corpus)["vectors"] if e["subjectType"] == "report")
     path = corpus / entry["file"]
     body = bytearray(path.read_bytes())
-    body[len(body) // 2] ^= 0x01
+    marker = b'"check": "'
+    body[body.index(marker) + len(marker)] ^= 0x01
     path.write_bytes(bytes(body))
 
 
@@ -66,30 +75,51 @@ def wrong_row(corpus: Path) -> None:
     write_manifest(corpus, manifest)
 
 
-def edit_member(corpus: Path, edit: Callable[[dict[str, Any]], None]) -> None:
+def edit_member(
+    corpus: Path, edit: Callable[[dict[str, Any]], None], with_evidence: bool = False
+) -> None:
     entry = next(
         e for e in manifest_of(corpus)["vectors"]
         if e["kind"] == "accept" and e["subjectType"] == "report"
+        and (not with_evidence or e["family"] == "w3c-f-21")
     )
     path = corpus / entry["file"]
     document = json.loads(path.read_text(encoding="utf-8"))
-    edit(document["subject"])
+    edit(document)
     path.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def mismatched_store(corpus: Path) -> None:
+    """A member's store resolving a reference to bytes with another digest: rule 20."""
+    def edit(document: dict[str, Any]) -> None:
+        document["resolves"]["obs-fail"]["sha256"] = "0" * 64
+
+    edit_member(corpus, edit, with_evidence=True)
+
+
+def restated_domain(corpus: Path) -> None:
+    """The fixed slot restating the domain as an object: rule 28."""
+    def edit(document: dict[str, Any]) -> None:
+        document["subject"]["evidence"][0]["fixed"]["domain"] = {"id": "d-run"}
+
+    edit_member(corpus, edit, with_evidence=True)
+
+
 def drop_negative_capable(corpus: Path) -> None:
-    edit_member(corpus, lambda report: report["roll-up"].pop("negative-capable"))
+    edit_member(corpus, lambda document: document["subject"]["roll-up"].pop("negative-capable"))
 
 
 def miscount_check_set(corpus: Path) -> None:
-    def edit(report: dict[str, Any]) -> None:
+    def edit(document: dict[str, Any]) -> None:
+        report = document["subject"]
         report["check-set"]["leaf-count"] = report["check-set"]["leaf-count"] + 1
 
     edit_member(corpus, edit)
 
 
 def float_count(corpus: Path) -> None:
-    def edit(report: dict[str, Any]) -> None:
+    def edit(document: dict[str, Any]) -> None:
+        report = document["subject"]
         report["roll-up"]["declared"] = float(report["roll-up"]["declared"])
 
     edit_member(corpus, edit)
@@ -102,6 +132,8 @@ CASES: list[tuple[str, Callable[[Path], None] | None]] = [
     ("silent-roll-up", drop_negative_capable),
     ("miscounted-set", miscount_check_set),
     ("float-count", float_count),
+    ("mismatched-store", mismatched_store),
+    ("restated-domain", restated_domain),
 ]
 
 

@@ -28,7 +28,7 @@ var (
 	w3cStates      = set("pass", "fail", "inconclusive", "not-exercised", "void")
 	w3cVerdict     = set("pass", "fail")
 	w3cNonVerdict  = set("inconclusive", "not-exercised", "void")
-	w3cCauses      = set("not_applicable", "disabled_by_policy", "unsupported_input", "resource_exhausted", "failed", "unavailable", "out_of_scope", "withheld", "integrity-failure", "availability-failure", "precondition-unsatisfiable", "reading-committed", "reading-uncommitted", "harness-failure")
+	w3cCauses      = set("not_applicable", "disabled_by_policy", "unsupported_input", "resource_exhausted", "failed", "unavailable", "out_of_scope", "withheld", "evidence-does-not-hold", "integrity-failure", "availability-failure", "precondition-unsatisfiable")
 	w3cNeverExam   = set("not_applicable", "out_of_scope", "withheld")
 	w3cOther       = set("unknown", "possible-not-demonstrated", "demonstrated", "foreclosed")
 	w3cDisc        = set("unknown", "demonstrated")
@@ -38,7 +38,7 @@ var (
 	w3cSlots       = set("verdict", "fired-rule list", "error list")
 	w3cKinds       = set("accept", "reject")
 	w3cSubjects    = set("report", "agent-run-metrics", "llm-context-discovery")
-	w3cIDFields    = []string{"kind", "family", "requirements", "subjectType", "subject", "expected"}
+	w3cIDFields    = []string{"kind", "family", "requirements", "subjectType", "subject", "resolves", "expected"}
 	w3cAgreeFields = []string{"kind", "family", "requirements", "expected", "specVersion", "subjectType"}
 	w3cCoverageStr = []string{"surface", "scan-depth", "point-in-time", "linked-repo"}
 	w3cClaims      = set("satisfied", "not-satisfied", "not-claimable")
@@ -240,7 +240,16 @@ func (w w3cReport) checkFile(dir string, v w3cVector, out *Member) {
 		out.Findings = append(out.Findings, "the subject is not the shape its definition gives: "+strings.Join(shape, "; "))
 		return
 	}
-	observed := subjectRejections(v.SubjectType, object["subject"].(map[string]any))
+	var resolves map[string]any
+	if raw, present := object["resolves"]; present && raw != nil {
+		store, ok := raw.(map[string]any)
+		if !ok {
+			out.Findings = append(out.Findings, "resolves is present and is not an object")
+			return
+		}
+		resolves = store
+	}
+	observed := subjectRejections(v.SubjectType, object["subject"].(map[string]any), resolves)
 	var expected []string
 	if v.Expected.Rejects != nil {
 		expected = sortedStrings(*v.Expected.Rejects)
@@ -264,14 +273,14 @@ func subjectShapeErrors(subjectType string, subject any) []string {
 	return w3cShapeErrors(subject)
 }
 
-func subjectRejections(subjectType string, subject map[string]any) []string {
+func subjectRejections(subjectType string, subject map[string]any, resolves map[string]any) []string {
 	switch subjectType {
 	case "agent-run-metrics":
 		return armRejections(subject)
 	case "llm-context-discovery":
 		return lcdRejections(subject)
 	}
-	return w3cRejections(subject)
+	return w3cRejections(subject, resolves)
 }
 
 // jsonEqual compares two decoded values the way Python's == does on parsed
@@ -427,6 +436,9 @@ func w3cShapeEvidence(item any, index int, out *[]string) {
 			*out = append(*out, where+"."+slot+" is not a list of strings")
 		}
 	}
+	if delta, present := object["delta"]; present && !isObj(delta) {
+		*out = append(*out, where+".delta is present and is not an object")
+	}
 	observations, ok := object["observations"].([]any)
 	if !ok {
 		*out = append(*out, where+".observations is not a list")
@@ -434,10 +446,40 @@ func w3cShapeEvidence(item any, index int, out *[]string) {
 	}
 	for j, observation := range observations {
 		o, ok := observation.(map[string]any)
-		_, hasRef := o["reference"]
-		_, hasCarried := o["carried"]
+		ref, hasRef := o["reference"]
+		carried, hasCarried := o["carried"]
 		if !ok || hasRef == hasCarried {
 			*out = append(*out, fmt.Sprintf("%s.observations[%d] is not exactly one of reference or carried", where, j))
+		} else if (hasRef && !isObj(ref)) || (hasCarried && !isObj(carried)) {
+			*out = append(*out, fmt.Sprintf("%s.observations[%d] carries a form that is not an object", where, j))
+		}
+	}
+}
+
+// w3cShapeDomain: the domain is declared once, at run level, and every slot
+// names it by identifier. A slot naming a domain the run does not declare is a
+// dangling reference and not a row.
+func w3cShapeDomain(report map[string]any, out *[]string) {
+	domain, ok := report["domain"].(map[string]any)
+	if !ok || !isStr(domain["id"]) {
+		*out = append(*out, "the report declares no domain object with a string id")
+		return
+	}
+	declared := domain["id"].(string)
+	checks, _ := report["checks"].([]any)
+	for i, raw := range checks {
+		check, _ := raw.(map[string]any)
+		other, _ := check["other-verdict"].(map[string]any)
+		if named, ok := other["domain"].(string); ok && named != declared {
+			*out = append(*out, fmt.Sprintf("checks[%d].other-verdict names a domain the run does not declare", i))
+		}
+	}
+	evidence, _ := report["evidence"].([]any)
+	for i, raw := range evidence {
+		item, _ := raw.(map[string]any)
+		fixed, _ := item["fixed"].(map[string]any)
+		if named, ok := fixed["domain"].(string); ok && named != declared {
+			*out = append(*out, fmt.Sprintf("evidence[%d].fixed names a domain the run does not declare", i))
 		}
 	}
 }
@@ -483,6 +525,7 @@ func w3cShapeErrors(value any) []string {
 	if w3cShapeList(evidence, "id", w3cShapeEvidence, &out) {
 		out = append(out, "two evidence objects carry one id")
 	}
+	w3cShapeDomain(report, &out)
 	for _, slot := range []string{"roll-up", "check-set"} {
 		if value, present := report[slot]; present && !isObj(value) {
 			out = append(out, slot+" is present and is not an object")
@@ -552,7 +595,7 @@ func w3cRowPairs(check map[string]any, state string, out w3cRejects) {
 	}
 }
 
-func w3cRowQualifiers(check map[string]any, state string, evidence map[string]map[string]any, out w3cRejects) {
+func w3cRowQualifiers(check map[string]any, state string, evidence map[string]map[string]any, resolves map[string]any, out w3cRejects) {
 	other, hasOther := check["other-verdict"].(map[string]any)
 	disc, hasDisc := check["discrimination"].(map[string]any)
 	if w3cNonVerdict[state] && (hasOther || hasDisc) {
@@ -569,25 +612,40 @@ func w3cRowQualifiers(check map[string]any, state string, evidence map[string]ma
 		out.add(19)
 		return
 	}
-	w3cRowOtherVerdict(other, ov, dv, evidence, out)
-	w3cRowDiscrimination(disc, dv, evidence, out)
-}
-
-// w3cRowOtherVerdict: the rows the other-verdict qualifier carries on its
-// own and against the discrimination value beside it.
-func w3cRowOtherVerdict(other map[string]any, ov, dv string, evidence map[string]map[string]any, out w3cRejects) {
 	if ov == "foreclosed" && dv == "demonstrated" {
 		out.add(8)
 	}
 	if dv == "demonstrated" && (ov == "unknown" || ov == "possible-not-demonstrated") {
 		out.add(9)
 	}
-	if ov == "foreclosed" && (!isStr(other["constraint-set"]) || !isStr(other["domain"])) {
+	w3cRowOtherVerdict(other, ov, evidence, resolves, out)
+	w3cRowDiscrimination(disc, dv, evidence, out)
+}
+
+// w3cRowOtherVerdict: the rows the other-verdict qualifier carries on its own:
+// a restated domain, an unbounded foreclosure, an asserted value with no
+// reference, and (row 13, proposed) a demonstration whose recomputed moved
+// does not contain the verdict.
+func w3cRowOtherVerdict(other map[string]any, ov string, evidence map[string]map[string]any, resolves map[string]any, out w3cRejects) {
+	domain, hasDomain := other["domain"]
+	if hasDomain && !isStr(domain) {
+		out.add(28)
+	}
+	if ov == "foreclosed" && (!isStr(other["constraint-set"]) || !hasDomain) {
 		out.add(10)
 	}
-	if ov == "demonstrated" || ov == "foreclosed" {
-		if ref, _ := other["ref"].(string); evidence[ref] == nil || !isStr(other["ref"]) {
-			out.add(11)
+	if ov != "demonstrated" && ov != "foreclosed" {
+		return
+	}
+	ref, isString := other["ref"].(string)
+	if !isString || evidence[ref] == nil {
+		out.add(11)
+		return
+	}
+	if ov == "demonstrated" {
+		moved, state := w3cRecomputedMoved(evidence[ref], resolves)
+		if state == w3cRead && !moved["verdict"] {
+			out.add(25)
 		}
 	}
 }
@@ -611,14 +669,31 @@ func w3cRowDiscrimination(disc map[string]any, dv string, evidence map[string]ma
 	}
 }
 
+// w3cDeltaChanges is the list of concrete changes a stated delta lists, or
+// nil when the object states none; arity is its length and is never declared.
+func w3cDeltaChanges(item map[string]any) []map[string]any {
+	delta, _ := item["delta"].(map[string]any)
+	raw, _ := delta["changes"].([]any)
+	if len(raw) == 0 {
+		return nil
+	}
+	changes := make([]map[string]any, 0, len(raw))
+	for _, entry := range raw {
+		change, ok := entry.(map[string]any)
+		if field, _ := change["field"].(string); !ok || field == "" {
+			return nil
+		}
+		changes = append(changes, change)
+	}
+	return changes
+}
+
 // w3cDeltaRelated: two observations, a stated delta, and the checker, the
 // constraint set and the domain pinned by name.
 func w3cDeltaRelated(item map[string]any) bool {
 	observations, _ := item["observations"].([]any)
 	fixed, _ := item["fixed"].(map[string]any)
-	delta, _ := item["delta"].(map[string]any)
-	field, _ := delta["field"].(string)
-	if len(observations) != 2 || delta == nil || field == "" {
+	if len(observations) != 2 || w3cDeltaChanges(item) == nil {
 		return false
 	}
 	for _, key := range []string{"checker", "constraint-set", "domain"} {
@@ -629,44 +704,96 @@ func w3cDeltaRelated(item map[string]any) bool {
 	return true
 }
 
-// w3cOutcome is the verdict and sorted fired-rule list an observation carries,
-// in its carried body or its reference, or ok=false when it carries neither.
-func w3cOutcome(observation map[string]any) (string, string, bool) {
-	body, ok := observation["carried"].(map[string]any)
-	if !ok {
-		body, ok = observation["reference"].(map[string]any)
-	}
+// The reading table for carry-or-reference, as the Python module reads it: a
+// carried observation is read as carried; a referenced one resolves with a
+// matching digest (read), resolves with a mismatch (an integrity failure), or
+// does not resolve (unchecked, and the rows reading moved degrade).
+const (
+	w3cRead      = "read"
+	w3cMismatch  = "mismatch"
+	w3cUnchecked = "unchecked"
+)
+
+func w3cOutcomeOf(body any) (string, string, bool) {
+	object, ok := body.(map[string]any)
 	if !ok {
 		return "", "", false
 	}
-	verdict, isString := body["verdict"].(string)
-	rules, isList := stringList(body["rules"])
+	verdict, isString := object["verdict"].(string)
+	rules, isList := stringList(object["rules"])
 	if !isString || !isList {
 		return "", "", false
 	}
 	return verdict, strings.Join(sortedStrings(rules), "\x00"), true
 }
 
-// w3cRowRecomputedMoved is rule 21: moved is read as recomputed from the two
-// observations, never as the emitter declared it.
-func w3cRowRecomputedMoved(item map[string]any, out w3cRejects) {
+// w3cReadObservation is the outcome an observation resolves to and the reading
+// table line it fell on.
+func w3cReadObservation(observation map[string]any, resolves map[string]any) (string, string, string) {
+	if carried, present := observation["carried"]; present {
+		verdict, rules, ok := w3cOutcomeOf(carried)
+		if !ok {
+			return "", "", w3cUnchecked
+		}
+		return verdict, rules, w3cRead
+	}
+	reference, ok := observation["reference"].(map[string]any)
+	if !ok || !isStr(reference["sha256"]) {
+		return "", "", w3cUnchecked
+	}
+	locator, ok := reference["vector"].(string)
+	resolved, found := resolves[locator]
+	if !ok || !found {
+		return "", "", w3cUnchecked
+	}
+	body, ok := resolved.(map[string]any)
+	if !ok || body["sha256"] != reference["sha256"] {
+		return "", "", w3cMismatch
+	}
+	verdict, rules, ok := w3cOutcomeOf(body)
+	if !ok {
+		return "", "", w3cUnchecked
+	}
+	return verdict, rules, w3cRead
+}
+
+// w3cRecomputedMoved is the set of slots that moved between the two
+// observations, with the reading-table line the pair fell on.
+func w3cRecomputedMoved(item map[string]any, resolves map[string]any) (map[string]bool, string) {
 	observations, _ := item["observations"].([]any)
 	if len(observations) != 2 {
-		return
+		return nil, w3cUnchecked
 	}
 	first, _ := observations[0].(map[string]any)
 	second, _ := observations[1].(map[string]any)
-	v1, r1, ok1 := w3cOutcome(first)
-	v2, r2, ok2 := w3cOutcome(second)
-	if !ok1 || !ok2 {
-		return
+	v1, r1, s1 := w3cReadObservation(first, resolves)
+	v2, r2, s2 := w3cReadObservation(second, resolves)
+	if s1 == w3cMismatch || s2 == w3cMismatch {
+		return nil, w3cMismatch
 	}
-	recomputed := map[string]bool{}
+	if s1 != w3cRead || s2 != w3cRead {
+		return nil, w3cUnchecked
+	}
+	moved := map[string]bool{}
 	if v1 != v2 {
-		recomputed["verdict"] = true
+		moved["verdict"] = true
 	}
 	if r1 != r2 {
-		recomputed["fired-rule list"] = true
+		moved["fired-rule list"] = true
+	}
+	return moved, w3cRead
+}
+
+// w3cRowRecomputedMoved is rule 21: moved is read as recomputed from the two
+// observations, never as the emitter declared it; a mismatch is rule 20.
+func w3cRowRecomputedMoved(item map[string]any, resolves map[string]any, out w3cRejects) {
+	recomputed, state := w3cRecomputedMoved(item, resolves)
+	if state == w3cMismatch {
+		out.add(20)
+		return
+	}
+	if state != w3cRead {
+		return
 	}
 	moved, _ := stringList(item["moved"])
 	declared := map[string]bool{}
@@ -687,7 +814,41 @@ func w3cRowRecomputedMoved(item map[string]any, out w3cRejects) {
 	}
 }
 
-func w3cRowsEvidence(item map[string]any, out w3cRejects) {
+// w3cDigestReferenced: form, an observation is carried or referenced with a digest.
+func w3cDigestReferenced(observation map[string]any) bool {
+	if _, present := observation["carried"]; present {
+		return true
+	}
+	reference, ok := observation["reference"].(map[string]any)
+	return ok && isStr(reference["sha256"])
+}
+
+// w3cRowsEvidenceForm: the form rows, decidable from the object alone: row 14
+// (proposed), a declared arity, a restated domain.
+func w3cRowsEvidenceForm(item map[string]any, out w3cRejects) {
+	moved, _ := stringList(item["moved"])
+	observations, _ := item["observations"].([]any)
+	if len(moved) > 0 {
+		for _, raw := range observations {
+			if observation, _ := raw.(map[string]any); !w3cDigestReferenced(observation) {
+				out.add(26)
+				break
+			}
+		}
+	}
+	delta, _ := item["delta"].(map[string]any)
+	_, itemArity := item["arity"]
+	_, deltaArity := delta["arity"]
+	if itemArity || deltaArity {
+		out.add(27)
+	}
+	fixed, _ := item["fixed"].(map[string]any)
+	if !isStr(fixed["domain"]) {
+		out.add(28)
+	}
+}
+
+func w3cRowsEvidence(item map[string]any, resolves map[string]any, out w3cRejects) {
 	if changed, _ := item["changed"].(string); !w3cChanged[changed] {
 		out.add(19)
 	}
@@ -706,7 +867,8 @@ func w3cRowsEvidence(item map[string]any, out w3cRejects) {
 			break
 		}
 	}
-	w3cRowRecomputedMoved(item, out)
+	w3cRowsEvidenceForm(item, out)
+	w3cRowRecomputedMoved(item, resolves, out)
 }
 
 func w3cCounts(checks []map[string]any) map[string]int {
@@ -1022,9 +1184,13 @@ func w3cRowsCheckSet(report map[string]any, checks []map[string]any, out w3cReje
 }
 
 // w3cRejections is rejections() in the Python module: the sorted requirement
-// identifiers a well-shaped report is rejected under.
-func w3cRejections(report map[string]any) []string {
+// identifiers a well-shaped report is rejected under. resolves is what this
+// reader can resolve a referenced observation to, keyed by vector locator.
+func w3cRejections(report map[string]any, resolves map[string]any) []string {
 	out := w3cRejects{}
+	if resolves == nil {
+		resolves = map[string]any{}
+	}
 	rawChecks, _ := report["checks"].([]any)
 	checks := make([]map[string]any, 0, len(rawChecks))
 	for _, raw := range rawChecks {
@@ -1045,10 +1211,10 @@ func w3cRejections(report map[string]any) []string {
 		}
 		w3cRowCause(check, state, out)
 		w3cRowPairs(check, state, out)
-		w3cRowQualifiers(check, state, evidence, out)
+		w3cRowQualifiers(check, state, evidence, resolves, out)
 	}
 	for _, item := range evidence {
-		w3cRowsEvidence(item, out)
+		w3cRowsEvidence(item, resolves, out)
 	}
 	w3cRowsRollup(report, checks, out)
 	w3cRowsCheckSet(report, checks, out)

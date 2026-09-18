@@ -19,10 +19,15 @@ nothing installed.
    the crosswalk stated in ``CROSSWALK`` below rather than left to a reader.
 
 The record shape, the five states, the cause rule, the two qualifier slots and
-the twelve rejection rows are the group's; the two late additions of 2026-09-18
-(a roll-up says whether its checks could have gone negative; a digest over a
-set binds its leaf count and names its tree shape) are carried as rows 13 to
-15. Nothing here is a product and no field is ours.
+the twelve rejection rows are the group's, as the editor fixed them on
+2026-09-18 from the handover of the same day: rows 13 and 14 are carried under
+the numbering that handover proposes and marked proposed (W3C-R-025 and
+W3C-R-026); the late additions of 18 September, the rules of the freeze list
+and the editor's restatement, and the rules the thread settled beside the
+table are carried under their own identifiers without a row number, because
+nobody on the list has numbered them. A referenced observation is read through
+the reading table: resolves with a matching digest, resolves with a mismatch,
+does not resolve. Nothing here is a product and no field is ours.
 """
 
 from __future__ import annotations
@@ -57,11 +62,14 @@ STATES = ("pass", "fail", "inconclusive", "not-exercised", "void")
 VERDICT_STATES = ("pass", "fail")
 NON_VERDICT_STATES = ("inconclusive", "not-exercised", "void")
 
-#: The cause vocabulary: the eight CAP-1 dispositions the state-and-cause
-#: message started from, the integrity/availability seam, the one this list
-#: produced (precondition-unsatisfiable), and three the emitter needs to say
-#: what the harness did: a reading the rail committed to, a reading it did
-#: not commit to, and a harness that never produced an answer to read.
+#: The cause vocabulary as the editor fixed it: CAP-1's eight closed
+#: dispositions, a value for void, integrity-failure kept apart from
+#: availability-failure, and precondition-unsatisfiable. The list named the
+#: void slot and not its value; ``evidence-does-not-hold`` is the name this
+#: corpus proposes for it, in the words of the message that found the gap (a
+#: unit that was examined and whose evidence does not hold up). Nothing else
+#: is admitted: an emitter with a case the vocabulary cannot name says so in
+#: the detail beside the nearest disposition, and records the gap.
 CAUSES = (
     "not_applicable",
     "disabled_by_policy",
@@ -71,13 +79,13 @@ CAUSES = (
     "unavailable",
     "out_of_scope",
     "withheld",
+    "evidence-does-not-hold",
     "integrity-failure",
     "availability-failure",
     "precondition-unsatisfiable",
-    "reading-committed",
-    "reading-uncommitted",
-    "harness-failure",
 )
+#: The value for void, proposed by this corpus; see CAUSES.
+VOID_CAUSE = "evidence-does-not-hold"
 #: Row 2: a unit that was never examined has no evidence that can fail to hold up.
 NEVER_EXAMINED = ("not_applicable", "out_of_scope", "withheld")
 
@@ -94,7 +102,7 @@ SLOTS = ("verdict", "fired-rule list", "error list")
 
 #: Requirement identifiers, minted by the corpus. The sentence each binds to
 #: is in vectors-w3c-report/MANIFEST.json and the corpus's INDEX.md.
-R = {n: f"W3C-R-{n:03d}" for n in range(1, 25)}
+R = {n: f"W3C-R-{n:03d}" for n in range(1, 29)}
 
 
 # --------------------------------------------------------------------------
@@ -233,13 +241,21 @@ def _shape_evidence(item: Any, index: int, out: list[str]) -> None:
         values = item.get(slot)
         if not isinstance(values, list) or not all(_is_str(v) for v in values):
             out.append(f"{where}.{slot} is not a list of strings")
-    observations = item.get("observations")
+    if "delta" in item and not _is_obj(item["delta"]):
+        out.append(f"{where}.delta is present and is not an object")
+    _shape_observations(item.get("observations"), where, out)
+
+
+def _shape_observations(observations: Any, where: str, out: list[str]) -> None:
+    """Each observation is exactly one of reference or carried, and that one is an object."""
     if not isinstance(observations, list):
         out.append(f"{where}.observations is not a list")
         return
     for j, observation in enumerate(observations):
         if not _is_obj(observation) or (("reference" in observation) == ("carried" in observation)):
             out.append(f"{where}.observations[{j}] is not exactly one of reference or carried")
+        elif not _is_obj(observation.get("reference", observation.get("carried"))):
+            out.append(f"{where}.observations[{j}] carries a form that is not an object")
 
 
 def _duplicate_ids(items: list[Any], key: str) -> bool:
@@ -266,6 +282,32 @@ def _shape_lists(report: dict[str, Any], out: list[str]) -> None:
         out.append("two evidence objects carry one id")
 
 
+def _shape_domain(report: dict[str, Any], out: list[str]) -> None:
+    """The domain is declared once, at run level, and every slot names it by identifier.
+
+    A slot naming a domain the run does not declare is a dangling reference and
+    not a row: the row that read a foreclosure over another domain became
+    unwritable once the domain is a declared object referenced by identifier.
+    """
+    domain = _get(report, "domain")
+    if not _is_obj(domain) or not _is_str(domain.get("id")):
+        out.append("the report declares no domain object with a string id")
+        return
+    declared = domain["id"]
+    checks: list[Any] = report["checks"] if isinstance(report.get("checks"), list) else []
+    for i, check in enumerate(checks):
+        other: Any = check.get("other-verdict") if _is_obj(check) else None
+        named: Any = other.get("domain") if _is_obj(other) else None
+        if _is_str(named) and named != declared:
+            out.append(f"checks[{i}].other-verdict names a domain the run does not declare")
+    evidence: list[Any] = report["evidence"] if isinstance(report.get("evidence"), list) else []
+    for i, item in enumerate(evidence):
+        fixed: Any = item.get("fixed") if _is_obj(item) else None
+        named = fixed.get("domain") if _is_obj(fixed) else None
+        if _is_str(named) and named != declared:
+            out.append(f"evidence[{i}].fixed names a domain the run does not declare")
+
+
 def shape_errors(report: Any) -> list[str]:
     """Every way the report fails to be a v0.1 report at all."""
     out: list[str] = []
@@ -274,6 +316,7 @@ def shape_errors(report: Any) -> list[str]:
     if report.get("format") != FORMAT:
         out.append(f"the report does not declare format '{FORMAT}'")
     _shape_lists(report, out)
+    _shape_domain(report, out)
     for slot in ("roll-up", "check-set"):
         if slot in report and not _is_obj(report[slot]):
             out.append(f"{slot} is present and is not an object")
@@ -314,30 +357,113 @@ def _resolves(ref: Any, evidence: dict[str, dict[str, Any]]) -> bool:
     return _is_str(ref) and ref in evidence
 
 
+# --------------------------------------------------------------------------
+# The reading table for carry-or-reference. A carried observation is read as
+# carried. A referenced one is read through what the reader can resolve:
+# resolves with a matching digest, the outcome is read and moved recomputes;
+# resolves with a mismatch, an integrity failure; does not resolve, unchecked,
+# and the rows that read moved degrade rather than fire.
+# --------------------------------------------------------------------------
+
+Outcome = tuple[str, list[str]]
+MISMATCH = "mismatch"
+
+
+def _outcome_of(body: Any) -> Outcome | None:
+    if not _is_obj(body):
+        return None
+    verdict, rules = body.get("verdict"), body.get("rules")
+    if not _is_str(verdict) or not isinstance(rules, list) or not all(_is_str(r) for r in rules):
+        return None
+    return verdict, sorted(rules)
+
+
+def _read_observation(
+    observation: dict[str, Any], resolves: dict[str, Any]
+) -> Outcome | str | None:
+    """A carried outcome, a resolved one, MISMATCH, or None when it cannot be read."""
+    if "carried" in observation:
+        return _outcome_of(observation["carried"])
+    reference: Any = observation.get("reference")
+    if not _is_obj(reference) or not _is_str(reference.get("sha256")):
+        return None
+    locator: Any = reference.get("vector")
+    if not _is_str(locator) or locator not in resolves:
+        return None
+    resolved: Any = resolves[locator]
+    if not _is_obj(resolved) or resolved.get("sha256") != reference["sha256"]:
+        return MISMATCH
+    return _outcome_of(resolved)
+
+
+def _recomputed_moved(item: dict[str, Any], resolves: dict[str, Any]) -> set[str] | str | None:
+    """The slots that moved between the two observations, MISMATCH, or None if unread."""
+    observations = item["observations"]
+    if len(observations) != 2:
+        return None
+    read = [_read_observation(o, resolves) for o in observations]
+    if any(r == MISMATCH for r in read):
+        return MISMATCH
+    if read[0] is None or read[1] is None or isinstance(read[0], str) or isinstance(read[1], str):
+        return None
+    first, second = read[0], read[1]
+    moved = set()
+    if first[0] != second[0]:
+        moved.add("verdict")
+    if first[1] != second[1]:
+        moved.add("fired-rule list")
+    return moved
+
+
 def _row_other_verdict(
-    other: dict[str, Any], ov: str, evidence: dict[str, dict[str, Any]], out: set[str]
+    other: dict[str, Any],
+    ov: str,
+    evidence: dict[str, dict[str, Any]],
+    resolves: dict[str, Any],
+    out: set[str],
 ) -> None:
-    bounded = _is_str(other.get("constraint-set")) and _is_str(other.get("domain"))
-    if ov == "foreclosed" and not bounded:
+    has_domain = "domain" in other
+    if has_domain and not _is_str(other["domain"]):
+        out.add(R[28])
+    if ov == "foreclosed" and not (_is_str(other.get("constraint-set")) and has_domain):
         out.add(R[10])
-    if ov in ("demonstrated", "foreclosed") and not _resolves(other.get("ref"), evidence):
+    ref: Any = other.get("ref")
+    if ov in ("demonstrated", "foreclosed") and not _resolves(ref, evidence):
         out.add(R[11])
+        return
+    if ov == "demonstrated":
+        moved = _recomputed_moved(evidence[ref], resolves)
+        if isinstance(moved, set) and "verdict" not in moved:
+            out.add(R[25])
+
+
+def _delta_changes(item: dict[str, Any]) -> list[dict[str, Any]] | None:
+    """The concrete changes a stated delta lists, or None when it states none."""
+    delta = _get(item, "delta")
+    if not _is_obj(delta):
+        return None
+    changes: Any = delta.get("changes")
+    if not isinstance(changes, list) or not changes:
+        return None
+    if not all(_is_obj(c) and _is_str(c.get("field")) and bool(c["field"]) for c in changes):
+        return None
+    typed: list[dict[str, Any]] = changes
+    return typed
+
+
+def arity(item: dict[str, Any]) -> int:
+    """How many fields the delta moves, recomputed from the delta and never declared."""
+    changes = _delta_changes(item)
+    return 0 if changes is None else len(changes)
 
 
 def _delta_related(item: dict[str, Any]) -> bool:
     """Two observations, a stated delta, and the checker, constraints and domain pinned."""
     fixed = item["fixed"]
-    delta = _get(item, "delta")
     pinned = all(
         _is_str(fixed.get(k)) and bool(fixed[k]) for k in ("checker", "constraint-set", "domain")
     )
-    return (
-        len(item["observations"]) == 2
-        and _is_obj(delta)
-        and _is_str(delta.get("field"))
-        and bool(delta["field"])
-        and pinned
-    )
+    return len(item["observations"]) == 2 and _delta_changes(item) is not None and pinned
 
 
 def _row_discrimination(
@@ -353,35 +479,25 @@ def _row_discrimination(
         out.add(R[24])
 
 
-def _observation_outcome(observation: dict[str, Any]) -> tuple[str, list[str]] | None:
-    """The verdict and fired-rule list an observation carries, or None if it does not."""
-    body: Any = observation.get("carried", observation.get("reference"))
-    if not _is_obj(body):
-        return None
-    verdict, rules = body.get("verdict"), body.get("rules")
-    if not _is_str(verdict) or not isinstance(rules, list) or not all(_is_str(r) for r in rules):
-        return None
-    return verdict, sorted(rules)
-
-
-def _row_recomputed_moved(item: dict[str, Any], out: set[str]) -> None:
+def _row_recomputed_moved(item: dict[str, Any], resolves: dict[str, Any], out: set[str]) -> None:
     """Rule 21: moved is read as recomputed from the two observations, never as declared."""
-    outcomes = [_observation_outcome(o) for o in item["observations"]]
-    if len(outcomes) != 2 or outcomes[0] is None or outcomes[1] is None:
+    recomputed = _recomputed_moved(item, resolves)
+    if recomputed == MISMATCH:
+        out.add(R[20])
         return
-    first, second = outcomes[0], outcomes[1]
-    recomputed = set()
-    if first[0] != second[0]:
-        recomputed.add("verdict")
-    if first[1] != second[1]:
-        recomputed.add("fired-rule list")
+    if not isinstance(recomputed, set):
+        return
     declared = {v for v in item["moved"] if v in ("verdict", "fired-rule list")}
     if declared != recomputed:
         out.add(R[21])
 
 
 def _row_qualifiers(
-    check: dict[str, Any], state: str, evidence: dict[str, dict[str, Any]], out: set[str]
+    check: dict[str, Any],
+    state: str,
+    evidence: dict[str, dict[str, Any]],
+    resolves: dict[str, Any],
+    out: set[str],
 ) -> None:
     other: dict[str, Any] = check.get("other-verdict") or {}
     disc: dict[str, Any] = check.get("discrimination") or {}
@@ -396,12 +512,31 @@ def _row_qualifiers(
         out.add(R[8])
     if dv == "demonstrated" and ov in ("unknown", "possible-not-demonstrated"):
         out.add(R[9])
-    _row_other_verdict(other, ov, evidence, out)
+    _row_other_verdict(other, ov, evidence, resolves, out)
     if dv == "demonstrated":
         _row_discrimination(disc, evidence, out)
 
 
-def _rows_evidence(item: dict[str, Any], out: set[str]) -> None:
+def _digest_referenced(observation: dict[str, Any]) -> bool:
+    """Form: an observation is carried, or referenced with a digest."""
+    if "carried" in observation:
+        return True
+    reference: Any = observation.get("reference")
+    return _is_obj(reference) and _is_str(reference.get("sha256"))
+
+
+def _rows_evidence_form(item: dict[str, Any], out: set[str]) -> None:
+    """The form rows, decidable from the object alone: 14 (proposed), arity, domain."""
+    if item["moved"] and not all(_digest_referenced(o) for o in item["observations"]):
+        out.add(R[26])
+    delta: Any = item.get("delta")
+    if "arity" in item or (_is_obj(delta) and "arity" in delta):
+        out.add(R[27])
+    if not _is_str(item["fixed"].get("domain")):
+        out.add(R[28])
+
+
+def _rows_evidence(item: dict[str, Any], resolves: dict[str, Any], out: set[str]) -> None:
     if item["changed"] not in CHANGED:
         out.add(R[19])
     compared, moved = item["compared"], item["moved"]
@@ -409,7 +544,8 @@ def _rows_evidence(item: dict[str, Any], out: set[str]) -> None:
         out.add(R[19])
     if not set(moved) <= set(compared):
         out.add(R[16])
-    _row_recomputed_moved(item, out)
+    _rows_evidence_form(item, out)
+    _row_recomputed_moved(item, resolves, out)
 
 
 def _counts(checks: list[dict[str, Any]]) -> dict[str, int]:
@@ -601,14 +737,23 @@ def _rows_check_set(report: dict[str, Any], checks: list[dict[str, Any]], out: s
         out.add(R[20])
 
 
-def rejections(report: dict[str, Any], relax: frozenset[str] = frozenset()) -> list[str]:
+def rejections(
+    report: dict[str, Any],
+    relax: frozenset[str] = frozenset(),
+    resolves: dict[str, Any] | None = None,
+) -> list[str]:
     """The requirement identifiers this report is rejected under, sorted.
 
     The report must already have passed ``shape_errors``. An empty list is a
     conforming report. ``relax`` names rows switched off, which is how the
     mutation sweep asks whether only the members naming a row flip when it is.
+    ``resolves`` is what this reader can resolve a referenced observation to,
+    keyed by the reference's vector locator; a reader with nothing to resolve
+    against reads every reference as unchecked and the rows reading moved
+    degrade, which is the reading table's third line.
     """
     out: set[str] = set()
+    store: dict[str, Any] = resolves or {}
     checks: list[dict[str, Any]] = report["checks"]
     evidence = {e["id"]: e for e in report.get("evidence", [])}
     for check in checks:
@@ -618,9 +763,9 @@ def rejections(report: dict[str, Any], relax: frozenset[str] = frozenset()) -> l
             continue
         _row_cause(check, state, out)
         _row_pairs(check, state, out)
-        _row_qualifiers(check, state, evidence, out)
+        _row_qualifiers(check, state, evidence, store, out)
     for item in evidence.values():
-        _rows_evidence(item, out)
+        _rows_evidence(item, store, out)
     _rows_rollup(report, checks, out)
     _rows_check_set(report, checks, out)
     _rows_coverage(report, out)
@@ -637,21 +782,27 @@ def subject_shape_errors(subject_type: str, subject: Any) -> list[str]:
 
 
 def subject_rejections(
-    subject_type: str, subject: dict[str, Any], relax: frozenset[str] = frozenset()
+    subject_type: str,
+    subject: dict[str, Any],
+    relax: frozenset[str] = frozenset(),
+    resolves: dict[str, Any] | None = None,
 ) -> list[str]:
     """Rejections for a member's subject, by the type the manifest names."""
     if subject_type == "agent-run-metrics":
         return sorted(set(runmetrics.rejections(subject)) - set(relax))
     if subject_type == "llm-context-discovery":
         return sorted(set(contextdiscovery.rejections(subject)) - set(relax))
-    return rejections(subject, relax)
+    return rejections(subject, relax, resolves)
 
 
 # --------------------------------------------------------------------------
 # The judge: vectors-w3c-report/ against this validator.
 # --------------------------------------------------------------------------
 
-ID_FIELDS = ("kind", "family", "requirements", "subjectType", "subject", "expected")
+#: The member fields the identifier digests. ``resolves`` is what the member
+#: hands the reader to resolve its referenced observations against, so a
+#: changed store changes the member.
+ID_FIELDS = ("kind", "family", "requirements", "subjectType", "subject", "resolves", "expected")
 KINDS = ("accept", "reject")
 
 
@@ -811,7 +962,11 @@ def _member_file(directory: str, entry: dict[str, Any], out: list[str]) -> None:
     if shape:
         out.append("the subject is not the shape its definition gives: " + "; ".join(shape))
         return
-    observed = subject_rejections(subject_type, subject)
+    resolves: Any = document.get("resolves")
+    if resolves is not None and not _is_obj(resolves):
+        out.append("resolves is present and is not an object")
+        return
+    observed = subject_rejections(subject_type, subject, resolves=resolves)
     expected = sorted(entry.get("expected", {}).get("rejects") or [])
     if observed != expected:
         out.append(
@@ -935,8 +1090,11 @@ CROSSWALK = {
         "codes are carried in annotations"
     ),
     "inconclusive": (
-        "the indeterminate kind: cause reading-committed with the condition the "
-        "rail committed to, or reading-uncommitted with the declared readings"
+        "the indeterminate kind, a vector whose specification admits more than one "
+        "reading: cause unsupported_input, the nearest closed disposition, with the "
+        "reading the rail committed to or the declared readings as detail; the "
+        "vocabulary has no value for an input the specification leaves undetermined, "
+        "and that is recorded as a known gap rather than named here"
     ),
     "not-exercised": (
         "a manifest entry declaring expected.unmeasurableBecause, reported with "
@@ -944,9 +1102,16 @@ CROSSWALK = {
         "manifest expects and the rail left absent, with cause unavailable"
     ),
     "void": (
-        "the harness could not establish a verdict: cause harness-failure with "
-        "the rail's errors or exit as detail"
+        "the harness could not establish a verdict: cause evidence-does-not-hold, "
+        "the value for void, with the rail's errors or exit as detail"
     ),
+}
+
+#: The domain the emitted report declares once, at run level; every slot that
+#: needs it names it by this identifier.
+EMITTED_DOMAIN = {
+    "id": "d-aee-replay",
+    "description": "the AEE corpus replayed by the harness: the artifacts its manifests pin",
 }
 
 ABSENT_EXPECTED = {"result": "result", "tiers": "tiers"}
@@ -974,10 +1139,11 @@ def _inconclusive(row: dict[str, Any], notes: dict[str, Any]) -> dict[str, Any]:
     expected = row.get("expected") or {}
     readings = expected.get("readings") or {}
     primary = (row.get("observed") or {}).get("primaryCode")
+    cause: dict[str, Any] = {"code": "unsupported_input"}
     if isinstance(primary, str) and primary:
-        cause: dict[str, Any] = {"code": "reading-committed", "condition": primary}
+        cause["detail"] = f"reading committed: {primary}"
     else:
-        cause = {"code": "reading-uncommitted", "detail": ", ".join(sorted(readings))}
+        cause["detail"] = "readings declared, none committed: " + ", ".join(sorted(readings))
     return _record(row["id"], "inconclusive", cause, notes)
 
 
@@ -992,7 +1158,7 @@ def _from_row(row: dict[str, Any]) -> list[dict[str, Any]]:
     errors = observed.get("errors") or []
     verdict = observed.get("verdict")
     if errors or verdict not in ("valid", "invalid"):
-        cause = {"code": "harness-failure", "detail": "; ".join(errors) or f"verdict {verdict!r}"}
+        cause = {"code": VOID_CAUSE, "detail": "; ".join(errors) or f"verdict {verdict!r}"}
         return [_record(row["id"], "void", cause, notes)]
     if row.get("kind") == "indeterminate":
         return [_inconclusive(row, notes)]
@@ -1025,6 +1191,7 @@ def emit(conformance_report: dict[str, Any], shape: str = "flat") -> dict[str, A
             "rail": conformance_report.get("rail"),
         },
         "crosswalk": CROSSWALK,
+        "domain": dict(EMITTED_DOMAIN),
         "checks": checks,
         "evidence": [],
         "roll-up": rollup,

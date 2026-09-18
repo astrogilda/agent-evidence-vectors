@@ -5,7 +5,7 @@
     python3 gen_vectors.py --check    # refuse when the tree on disk differs
 
 The text this corpus tests is vendored in ``spec-vendored/`` and pinned by
-digest: eight messages of the W3C public-agent-conformance list that together
+digest: ten messages of the W3C public-agent-conformance list that together
 fix what v0.1 of the reporting format freezes, and the two Internet-Drafts the
 format's editor holds, whose Run object and discovery snapshot are judged here
 as further subjects. None of them carries a requirement identifier, so each is
@@ -56,6 +56,8 @@ VENDORED = {
     "0060": "spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt",
     "0062": "spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt",
     "0069": "spec-vendored/0069-arsentev-2026-09-18-late-additions.txt",
+    "0072": "spec-vendored/0072-rocchia-2026-09-18-handover.txt",
+    "0073": "spec-vendored/0073-arsentev-2026-09-18-fixed-scope.txt",
     "draft-arsentev-agent-run-metrics-00": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
     "draft-arsentev-llm-context-discovery-00": (
         "spec-vendored/draft-arsentev-llm-context-discovery-00.txt"
@@ -72,6 +74,8 @@ AUTHORS = {
     "0060": "Nicolas Rocchia",
     "0062": "Evgenii Arsentev",
     "0069": "Evgenii Arsentev",
+    "0072": "Nicolas Rocchia",
+    "0073": "Evgenii Arsentev",
     "draft-arsentev-agent-run-metrics-00": "Evgenii Arsentev",
     "draft-arsentev-llm-context-discovery-00": "Evgenii Arsentev",
 }
@@ -83,8 +87,31 @@ def source_url(key: str) -> str:
     return f"{ARCHIVE}{key}.html"
 
 
-def requirement(ident: str, row: str, file: str, sentence: str) -> dict[str, str]:
-    return {"id": ident, "row": row, "file": file, "sentence": sentence}
+CONSISTENCY, EVIDENCE, FORM = "consistency", "evidence", "form"
+AGREED, PROPOSED = "agreed", "proposed"
+
+
+def requirement(
+    ident: str,
+    row: str,
+    file: str,
+    sentence: str,
+    cls: str = CONSISTENCY,
+    status: str = AGREED,
+) -> dict[str, str]:
+    """One requirement: its sentence, its row class and whether the list agreed it.
+
+    The class is the handover's: a consistency row reads declared slots against
+    each other and catches a contradiction; an evidence row reads a declared slot
+    against a recomputed or resolved one and catches a falsehood; a form row is
+    decidable from the object alone. The handover left rows 4, 10, 11, 12 and 13
+    unclassified; the class given here for those five is this corpus's proposal,
+    and ``resolved_read`` measures the part of it a validator can measure.
+    """
+    return {
+        "id": ident, "row": row, "file": file, "sentence": sentence,
+        "class": cls, "status": status,
+    }
 
 
 #: One row per requirement: the verbatim sentence, located in the vendored
@@ -93,8 +120,11 @@ W3C_REQUIREMENTS: tuple[dict[str, str], ...] = (
     requirement("W3C-R-001", "1", "0043", "a non-verdict state with no cause"),
     requirement("W3C-R-002", "2", "0043", "void with not_applicable, out_of_scope or withheld"),
     requirement("W3C-R-003", "3", "0043", "not-exercised with integrity-failure"),
+    # Rows 4, 10, 11, 12 and 13 are the five the handover left unclassified;
+    # their class here is proposed, and the appendix carries the rationale.
     requirement(
-        "W3C-R-004", "4", "0043", "a confinement control that failed while the check ran"
+        "W3C-R-004", "4", "0043", "a confinement control that failed while the check ran",
+        CONSISTENCY, PROPOSED,
     ),
     requirement(
         "W3C-R-005", "5", "0043", "a declared exclusion with any state but not-exercised"
@@ -107,15 +137,24 @@ W3C_REQUIREMENTS: tuple[dict[str, str], ...] = (
     requirement(
         "W3C-R-009", "9", "0043", "discrimination demonstrated with other-verdict unknown"
     ),
-    requirement("W3C-R-010", "10", "0043", "foreclosed without a constraint set and a domain"),
-    requirement("W3C-R-011", "11", "0043", "an asserted value without its evidence reference"),
-    requirement("W3C-R-012", "12", "0043", "whose changed slot is the checker"),
+    requirement(
+        "W3C-R-010", "10", "0043", "foreclosed without a constraint set and a domain",
+        CONSISTENCY, PROPOSED,
+    ),
+    requirement(
+        "W3C-R-011", "11", "0043", "an asserted value without its evidence reference",
+        CONSISTENCY, PROPOSED,
+    ),
+    requirement(
+        "W3C-R-012", "12", "0043", "whose changed slot is the checker", CONSISTENCY, PROPOSED
+    ),
     requirement(
         "W3C-R-013",
         "(a) roll-up",
         "0069",
         "a roll-up states whether the checks it aggregates\n"
         "were capable of a negative verdict",
+        EVIDENCE,
     ),
     requirement(
         "W3C-R-014",
@@ -129,6 +168,7 @@ W3C_REQUIREMENTS: tuple[dict[str, str], ...] = (
         "0069",
         "digest match establishes a set only when the count of leaves is bound too,\n"
         "and a report says which tree shape it uses",
+        EVIDENCE,
     ),
     requirement(
         "W3C-R-016",
@@ -137,25 +177,29 @@ W3C_REQUIREMENTS: tuple[dict[str, str], ...] = (
         "an object whose moved is not contained in its declared set is\nrejected",
     ),
     requirement(
-        "W3C-R-017", "roll-up denominator", "0060", "never emitted without its complete denominator"
+        "W3C-R-017", "roll-up denominator", "0060",
+        "never emitted without its complete denominator", EVIDENCE,
     ),
     requirement(
-        "W3C-R-018", "roll-up counter", "0060", "the counter over carried against referenced"
+        "W3C-R-018", "roll-up counter", "0060",
+        "the counter over carried against referenced", EVIDENCE,
     ),
     requirement(
-        "W3C-R-019", "closed vocabulary", "0025", "because free text does not aggregate"
+        "W3C-R-019", "closed vocabulary", "0025", "because free text does not aggregate", FORM
     ),
     requirement(
         "W3C-R-020",
         "reference mismatch",
         "0062",
         "resolves with a mismatch (an integrity failure)",
+        EVIDENCE,
     ),
     requirement(
         "W3C-R-021",
         "recomputed delta",
         "0050",
         "they read moved\nas recomputed from the two observations the object names",
+        EVIDENCE,
     ),
     requirement(
         "W3C-R-022",
@@ -163,18 +207,47 @@ W3C_REQUIREMENTS: tuple[dict[str, str], ...] = (
         "0001",
         "a sampled / full_coverage flag\n"
         "with the count of scannable files recorded before the per-repo cap",
+        FORM,
     ),
     requirement(
         "W3C-R-023",
         "population denominator",
         "0036",
         "a claim over an empty population is reported as not claimable, not as\nsatisfied",
+        EVIDENCE,
     ),
     requirement(
         "W3C-R-024",
         "delta-related pair",
         "0036",
         "Unrelated pass and fail records in one corpus must not qualify",
+    ),
+    # The two rows the handover numbers 13 and 14 and marks as proposed, because
+    # nobody on the list has numbered them; rows 1 to 12 keep their numbers.
+    requirement(
+        "W3C-R-025",
+        "13 (proposed)",
+        "0072",
+        "other-verdict demonstrated citing an evidence object whose moved\n"
+        "does not contain the verdict",
+        EVIDENCE,
+        PROPOSED,
+    ),
+    requirement(
+        "W3C-R-026",
+        "14 (proposed)",
+        "0072",
+        "14 moved asserted on an evidence object that neither carries both\n"
+        "observations nor references them with digests",
+        FORM,
+        PROPOSED,
+    ),
+    # Two rules of the handover's Part 1 the editor took in as agreed text.
+    requirement(
+        "W3C-R-027", "arity recomputed", "0072", "so arity is recomputed from the delta", FORM
+    ),
+    requirement(
+        "W3C-R-028", "domain once", "0072", "The domain is declared once at run level", FORM
     ),
 )
 
@@ -359,13 +432,17 @@ FAMILIES = {
         "late addition (a): a prior discriminating run binds the check identity that survived"
     ),
     "w3c-f-15": (
-        "late addition (b): a digest over a set binds its leaf count and names its tree shape"
+        "late addition (b): a digest over a set binds its leaf count and names its tree "
+        "shape; domain separation alone is not the fix"
     ),
     "w3c-f-16": "declared slots: moved is contained in the declared compared set",
     "w3c-f-17": "roll-up: the aggregate carries its complete denominator",
     "w3c-f-18": "roll-up: the counter over carried against referenced recomputes",
     "w3c-f-19": "closed vocabulary: a value outside a registry is not read",
-    "w3c-f-20": "carry-or-reference: a set digest that does not recompute is an integrity failure",
+    "w3c-f-20": (
+        "carry-or-reference: a digest that resolves with a mismatch is an integrity failure, "
+        "over the check set and over a referenced observation alike"
+    ),
     "w3c-f-21": (
         "recomputed delta: moved is read as recomputed over the observations, not as declared"
     ),
@@ -374,6 +451,16 @@ FAMILIES = {
     ),
     "w3c-f-23": "population denominator: a completeness claim carries the size of its population",
     "w3c-f-24": "delta-related pair: unrelated pass and fail records do not witness discrimination",
+    "w3c-f-25": (
+        "row 13 (proposed): other-verdict demonstrated citing an object whose recomputed moved "
+        "does not contain the verdict; unresolvable, the row degrades"
+    ),
+    "w3c-f-26": (
+        "row 14 (proposed): moved asserted on an object that neither carries its observations "
+        "nor references them with digests"
+    ),
+    "w3c-f-27": "arity: recomputed from the delta, never declared",
+    "w3c-f-28": "domain: declared once at run level, named by identifier and never restated",
     "w3c-f-gaps": (
         "the two known gaps of the reference emitter, closed: void has a slot and "
         "not-exercised carries a cause"
@@ -432,6 +519,12 @@ def locate(row: dict[str, str]) -> tuple[int, str]:
 # --------------------------------------------------------------------------
 
 DOMAIN = {"id": "d-run", "description": "the run's declared domain, referenced by identifier"}
+DISENSOR_DOMAIN = {
+    "id": "d-disensor",
+    "description": (
+        "the disensor corpus at the pinned commit: its vectors under each schema version"
+    ),
+}
 FIXED = {"checker": "checker-1", "constraint-set": "cs-1", "domain": "d-run"}
 DECLARED = ["verdict", "fired-rule list"]
 WITH_ERRORS = ["verdict", "fired-rule list", "error list"]
@@ -459,30 +552,42 @@ def with_slots(record: dict[str, Any], **slots: dict[str, Any]) -> dict[str, Any
     return out
 
 
+Outcomes = tuple[tuple[str, list[str]], tuple[str, list[str]]]
+PASS_FAIL: Outcomes = (("pass", []), ("fail", ["R-1"]))
+DELTA = {"changes": [{"field": "artifact/field", "before": 1, "after": 2}]}
+
+
 def evidence(
     ident: str,
     changed: str = "input artifact",
     moved: list[str] | None = None,
     compared: list[str] | None = None,
-    outcomes: tuple[tuple[str, list[str]], tuple[str, list[str]]] | None = None,
 ) -> dict[str, Any]:
-    observations: list[dict[str, Any]] = [
-        {"reference": {"vector": "obs-pass", "sha256": sha(b"obs-pass")}},
-        {"reference": {"vector": "obs-fail", "sha256": sha(b"obs-fail")}},
-    ]
-    if outcomes is not None:
-        for observation, (verdict, rules) in zip(observations, outcomes, strict=True):
-            observation["reference"]["verdict"] = verdict
-            observation["reference"]["rules"] = rules
+    """An evidence object referencing its two observations by locator and digest.
+
+    A reference carries no outcome: what the observation contains is what the
+    reader resolves it to, through the member's ``resolves`` store (``store()``).
+    """
     return {
         "id": ident,
         "changed": changed,
         "fixed": dict(FIXED),
         "compared": list(compared or DECLARED),
         "moved": list(moved or DECLARED),
-        "delta": {"field": "artifact/field", "before": 1, "after": 2},
-        "observations": observations,
+        "delta": copy.deepcopy(DELTA),
+        "observations": [
+            {"reference": {"vector": "obs-pass", "sha256": sha(b"obs-pass")}},
+            {"reference": {"vector": "obs-fail", "sha256": sha(b"obs-fail")}},
+        ],
     }
+
+
+def store(outcomes: Outcomes = PASS_FAIL) -> dict[str, Any]:
+    """What a reader holding the suite resolves ``obs-pass`` and ``obs-fail`` to."""
+    resolved = {}
+    for locator, (verdict, rules) in zip(("obs-pass", "obs-fail"), outcomes, strict=True):
+        resolved[locator] = {"sha256": sha(locator.encode()), "verdict": verdict, "rules": rules}
+    return resolved
 
 
 def qualifier(value: str, ref: str | None = None, bounded: bool = False) -> dict[str, Any]:
@@ -507,7 +612,7 @@ EXCLUDED = check(
 INCONCLUSIVE = check(
     "c-inconclusive",
     "inconclusive",
-    {"code": "reading-committed", "condition": "record-undecodable"},
+    {"code": "unsupported_input", "detail": "reading committed: record-undecodable"},
 )
 VOID = check(
     "c-void",
@@ -522,6 +627,7 @@ def report(
     evidence_list: list[dict[str, Any]] | None = None,
     shape: str = "flat",
     negative: dict[str, Any] | None = None,
+    domain: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     checks = copy.deepcopy(checks)
     evidence_list = copy.deepcopy(evidence_list or [])
@@ -534,7 +640,7 @@ def report(
     rollup["negative-capable"] = negative
     return {
         "format": w3creport.FORMAT,
-        "domain": dict(DOMAIN),
+        "domain": dict(domain or DOMAIN),
         "checks": checks,
         "evidence": evidence_list,
         "roll-up": rollup,
@@ -560,6 +666,7 @@ class Members:
         cites: str,
         subject_type: str = "report",
         origin: dict[str, Any] | None = None,
+        resolves: dict[str, Any] | None = None,
     ) -> None:
         member: dict[str, Any] = {
             "kind": kind,
@@ -571,15 +678,36 @@ class Members:
             "expected": {"verdict": kind, "rejects": requirements if kind == "reject" else []},
             "cites": cites,
         }
+        if subject_type == "report":
+            # What this member's reader resolves referenced observations to.
+            # Every report member carries a store, so that a reader with the
+            # suite and a reader without it are both members of the corpus.
+            member["resolves"] = store() if resolves is None else resolves
         if origin is not None:
             member["origin"] = origin
         self.items.append(member)
 
-    def reject(self, family: str, req: str, subject: dict[str, Any], cites: str) -> None:
-        self.add(kind="reject", family=family, requirements=[req], subject=subject, cites=cites)
+    def reject(
+        self,
+        family: str,
+        req: str,
+        subject: dict[str, Any],
+        cites: str,
+        resolves: dict[str, Any] | None = None,
+    ) -> None:
+        self.add(kind="reject", family=family, requirements=[req], subject=subject, cites=cites,
+                 resolves=resolves)
 
-    def accept(self, family: str, req: str, subject: dict[str, Any], cites: str) -> None:
-        self.add(kind="accept", family=family, requirements=[req], subject=subject, cites=cites)
+    def accept(
+        self,
+        family: str,
+        req: str,
+        subject: dict[str, Any],
+        cites: str,
+        resolves: dict[str, Any] | None = None,
+    ) -> None:
+        self.add(kind="accept", family=family, requirements=[req], subject=subject, cites=cites,
+                 resolves=resolves)
 
     def pair(
         self,
@@ -589,9 +717,10 @@ class Members:
         accepted: dict[str, Any],
         why_reject: str,
         why_accept: str,
+        resolves: dict[str, Any] | None = None,
     ) -> None:
-        self.reject(family, req, rejected, why_reject)
-        self.accept(family, req, accepted, why_accept)
+        self.reject(family, req, rejected, why_reject, resolves)
+        self.accept(family, req, accepted, why_accept, resolves)
 
     def typed_pair(
         self,
@@ -749,6 +878,13 @@ def build_set_binding(m: Members) -> None:
                      "reference": {"sha256": sha(b"prior-run")}, "check-identity": ["c-pass"]}
     m.reject("w3c-f-15", "W3C-R-015", report(ALL_PASS, negative=prior_unbound),
              "a prior run referenced as a set of observations with no count and no shape")
+    separated = report(ALL_PASS, shape="rfc6962")
+    del separated["check-set"]["tree-shape"]
+    separated["check-set"]["domain-separation"] = True
+    m.reject("w3c-f-15", "W3C-R-015", separated,
+             "a count bound and domain separation asserted, with no tree shape declared: "
+             "domain separation alone is not the fix, because RFC 6962 also uses a different "
+             "tree shape, so the producer declares the shape")
     m.accept("w3c-f-15", "W3C-R-015", report(ALL_PASS, shape="rfc6962"),
              "the check set bound under the RFC 6962 tree shape, with its count")
     m.accept("w3c-f-15", "W3C-R-015", report([PASS, FAIL], shape="flat"),
@@ -798,9 +934,24 @@ def build_rules(m: Members) -> None:
     )
     m.pair(
         "w3c-f-20", "W3C-R-020", padded, report(three, shape="rfc6962"),
-        "a root computed over the leaf set with its last leaf repeated: the count says three "
-        "and the digest does not recompute",
+        "a root computed with RFC 6962 domain separation over the leaf set with its last leaf "
+        "repeated: the count says three and the digest does not recompute, so domain "
+        "separation retained beside duplicate-last padding is still a mismatch",
         "the root recomputed over exactly the three leaves the count binds",
+    )
+    demonstrated_pair = report([PASS, demonstrated], [evidence("e-1")])
+    mismatched = store()
+    mismatched["obs-fail"]["sha256"] = sha(b"obs-fail, another revision")
+    m.reject(
+        "w3c-f-20", "W3C-R-020", demonstrated_pair,
+        "a referenced observation that resolves to bytes whose digest is not the one the "
+        "reference carries: the reading table's second line, an integrity failure",
+        resolves=mismatched,
+    )
+    m.accept(
+        "w3c-f-20", "W3C-R-020", demonstrated_pair,
+        "the same reference resolving to the bytes it was written against, "
+        "which is the reading table's first line",
     )
 
 
@@ -822,19 +973,19 @@ COVERAGE = {
 
 def build_people_rules(m: Members) -> None:
     """The recomputed-delta rule, the coverage block, the population rule, the pair rule."""
-    demonstrated = with_slots(FAIL, other_verdict=qualifier("demonstrated", "e-1"))
     two_fails: tuple[tuple[str, list[str]], tuple[str, list[str]]] = (
         ("fail", ["R-A"]), ("fail", ["R-B"]),
     )
+    possible = with_slots(FAIL, other_verdict=qualifier("possible-not-demonstrated"))
     m.pair(
         "w3c-f-21", "W3C-R-021",
-        report([PASS, demonstrated], [evidence("e-1", moved=["verdict"], outcomes=two_fails)]),
-        report([PASS, demonstrated],
-               [evidence("e-1", moved=["fired-rule list"], outcomes=two_fails)]),
+        report([PASS, possible], [evidence("e-1", moved=["verdict"])]),
+        report([PASS, possible], [evidence("e-1", moved=["fired-rule list"])]),
         "fail with A beside fail with B, moved declared as the verdict: read the field and it "
         "passes, recompute the delta and it is rejected",
         "the same two observations with moved recomputed: the fired-rule list moved and the "
         "verdict did not",
+        resolves=store(two_fails),
     )
     partial = report(ALL_PASS)
     partial["coverage"] = {k: v for k, v in COVERAGE.items() if k != "scannable-files"}
@@ -903,11 +1054,71 @@ def build_people_rules(m: Members) -> None:
     )
 
 
+def build_proposed_rows(m: Members) -> None:
+    """Rows 13 and 14 under the handover's proposed numbering, and arity and domain."""
+    demonstrated = with_slots(FAIL, other_verdict=qualifier("demonstrated", "e-1"))
+    two_fails: Outcomes = (("fail", ["R-A"]), ("fail", ["R-B"]))
+    rules_only = report([PASS, demonstrated], [evidence("e-1", moved=["fired-rule list"])])
+    m.reject(
+        "w3c-f-25", "W3C-R-025", rules_only,
+        "the other verdict asserted demonstrated by an object whose two observations both "
+        "fail: moved, recomputed, holds the fired-rule list and not the verdict",
+        resolves=store(two_fails),
+    )
+    m.accept(
+        "w3c-f-25", "W3C-R-025", report([PASS, demonstrated], [evidence("e-1")]),
+        "the same assertion citing an object whose observations pass and fail, so the "
+        "verdict is in moved",
+    )
+    m.accept(
+        "w3c-f-25", "W3C-R-025", rules_only,
+        "the rejected report read by a reader that cannot resolve either reference: "
+        "unchecked, so the row reading moved degrades and does not fire",
+        resolves={},
+    )
+    undigested = evidence("e-1")
+    del undigested["observations"][1]["reference"]["sha256"]
+    carried = evidence("e-1")
+    carried["observations"] = [
+        {"carried": {"vector": "obs-pass", "verdict": "pass", "rules": []}},
+        {"carried": {"vector": "obs-fail", "verdict": "fail", "rules": ["R-1"]}},
+    ]
+    m.pair(
+        "w3c-f-26", "W3C-R-026",
+        report([PASS, demonstrated], [undigested]), report([PASS, demonstrated], [carried]),
+        "moved asserted while one observation is referenced with no digest: decidable from the "
+        "object alone, before any reader resolves anything",
+        "both observations carried, so moved recomputes from what the object holds",
+    )
+    declared_arity = evidence("e-1")
+    declared_arity["delta"]["arity"] = 1
+    two_fields = evidence("e-1")
+    two_fields["delta"]["changes"].append({"field": "artifact/other", "before": "a", "after": "b"})
+    m.pair(
+        "w3c-f-27", "W3C-R-027",
+        report([PASS, demonstrated], [declared_arity]),
+        report([PASS, demonstrated], [two_fields]),
+        "a delta declaring its arity: forgeable the same way a declared moved is",
+        "a delta listing two changes and declaring nothing: arity recomputes as two, and no "
+        "row reads it while what counts as one field is open",
+    )
+    restated = evidence("e-1")
+    restated["fixed"]["domain"] = dict(DOMAIN)
+    m.pair(
+        "w3c-f-28", "W3C-R-028",
+        report([PASS, demonstrated], [restated]),
+        report([PASS, demonstrated], [evidence("e-1")]),
+        "the fixed slot restating the domain as an object instead of naming the run's by "
+        "identifier",
+        "the fixed slot naming the run's domain by identifier, declared once at run level",
+    )
+
+
 def build_gaps(m: Members) -> None:
     """The two gaps the editor recorded about the reference emitter, as closed."""
     harness_void = check(
         "vector-x", "void",
-        {"code": "harness-failure",
+        {"code": w3creport.VOID_CAUSE,
          "detail": "rail invocation: exit 2: the verifier could not be started"},
     )
     m.add(kind="accept", family="w3c-f-gaps", requirements=["W3C-R-001", "W3C-R-002"],
@@ -933,22 +1144,36 @@ def pair_object(origin: dict[str, Any], pair: dict[str, Any]) -> dict[str, Any]:
     observations = []
     for side in ("pass", "fail"):
         ident = f"{version}/{pair[side]}"
-        record = origin["records"][ident]
         observations.append({"reference": {
             "repository": origin["repository"], "commit": origin["commit"], "vector": ident,
-            "sha256": record["sha256"], "verdict": record["verdict"], "rules": record["rules"],
+            "sha256": origin["records"][ident]["sha256"],
         }})
     return {
         "id": "e-pair",
         "changed": "input artifact",
         "fixed": {
-            "checker": checker, "constraint-set": f"residue/{version}", "domain": "d-disensor",
+            "checker": checker, "constraint-set": f"residue/{version}",
+            "domain": DISENSOR_DOMAIN["id"],
         },
         "compared": list(DECLARED),
         "moved": list(DECLARED),
-        "delta": {"field": pair["field"], "before": pair["before"], "after": pair["after"]},
+        "delta": {"changes": [
+            {"field": pair["field"], "before": pair["before"], "after": pair["after"]},
+        ]},
         "observations": observations,
     }
+
+
+def pair_store(origin: dict[str, Any], pair: dict[str, Any]) -> dict[str, Any]:
+    """What the pinned checker at the named commit resolves the two references to."""
+    resolved = {}
+    for side in ("pass", "fail"):
+        ident = f"{pair['version']}/{pair[side]}"
+        record = origin["records"][ident]
+        resolved[ident] = {
+            "sha256": record["sha256"], "verdict": record["verdict"], "rules": record["rules"],
+        }
+    return resolved
 
 
 def build_disensor(m: Members) -> None:
@@ -970,9 +1195,10 @@ def build_disensor(m: Members) -> None:
             "author": AUTHORS["0043"],
             "pair": {"pass": pass_id, "fail": fail_id, "field": pair["field"]},
         }
+        resolves = pair_store(origin, pair)
         m.add(
             kind="reject", family="w3c-f-disensor", requirements=["W3C-R-016"],
-            subject=report(checks, [as_emitted]),
+            subject=report(checks, [as_emitted], domain=DISENSOR_DOMAIN), resolves=resolves,
             cites="the pair as emitted on 2026-09-16: moved names the error list the checker "
                   "produced, which the compared vocabulary does not hold, so the object is "
                   "rejected under the declared-slot rule",
@@ -981,7 +1207,7 @@ def build_disensor(m: Members) -> None:
         )
         m.add(
             kind="accept", family="w3c-f-disensor", requirements=["W3C-R-016"],
-            subject=report(checks, [obj]),
+            subject=report(checks, [obj], domain=DISENSOR_DOMAIN), resolves=resolves,
             cites="the same pair re-cut against v0.1: moved recomputed over the declared slots, "
                   "the verdict in it, both observations referenced by commit, vector and digest",
             origin=dict(provenance, cause="none: moved is contained in the declared set and "
@@ -1262,6 +1488,7 @@ def build() -> list[dict[str, Any]]:
     build_set_binding(m)
     build_rules(m)
     build_people_rules(m)
+    build_proposed_rows(m)
     build_gaps(m)
     build_disensor(m)
     build_run_metrics(m)
@@ -1275,8 +1502,31 @@ def build() -> list[dict[str, Any]]:
 
 
 def judged_ok(member: dict[str, Any], relax: frozenset[str]) -> bool:
-    observed = w3creport.subject_rejections(member["subjectType"], member["subject"], relax)
+    observed = w3creport.subject_rejections(
+        member["subjectType"], member["subject"], relax, member.get("resolves")
+    )
     return observed == sorted(member["expected"]["rejects"])
+
+
+def resolved_read(members: list[dict[str, Any]], row: str) -> bool | None:
+    """Whether a row reads a resolved observation, measured rather than asserted.
+
+    A row's reject members are re-judged by a reader that resolves nothing. A row
+    is measured as reading a resolved slot when any member of it stops firing
+    (the reference-mismatch row fires from the report's own check set and from a
+    resolved observation, and reads a resolved slot); a row whose members all
+    still fire reads declared slots only. None where the row has no report
+    member.
+    """
+    naming = [
+        x for x in members
+        if x["expected"]["rejects"] == [row] and x["subjectType"] == "report"
+    ]
+    if not naming:
+        return None
+    return not all(
+        row in w3creport.rejections(x["subject"], frozenset(), {}) for x in naming
+    )
 
 
 def mutation_sweep(members: list[dict[str, Any]], rows: list[str]) -> list[dict[str, Any]]:
@@ -1335,8 +1585,9 @@ def render_index(manifest: dict[str, Any]) -> str:
         for entry in manifest["vectors"]
     )
     requirements = "\n".join(
-        "| `{id}` | {row} | `{file}` | `{digest}` | {sentence} |".format(
+        "| `{id}` | {row} | {cls} | {status} | `{file}` | `{digest}` | {sentence} |".format(
             id=row["id"], row=row["row"], file=row["vendored"],
+            cls=row.get("class", "-"), status=row.get("status", "-"),
             digest=row["sentenceDigest"][:16],
             sentence=row["sentence"].replace("\n", " ").replace("|", "\\|"),
         )
@@ -1355,11 +1606,13 @@ def render_index(manifest: dict[str, Any]) -> str:
         kind: sum(1 for e in manifest["vectors"] if e["subjectType"] == kind)
         for kind in w3creport.SUBJECT_TYPES
     }
+    messages = sum(1 for key in manifest["specVendored"] if not key.startswith("draft-"))
+    texts = len(manifest["specVendored"])
     return f"""# Conformance vectors (v0.1 per-check report)
 
 Every member of this suite in one table, rejected and accepted alike. Ground
-truth: ten texts vendored in `spec-vendored/` and pinned by sha256 in
-`MANIFEST.json`: eight messages of the W3C public-agent-conformance list that
+truth: {texts} texts vendored in `spec-vendored/` and pinned by sha256 in
+`MANIFEST.json`: {messages} messages of the W3C public-agent-conformance list that
 together fix what v0.1 of the reporting format freezes, and the two
 Internet-Drafts the format's editor holds.
 
@@ -1410,8 +1663,15 @@ the same lines.
 
 ## Requirements
 
-| id | row | vendored in | sentence digest | normative sentence |
-|---|---|---|---|---|
+The class column is the handover's sort of the rows: consistency rows read
+declared slots against each other, evidence rows read a declared slot against
+a recomputed or resolved one, form rows are decidable from the object alone.
+The status column says whether the list agreed the row or this corpus proposes
+it (the numbering of rows 13 and 14, and the class of rows 4, 10, 11, 12 and
+13, which the handover left unclassified).
+
+| id | row | class | status | vendored in | sentence digest | normative sentence |
+|---|---|---|---|---|---|---|
 {requirements}
 
 ## Families
@@ -1435,6 +1695,8 @@ def member_document(vid: str, member: dict[str, Any]) -> dict[str, Any]:
         "subjectType": member["subjectType"], "expected": member["expected"],
         "subject": member["subject"],
     }
+    if "resolves" in member:
+        document["resolves"] = member["resolves"]
     if "origin" in member:
         document["origin"] = member["origin"]
     return document
@@ -1458,7 +1720,9 @@ def self_check(vid: str, member: dict[str, Any], known: set[str]) -> None:
         raise SystemExit(f"FAIL: {vid} cites requirements that do not exist: {missing}")
     if shape := w3creport.subject_shape_errors(member["subjectType"], member["subject"]):
         raise SystemExit(f"FAIL: {vid} is not the shape of its subject: {shape}")
-    observed = w3creport.subject_rejections(member["subjectType"], member["subject"])
+    observed = w3creport.subject_rejections(
+        member["subjectType"], member["subject"], resolves=member.get("resolves")
+    )
     if observed != sorted(member["expected"]["rejects"]):
         raise SystemExit(
             f"FAIL: {vid} ({member['family']}, {member['cites'][:60]}) expects "
@@ -1466,27 +1730,46 @@ def self_check(vid: str, member: dict[str, Any], known: set[str]) -> None:
         )
 
 
-def build_requirements() -> list[dict[str, Any]]:
+def build_requirements(members: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out = []
     for row in REQUIREMENTS:
         line, digest = locate(row)
-        out.append({
+        entry: dict[str, Any] = {
             "id": row["id"], "row": row["row"], "file": row["file"],
             "vendored": VENDORED[row["file"]], "line": line, "sentence": row["sentence"],
             "sentenceDigest": digest, "specVersion": SPEC_VERSION,
-        })
+        }
+        if row["id"].startswith("W3C-R-"):
+            entry["class"] = row["class"]
+            entry["status"] = row["status"]
+            measured = resolved_read(members, row["id"])
+            if measured is not None:
+                entry["resolvedRead"] = measured
+                if measured and row["class"] != EVIDENCE:
+                    raise SystemExit(f"FAIL: {row['id']} reads a resolved slot and is classed "
+                                     f"{row['class']}")
+                if not measured and row["class"] == EVIDENCE and row["id"] in RESOLVED_CLASS:
+                    raise SystemExit(f"FAIL: {row['id']} is classed evidence and fires with "
+                                     "nothing resolved")
+        out.append(entry)
     return out
 
 
+#: The evidence rows whose recomputed slot is a resolved observation, so the
+#: measurement above must agree with the class; the other evidence rows
+#: recompute from the report's own records (counts, roots, populations).
+RESOLVED_CLASS = frozenset({"W3C-R-020", "W3C-R-021", "W3C-R-025"})
+
+
 def build_manifest() -> tuple[dict[str, Any], dict[str, bytes]]:
-    requirements = build_requirements()
+    members = build()
+    requirements = build_requirements(members)
     known = {row["id"] for row in requirements}
     origin = json.loads(read(ORIGIN_FILE))
     origin["author"] = AUTHORS["0043"]
     seen: set[str] = set()
     files: dict[str, bytes] = {}
     entries = []
-    members = build()
     for member in members:
         vid = w3creport.identify(member)
         if vid in seen:
@@ -1542,13 +1825,15 @@ def build_manifest() -> tuple[dict[str, Any], dict[str, bytes]]:
             "author": AUTHORS["0043"], "checker": origin["checker"],
             "pairingRule": origin["pairingRule"], "pairs": len(origin["pairs"]),
             "derivedBy": "origin/derive_pairs.py", "data": ORIGIN_FILE,
+            "reproducibleBy": "tools/emitir-42.py in the same repository, published 2026-09-18",
             "note": (
                 "The twelve rejection rows and the record definition are the author's, "
-                "consolidated on the list on 2026-09-15. The pairs were counted at this commit "
-                "as 42 (v0.2 4, v0.3 16, v0.4 22) and the objects emitted against them were "
-                "described on 2026-09-16 and never posted, so they are re-emitted here from "
-                "the same bytes under the same recipe: each observation referenced by commit, "
-                "vector and digest, moved recomputed from the two."
+                "consolidated on the list on 2026-09-15 and handed over on 2026-09-18. The "
+                "pairs were counted at this commit as 42 (v0.2 4, v0.3 16, v0.4 22); the "
+                "objects are re-emitted here from the same bytes under the recipe the handover "
+                "fixes: each observation referenced by commit, vector and digest, the "
+                "outcome resolved through the member's store and never declared in the "
+                "reference, moved recomputed from the two, the domain declared once."
             ),
         },
         "mutationSweep": {"file": "MUTATION-SWEEP.md", "rows": len(sweep), "leaks": 0},

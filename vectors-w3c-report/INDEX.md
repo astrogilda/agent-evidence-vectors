@@ -1,15 +1,15 @@
 # Conformance vectors (v0.1 per-check report)
 
 Every member of this suite in one table, rejected and accepted alike. Ground
-truth: ten texts vendored in `spec-vendored/` and pinned by sha256 in
-`MANIFEST.json`: eight messages of the W3C public-agent-conformance list that
+truth: 12 texts vendored in `spec-vendored/` and pinned by sha256 in
+`MANIFEST.json`: 10 messages of the W3C public-agent-conformance list that
 together fix what v0.1 of the reporting format freezes, and the two
 Internet-Drafts the format's editor holds.
 
-This corpus is 210 vectors, of which 106 a conformant verifier must not fail closed
-on and 104 it must reject.
+This corpus is 222 vectors, of which 112 a conformant verifier must not fail closed
+on and 110 it must reject.
 
-**Three subject types, one manifest.** 144 members are whole
+**Three subject types, one manifest.** 156 members are whole
 v0.1 reports, judged by the rows of the format; 44
 are Run objects of the agent-run-metrics draft; 22
 are discovery snapshots of the context-discovery draft. Each member names its
@@ -57,70 +57,83 @@ the same lines.
 | `0060` | Nicolas Rocchia | `spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt` | `47f96e10c2ac5dc0` | https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0060.html |
 | `0062` | Evgenii Arsentev | `spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt` | `b92f4a6ca926eaa8` | https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0062.html |
 | `0069` | Evgenii Arsentev | `spec-vendored/0069-arsentev-2026-09-18-late-additions.txt` | `40153b17403b0e65` | https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0069.html |
+| `0072` | Nicolas Rocchia | `spec-vendored/0072-rocchia-2026-09-18-handover.txt` | `27cea4f3ffd48ed4` | https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0072.html |
+| `0073` | Evgenii Arsentev | `spec-vendored/0073-arsentev-2026-09-18-fixed-scope.txt` | `42fa833367e0e1d5` | https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0073.html |
 | `draft-arsentev-agent-run-metrics-00` | Evgenii Arsentev | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `0ef9e7fbc39d04bf` | https://datatracker.ietf.org/doc/draft-arsentev-agent-run-metrics/ |
 | `draft-arsentev-llm-context-discovery-00` | Evgenii Arsentev | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `13081268c70a19e9` | https://datatracker.ietf.org/doc/draft-arsentev-llm-context-discovery/ |
 
 ## Requirements
 
-| id | row | vendored in | sentence digest | normative sentence |
-|---|---|---|---|---|
-| `W3C-R-001` | 1 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `87893835a3e13451` | a non-verdict state with no cause |
-| `W3C-R-002` | 2 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `05fb9274ff0859d9` | void with not_applicable, out_of_scope or withheld |
-| `W3C-R-003` | 3 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `587e9bc351daaed2` | not-exercised with integrity-failure |
-| `W3C-R-004` | 4 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `32dd6b74795b02bd` | a confinement control that failed while the check ran |
-| `W3C-R-005` | 5 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `ed9007c6e8a11eb2` | a declared exclusion with any state but not-exercised |
-| `W3C-R-006` | 6 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `4ef6f3c9383ae454` | a non-verdict state carrying either qualifier |
-| `W3C-R-007` | 7 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `831dc816ea23fa26` | a verdict state carrying a cause |
-| `W3C-R-008` | 8 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `2c6f812fc2752889` | other-verdict foreclosed with discrimination demonstrated |
-| `W3C-R-009` | 9 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `111e3eb11cdcc313` | discrimination demonstrated with other-verdict unknown |
-| `W3C-R-010` | 10 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `139eba59f4dc4345` | foreclosed without a constraint set and a domain |
-| `W3C-R-011` | 11 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `f68cd56a997a5773` | an asserted value without its evidence reference |
-| `W3C-R-012` | 12 | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `d2268e7db1d50fe5` | whose changed slot is the checker |
-| `W3C-R-013` | (a) roll-up | `spec-vendored/0069-arsentev-2026-09-18-late-additions.txt` | `f73fd10347201018` | a roll-up states whether the checks it aggregates were capable of a negative verdict |
-| `W3C-R-014` | (a) prior run | `spec-vendored/0069-arsentev-2026-09-18-late-additions.txt` | `2da5682dbbb4be1f` | a prior discriminating run only counts where check identity survives across runs |
-| `W3C-R-015` | (b) set binding | `spec-vendored/0069-arsentev-2026-09-18-late-additions.txt` | `c6fe2b8552666e81` | digest match establishes a set only when the count of leaves is bound too, and a report says which tree shape it uses |
-| `W3C-R-016` | declared slots | `spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt` | `303d488c14eed0d2` | an object whose moved is not contained in its declared set is rejected |
-| `W3C-R-017` | roll-up denominator | `spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt` | `526d7694de57f6c5` | never emitted without its complete denominator |
-| `W3C-R-018` | roll-up counter | `spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt` | `31c3dfd19fc59147` | the counter over carried against referenced |
-| `W3C-R-019` | closed vocabulary | `spec-vendored/0025-rocchia-2026-09-13-state-cause-pair-table.txt` | `1b376a60d7520ff7` | because free text does not aggregate |
-| `W3C-R-020` | reference mismatch | `spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt` | `af507f1056e619da` | resolves with a mismatch (an integrity failure) |
-| `W3C-R-021` | recomputed delta | `spec-vendored/0050-ives-2026-09-15-recomputed-delta.txt` | `bc4afdb28cee9c30` | they read moved as recomputed from the two observations the object names |
-| `W3C-R-022` | coverage block | `spec-vendored/0001-ives-2026-09-01-coverage-block.txt` | `50c6f490bcf092b2` | a sampled / full_coverage flag with the count of scannable files recorded before the per-repo cap |
-| `W3C-R-023` | population denominator | `spec-vendored/0036-arsentev-2026-09-14-discrimination-and-populations.txt` | `04fa2499c017be72` | a claim over an empty population is reported as not claimable, not as satisfied |
-| `W3C-R-024` | delta-related pair | `spec-vendored/0036-arsentev-2026-09-14-discrimination-and-populations.txt` | `d75ca465cf824295` | Unrelated pass and fail records in one corpus must not qualify |
-| `ARM-R-001` | 5.1 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `f313511759b2f6ce` | Reporter MUST emit "1" while conforming to this specification |
-| `ARM-R-002` | 3.1 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `a82c8c4e90b439d6` | The "end" member MUST be present when "status" is "completed",    "failed" or "aborted", and MUST NOT be present when "status" is    "running" |
-| `ARM-R-003` | 3.1 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `1651e4aa28aef3c5` | When present, "end" MUST NOT be earlier than "start" |
-| `ARM-R-004` | 3.1 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `532a0c7a01289d79` | a Reporter MUST NOT emit    a value other than the four listed |
-| `ARM-R-005` | 3.1 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `b0245f78d559c0cf` | When the "steps" array is present, "step_count" MUST be    greater than or equal to the length of that array |
-| `ARM-R-006` | 3.2 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `de2c45f5dcc4d136` | Within one Run, "index" values MUST be unique and MUST be assigned in    the order in which Steps began |
-| `ARM-R-007` | 3.2 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `bb47f3459eea16f1` | When "kind" is "model_invocation", the "usage" and "model" members    MUST be present |
-| `ARM-R-008` | 3.2 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `cbf735970617d21d` | When "kind" is "tool_call", the "tool" member MUST    be present and the "usage" member MUST NOT be present |
-| `ARM-R-009` | 3.4 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `0748102d1586a9c5` | All members of a Usage object MUST be non-negative integers |
-| `ARM-R-010` | 3.4 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `912e608876053400` | "cache_read_tokens" is a subset of "input_tokens" and therefore        MUST be less than or equal to it |
-| `ARM-R-011` | 3.4 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `ab264faa892721d2` | "cache_read_tokens" and "cache_write_tokens"        denote disjoint subsets of "input_tokens" and their sum MUST be        less than or equal to "input_tokens" |
-| `ARM-R-012` | 3.4 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `e6b6a4c51dfe30f7` | "totals" object MUST be, member by member, the sum of the    corresponding members of every Step's Usage object |
-| `ARM-R-013` | 3.5 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `89119163b621c774` | One    "lifetime" value MUST NOT appear in more than one element of the same    array |
-| `ARM-R-014` | 3.5 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `17816ade45921f0d` | The sum of the "tokens" members of "cache_writes" MUST equal the    "cache_write_tokens" member of the same Usage object |
-| `ARM-R-015` | 3.3 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `0883bbd19a653019` | A Reporter MUST NOT    emit two Steps of one Run with the same "invocation_id" |
-| `ARM-R-016` | 3.6 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `546781f078f7e248` | A Run that emits "root_run_id" and has no       parent MUST set it equal to its own "run_id" |
-| `ARM-R-017` | 3.7 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `f15b1c8c7a0cfe45` | The "amount" member MUST be a JSON string matching the ABNF [RFC5234]    rule |
-| `ARM-R-018` | 3.12 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `4d1f574a3f6c8983` | Its value MUST be a JSON object whose members all    have string values |
-| `ARM-R-019` | 5 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `af8a371a7c03ddaa` | Timestamps MUST be strings conforming to the "date-time" production    of [RFC3339].  They MUST use the "Z" time offset |
-| `ARM-R-020` | 5 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `f45b4290574244a8` | MUST be non-empty strings of at most 128    characters |
-| `ARM-R-021` | 5.1 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `a9283399f2f72c8c` | A Reporter MUST NOT use an unprefixed member    name for a purpose other than the one specified here |
-| `ARM-R-022` | 3.4 | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `77239d6671db6001` | "reasoning_tokens" is a subset of "output_tokens" and        therefore MUST be less than or equal to it |
-| `LCD-R-001` | 3.1 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `dea0684290a3e21a` | A context file MUST NOT be served with a "Content-Type" of "text/    html" |
-| `LCD-R-002` | 3.2 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `993eae7ed8a98e13` | A discovery mechanism defined in Section 4 MUST point at an index       resource, never directly at a detail resource |
-| `LCD-R-003` | 4.1 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `b75a01b97d999548` | A publisher advertising a context file through this mechanism MUST    arrange that a GET request for "/.well-known/llm-context" on the    origin returns either |
-| `LCD-R-004` | 4.3 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `cbf9300432d96463` | Its value MUST be an absolute    URI |
-| `LCD-R-005` | 4.3 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `6c62b556add0487c` | A publisher MUST NOT use this record to advertise a context file    whose retrieval the same robots.txt disallows |
-| `LCD-R-006` | 4.4 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `bc76905fa3c30441` | a consumer MUST    apply the following precedence, highest first |
-| `LCD-R-007` | 4.4 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `9303b76c717a46a4` | A consumer MUST NOT retrieve more than one index resource per origin    per retrieval cycle |
-| `LCD-R-008` | 7.2 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `de7f08a1b2a8a663` | A consumer MUST NOT attribute the content of a cross-origin index    resource to the advertising origin |
-| `LCD-R-009` | 7.4 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `6bf3ffe5624cb4d3` | A consumer MUST impose its own ceiling on the size of any retrieved    context file |
-| `LCD-R-010` | 3.3 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `1f8ceb1482c75131` | the response MUST carry an appropriate "Content-Language" |
-| `LCD-R-011` | 4.4 | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `1cb26bd4e4ca5526` | a consumer MUST evaluate the exclusion    rules of [RFC9309] against the index resource's URI before retrieving    it |
+The class column is the handover's sort of the rows: consistency rows read
+declared slots against each other, evidence rows read a declared slot against
+a recomputed or resolved one, form rows are decidable from the object alone.
+The status column says whether the list agreed the row or this corpus proposes
+it (the numbering of rows 13 and 14, and the class of rows 4, 10, 11, 12 and
+13, which the handover left unclassified).
+
+| id | row | class | status | vendored in | sentence digest | normative sentence |
+|---|---|---|---|---|---|---|
+| `W3C-R-001` | 1 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `87893835a3e13451` | a non-verdict state with no cause |
+| `W3C-R-002` | 2 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `05fb9274ff0859d9` | void with not_applicable, out_of_scope or withheld |
+| `W3C-R-003` | 3 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `587e9bc351daaed2` | not-exercised with integrity-failure |
+| `W3C-R-004` | 4 | consistency | proposed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `32dd6b74795b02bd` | a confinement control that failed while the check ran |
+| `W3C-R-005` | 5 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `ed9007c6e8a11eb2` | a declared exclusion with any state but not-exercised |
+| `W3C-R-006` | 6 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `4ef6f3c9383ae454` | a non-verdict state carrying either qualifier |
+| `W3C-R-007` | 7 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `831dc816ea23fa26` | a verdict state carrying a cause |
+| `W3C-R-008` | 8 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `2c6f812fc2752889` | other-verdict foreclosed with discrimination demonstrated |
+| `W3C-R-009` | 9 | consistency | agreed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `111e3eb11cdcc313` | discrimination demonstrated with other-verdict unknown |
+| `W3C-R-010` | 10 | consistency | proposed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `139eba59f4dc4345` | foreclosed without a constraint set and a domain |
+| `W3C-R-011` | 11 | consistency | proposed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `f68cd56a997a5773` | an asserted value without its evidence reference |
+| `W3C-R-012` | 12 | consistency | proposed | `spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt` | `d2268e7db1d50fe5` | whose changed slot is the checker |
+| `W3C-R-013` | (a) roll-up | evidence | agreed | `spec-vendored/0069-arsentev-2026-09-18-late-additions.txt` | `f73fd10347201018` | a roll-up states whether the checks it aggregates were capable of a negative verdict |
+| `W3C-R-014` | (a) prior run | consistency | agreed | `spec-vendored/0069-arsentev-2026-09-18-late-additions.txt` | `2da5682dbbb4be1f` | a prior discriminating run only counts where check identity survives across runs |
+| `W3C-R-015` | (b) set binding | evidence | agreed | `spec-vendored/0069-arsentev-2026-09-18-late-additions.txt` | `c6fe2b8552666e81` | digest match establishes a set only when the count of leaves is bound too, and a report says which tree shape it uses |
+| `W3C-R-016` | declared slots | consistency | agreed | `spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt` | `303d488c14eed0d2` | an object whose moved is not contained in its declared set is rejected |
+| `W3C-R-017` | roll-up denominator | evidence | agreed | `spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt` | `526d7694de57f6c5` | never emitted without its complete denominator |
+| `W3C-R-018` | roll-up counter | evidence | agreed | `spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt` | `31c3dfd19fc59147` | the counter over carried against referenced |
+| `W3C-R-019` | closed vocabulary | form | agreed | `spec-vendored/0025-rocchia-2026-09-13-state-cause-pair-table.txt` | `1b376a60d7520ff7` | because free text does not aggregate |
+| `W3C-R-020` | reference mismatch | evidence | agreed | `spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt` | `af507f1056e619da` | resolves with a mismatch (an integrity failure) |
+| `W3C-R-021` | recomputed delta | evidence | agreed | `spec-vendored/0050-ives-2026-09-15-recomputed-delta.txt` | `bc4afdb28cee9c30` | they read moved as recomputed from the two observations the object names |
+| `W3C-R-022` | coverage block | form | agreed | `spec-vendored/0001-ives-2026-09-01-coverage-block.txt` | `50c6f490bcf092b2` | a sampled / full_coverage flag with the count of scannable files recorded before the per-repo cap |
+| `W3C-R-023` | population denominator | evidence | agreed | `spec-vendored/0036-arsentev-2026-09-14-discrimination-and-populations.txt` | `04fa2499c017be72` | a claim over an empty population is reported as not claimable, not as satisfied |
+| `W3C-R-024` | delta-related pair | consistency | agreed | `spec-vendored/0036-arsentev-2026-09-14-discrimination-and-populations.txt` | `d75ca465cf824295` | Unrelated pass and fail records in one corpus must not qualify |
+| `W3C-R-025` | 13 (proposed) | evidence | proposed | `spec-vendored/0072-rocchia-2026-09-18-handover.txt` | `01119b86460f6112` | other-verdict demonstrated citing an evidence object whose moved does not contain the verdict |
+| `W3C-R-026` | 14 (proposed) | form | proposed | `spec-vendored/0072-rocchia-2026-09-18-handover.txt` | `021af13381601bcf` | 14 moved asserted on an evidence object that neither carries both observations nor references them with digests |
+| `W3C-R-027` | arity recomputed | form | agreed | `spec-vendored/0072-rocchia-2026-09-18-handover.txt` | `8d4a3be209be152c` | so arity is recomputed from the delta |
+| `W3C-R-028` | domain once | form | agreed | `spec-vendored/0072-rocchia-2026-09-18-handover.txt` | `fc883a4e2664fb33` | The domain is declared once at run level |
+| `ARM-R-001` | 5.1 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `f313511759b2f6ce` | Reporter MUST emit "1" while conforming to this specification |
+| `ARM-R-002` | 3.1 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `a82c8c4e90b439d6` | The "end" member MUST be present when "status" is "completed",    "failed" or "aborted", and MUST NOT be present when "status" is    "running" |
+| `ARM-R-003` | 3.1 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `1651e4aa28aef3c5` | When present, "end" MUST NOT be earlier than "start" |
+| `ARM-R-004` | 3.1 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `532a0c7a01289d79` | a Reporter MUST NOT emit    a value other than the four listed |
+| `ARM-R-005` | 3.1 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `b0245f78d559c0cf` | When the "steps" array is present, "step_count" MUST be    greater than or equal to the length of that array |
+| `ARM-R-006` | 3.2 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `de2c45f5dcc4d136` | Within one Run, "index" values MUST be unique and MUST be assigned in    the order in which Steps began |
+| `ARM-R-007` | 3.2 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `bb47f3459eea16f1` | When "kind" is "model_invocation", the "usage" and "model" members    MUST be present |
+| `ARM-R-008` | 3.2 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `cbf735970617d21d` | When "kind" is "tool_call", the "tool" member MUST    be present and the "usage" member MUST NOT be present |
+| `ARM-R-009` | 3.4 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `0748102d1586a9c5` | All members of a Usage object MUST be non-negative integers |
+| `ARM-R-010` | 3.4 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `912e608876053400` | "cache_read_tokens" is a subset of "input_tokens" and therefore        MUST be less than or equal to it |
+| `ARM-R-011` | 3.4 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `ab264faa892721d2` | "cache_read_tokens" and "cache_write_tokens"        denote disjoint subsets of "input_tokens" and their sum MUST be        less than or equal to "input_tokens" |
+| `ARM-R-012` | 3.4 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `e6b6a4c51dfe30f7` | "totals" object MUST be, member by member, the sum of the    corresponding members of every Step's Usage object |
+| `ARM-R-013` | 3.5 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `89119163b621c774` | One    "lifetime" value MUST NOT appear in more than one element of the same    array |
+| `ARM-R-014` | 3.5 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `17816ade45921f0d` | The sum of the "tokens" members of "cache_writes" MUST equal the    "cache_write_tokens" member of the same Usage object |
+| `ARM-R-015` | 3.3 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `0883bbd19a653019` | A Reporter MUST NOT    emit two Steps of one Run with the same "invocation_id" |
+| `ARM-R-016` | 3.6 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `546781f078f7e248` | A Run that emits "root_run_id" and has no       parent MUST set it equal to its own "run_id" |
+| `ARM-R-017` | 3.7 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `f15b1c8c7a0cfe45` | The "amount" member MUST be a JSON string matching the ABNF [RFC5234]    rule |
+| `ARM-R-018` | 3.12 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `4d1f574a3f6c8983` | Its value MUST be a JSON object whose members all    have string values |
+| `ARM-R-019` | 5 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `af8a371a7c03ddaa` | Timestamps MUST be strings conforming to the "date-time" production    of [RFC3339].  They MUST use the "Z" time offset |
+| `ARM-R-020` | 5 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `f45b4290574244a8` | MUST be non-empty strings of at most 128    characters |
+| `ARM-R-021` | 5.1 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `a9283399f2f72c8c` | A Reporter MUST NOT use an unprefixed member    name for a purpose other than the one specified here |
+| `ARM-R-022` | 3.4 | - | - | `spec-vendored/draft-arsentev-agent-run-metrics-00.txt` | `77239d6671db6001` | "reasoning_tokens" is a subset of "output_tokens" and        therefore MUST be less than or equal to it |
+| `LCD-R-001` | 3.1 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `dea0684290a3e21a` | A context file MUST NOT be served with a "Content-Type" of "text/    html" |
+| `LCD-R-002` | 3.2 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `993eae7ed8a98e13` | A discovery mechanism defined in Section 4 MUST point at an index       resource, never directly at a detail resource |
+| `LCD-R-003` | 4.1 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `b75a01b97d999548` | A publisher advertising a context file through this mechanism MUST    arrange that a GET request for "/.well-known/llm-context" on the    origin returns either |
+| `LCD-R-004` | 4.3 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `cbf9300432d96463` | Its value MUST be an absolute    URI |
+| `LCD-R-005` | 4.3 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `6c62b556add0487c` | A publisher MUST NOT use this record to advertise a context file    whose retrieval the same robots.txt disallows |
+| `LCD-R-006` | 4.4 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `bc76905fa3c30441` | a consumer MUST    apply the following precedence, highest first |
+| `LCD-R-007` | 4.4 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `9303b76c717a46a4` | A consumer MUST NOT retrieve more than one index resource per origin    per retrieval cycle |
+| `LCD-R-008` | 7.2 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `de7f08a1b2a8a663` | A consumer MUST NOT attribute the content of a cross-origin index    resource to the advertising origin |
+| `LCD-R-009` | 7.4 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `6bf3ffe5624cb4d3` | A consumer MUST impose its own ceiling on the size of any retrieved    context file |
+| `LCD-R-010` | 3.3 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `1f8ceb1482c75131` | the response MUST carry an appropriate "Content-Language" |
+| `LCD-R-011` | 4.4 | - | - | `spec-vendored/draft-arsentev-llm-context-discovery-00.txt` | `1cb26bd4e4ca5526` | a consumer MUST evaluate the exclusion    rules of [RFC9309] against the index resource's URI before retrieving    it |
 
 ## Families
 
@@ -140,16 +153,20 @@ the same lines.
 | `w3c-f-12` | row 12: discrimination demonstrated citing evidence whose changed slot is the checker |
 | `w3c-f-13` | late addition (a): a roll-up says whether its checks could have gone negative |
 | `w3c-f-14` | late addition (a): a prior discriminating run binds the check identity that survived |
-| `w3c-f-15` | late addition (b): a digest over a set binds its leaf count and names its tree shape |
+| `w3c-f-15` | late addition (b): a digest over a set binds its leaf count and names its tree shape; domain separation alone is not the fix |
 | `w3c-f-16` | declared slots: moved is contained in the declared compared set |
 | `w3c-f-17` | roll-up: the aggregate carries its complete denominator |
 | `w3c-f-18` | roll-up: the counter over carried against referenced recomputes |
 | `w3c-f-19` | closed vocabulary: a value outside a registry is not read |
-| `w3c-f-20` | carry-or-reference: a set digest that does not recompute is an integrity failure |
+| `w3c-f-20` | carry-or-reference: a digest that resolves with a mismatch is an integrity failure, over the check set and over a referenced observation alike |
 | `w3c-f-21` | recomputed delta: moved is read as recomputed over the observations, not as declared |
 | `w3c-f-22` | coverage block: scope disclosure in controlled fields, with the pre-cap file count |
 | `w3c-f-23` | population denominator: a completeness claim carries the size of its population |
 | `w3c-f-24` | delta-related pair: unrelated pass and fail records do not witness discrimination |
+| `w3c-f-25` | row 13 (proposed): other-verdict demonstrated citing an object whose recomputed moved does not contain the verdict; unresolvable, the row degrades |
+| `w3c-f-26` | row 14 (proposed): moved asserted on an object that neither carries its observations nor references them with digests |
+| `w3c-f-27` | arity: recomputed from the delta, never declared |
+| `w3c-f-28` | domain: declared once at run level, named by identifier and never restated |
 | `w3c-f-gaps` | the two known gaps of the reference emitter, closed: void has a slot and not-exercised carries a cause |
 | `w3c-f-disensor` | the 42 delta-related pairs of the disensor corpus at 1e36257, re-cut against v0.1 |
 | `arm-f-run` | agent run metrics: the Run object's own members |
@@ -164,213 +181,225 @@ the same lines.
 
 | id | kind | subject | family | requirements | rejected under |
 |---|---|---|---|---|---|
-| `v0164c803c34c3c4c` | reject | report | w3c-f-21 | W3C-R-021 | W3C-R-021 |
-| `v02b5aa1c6f152cb8` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v02ca1b3fce47e3ca` | reject | report | w3c-f-13 | W3C-R-013 | W3C-R-013 |
-| `v0320e079760670a9` | reject | agent-run-metrics | arm-f-totals | ARM-R-012 | ARM-R-012 |
-| `v04c9ebbce835c688` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v05639d5c3c8c0748` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v05d60efad92ebaf8` | reject | agent-run-metrics | arm-f-serialization | ARM-R-019 | ARM-R-019 |
-| `v066b4ec60aeb45ea` | accept | agent-run-metrics | arm-f-usage | ARM-R-022 | none |
-| `v0802ba8c1adfd735` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v095044ecfd531f0e` | accept | report | w3c-f-18 | W3C-R-018 | none |
-| `v096b392478fcf6fe` | reject | agent-run-metrics | arm-f-usage | ARM-R-014 | ARM-R-014 |
-| `v0a35d1d5e36bf503` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v0b7303efe873ba5e` | reject | report | w3c-f-3 | W3C-R-003 | W3C-R-003 |
-| `v0b91eaac1cdcc248` | reject | report | w3c-f-15 | W3C-R-015 | W3C-R-015 |
-| `v0beb3b74beb99bf1` | accept | report | w3c-f-13 | W3C-R-013 | none |
-| `v0de121457dabc092` | accept | report | w3c-f-8 | W3C-R-008 | none |
-| `v0e100bb5f5f9b549` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v0e31d851b22cf706` | reject | report | w3c-f-18 | W3C-R-018 | W3C-R-018 |
-| `v134763ca9f01867c` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-005 | LCD-R-005 |
-| `v13a01b0473aa7595` | accept | report | w3c-f-14 | W3C-R-014 | none |
-| `v143660ae522c83b7` | reject | agent-run-metrics | arm-f-run | ARM-R-004 | ARM-R-004 |
-| `v1916a6ce919c9c5d` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v1b2f5cbd6e1c2bd6` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-011 | none |
-| `v1c875fc4c36aa06d` | reject | agent-run-metrics | arm-f-usage | ARM-R-013 | ARM-R-013 |
-| `v1d69f990f88ee513` | reject | report | w3c-f-2 | W3C-R-002 | W3C-R-002 |
-| `v1e8ac2d635dba457` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v1f14e5858f61534b` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-006 | LCD-R-006 |
-| `v1f6745a7841076d0` | accept | agent-run-metrics | arm-f-totals | ARM-R-012 | none |
-| `v1f766b6f6eab757b` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v20aff5acca86c219` | accept | agent-run-metrics | arm-f-run | ARM-R-001 | none |
-| `v20cc6cdd082e0e45` | accept | agent-run-metrics | arm-f-steps | ARM-R-008 | none |
-| `v226c47602e7c328a` | accept | agent-run-metrics | arm-f-serialization | ARM-R-020 | none |
-| `v234281fbdc8cf63d` | reject | agent-run-metrics | arm-f-steps | ARM-R-008 | ARM-R-008 |
-| `v236138ba2b69c385` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v244f25416a939dab` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v24d2ed3c70934115` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v28404c7cebd1aa87` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v28ed5f74569195f7` | reject | report | w3c-f-13 | W3C-R-013 | W3C-R-013 |
-| `v296d1a74025adc1c` | accept | agent-run-metrics | arm-f-usage | ARM-R-011 | none |
-| `v2a00957a7f256025` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v2a84fd527effc283` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v2aec9aae50bd3992` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v2c385e784e0bac52` | accept | report | w3c-f-20 | W3C-R-020 | none |
-| `v2d246349f0051a1c` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v2ec19f234a21c62f` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-005 | none |
-| `v2ec6bcd8fa774fbc` | reject | agent-run-metrics | arm-f-steps | ARM-R-007 | ARM-R-007 |
-| `v2fc9dabfe555dd2a` | accept | agent-run-metrics | arm-f-run | ARM-R-004 | none |
-| `v3019a3f576b2feaa` | accept | agent-run-metrics | arm-f-steps | ARM-R-006 | none |
-| `v31b1b47ae148af1f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v321b67cda11cd67d` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v337f2e7acc229d39` | accept | agent-run-metrics | arm-f-run | ARM-R-002 | none |
-| `v34d068d7913a006d` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v35f9c4d0fac828df` | reject | agent-run-metrics | arm-f-run | ARM-R-001 | ARM-R-001 |
-| `v36840e71fe0f6f69` | reject | report | w3c-f-10 | W3C-R-010 | W3C-R-010 |
-| `v36d216e75e2526d3` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v36fe3597c4a38c48` | reject | report | w3c-f-23 | W3C-R-023 | W3C-R-023 |
-| `v3749565d86ca5c4a` | accept | report | w3c-f-19 | W3C-R-019 | none |
-| `v3949a35e22b64a4d` | accept | report | w3c-f-gaps | W3C-R-001, W3C-R-002 | none |
-| `v3bd7c51c7aa62b13` | reject | agent-run-metrics | arm-f-steps | ARM-R-015 | ARM-R-015 |
-| `v3c96293f578f1b72` | accept | agent-run-metrics | arm-f-steps | ARM-R-007 | none |
-| `v3c97c572e8c9f739` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-007 | none |
-| `v3cacf9884fdadcbd` | reject | report | w3c-f-4 | W3C-R-004 | W3C-R-004 |
-| `v3ce86915f6ee7b7e` | reject | report | w3c-f-12 | W3C-R-012 | W3C-R-012 |
-| `v44df6ea141d977e3` | accept | report | w3c-f-22 | W3C-R-022 | none |
-| `v466ace50ae1bbbc0` | reject | agent-run-metrics | arm-f-serialization | ARM-R-018 | ARM-R-018 |
-| `v468366f762a8bdf4` | accept | agent-run-metrics | arm-f-usage | ARM-R-013 | none |
-| `v468d3d041713bf7d` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v4833c3b1ab7dceef` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v490f13fcc91800c2` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v4acd588a3c0cc94e` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v4c65aa9f3b8e431b` | reject | agent-run-metrics | arm-f-run | ARM-R-005 | ARM-R-005 |
-| `v500e95527f03d635` | reject | report | w3c-f-15 | W3C-R-015 | W3C-R-015 |
-| `v50ef3e4bd9f138bc` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-004 | none |
-| `v51667084eded3199` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v5187613995b28f33` | reject | agent-run-metrics | arm-f-usage | ARM-R-010 | ARM-R-010 |
-| `v532f7ce5761b5119` | reject | report | w3c-f-22 | W3C-R-022 | W3C-R-022 |
-| `v57c34a0d07c3f4b4` | reject | report | w3c-f-7 | W3C-R-007 | W3C-R-007 |
-| `v57e0040ff0ad8028` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v5821b8f0393e7bda` | reject | report | w3c-f-5 | W3C-R-005 | W3C-R-005 |
-| `v58a46ac55b803155` | reject | report | w3c-f-1 | W3C-R-001 | W3C-R-001 |
-| `v58f8859669e43d97` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-002 | none |
-| `v59d76289515e9386` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-004 | LCD-R-004 |
-| `v59d7c0268acaec8c` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v5bd6bf20b3a439e7` | reject | agent-run-metrics | arm-f-serialization | ARM-R-021 | ARM-R-021 |
-| `v5ca57343666ee192` | accept | report | w3c-f-4 | W3C-R-004 | none |
-| `v5f4b5733c5575b9f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v5fa1792bbc9887c1` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-008 | LCD-R-008 |
-| `v5fc98bb46ae0c270` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v6027f56ef7676a5d` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-003 | LCD-R-003 |
-| `v61b7b88845756190` | reject | report | w3c-f-6 | W3C-R-006 | W3C-R-006 |
-| `v62ba14cf314c1762` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v6775108beb739acf` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v67fa8be2bfc39fc3` | reject | report | w3c-f-11 | W3C-R-011 | W3C-R-011 |
-| `v6886f2dea5b8d30c` | accept | report | w3c-f-23 | W3C-R-023 | none |
-| `v6a468aead6a0997c` | accept | report | w3c-f-17 | W3C-R-017 | none |
-| `v6ad97761064d2e7f` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-008 | none |
-| `v6c32781926fcdd5c` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v6d1bd6df443e2fc5` | accept | report | w3c-f-10 | W3C-R-010 | none |
-| `v6d6b62187cfc99ef` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-006 | none |
-| `v6ea8de1e96eaa2e7` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v6ec17de3ba07cb6b` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-010 | LCD-R-010 |
-| `v702752d4edc33185` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v732ec2a879e6f405` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v745e2452410fd4fa` | accept | agent-run-metrics | arm-f-serialization | ARM-R-018 | none |
-| `v74785d5a33f1eadb` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v748108bc07240595` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-010 | none |
-| `v750f005fde7f2658` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v756f896b8328c22f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v75a3e8e255520a6f` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v75b42fab65afc397` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v76384d66512cc6a4` | accept | agent-run-metrics | arm-f-serialization | ARM-R-017 | none |
-| `v76eff81a9ab7e6dd` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v78d66a8e657c2772` | accept | agent-run-metrics | arm-f-usage | ARM-R-010 | none |
-| `v7b61413822815cfb` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-003 | none |
-| `v802e4cd278a0fbd2` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-002 | LCD-R-002 |
-| `v80a61d35636233e0` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v80e52166b6a54bab` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-009 | LCD-R-009 |
-| `v8357c7ec77007bab` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v84b862295e8bd427` | accept | report | w3c-f-5 | W3C-R-005 | none |
-| `v85031f0b2100719d` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v86a6eabef30e4ba5` | accept | report | w3c-f-16 | W3C-R-016 | none |
-| `v89900ec30e1dfe82` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v8ab485d5b009b46c` | accept | agent-run-metrics | arm-f-usage | ARM-R-009 | none |
-| `v8c712e7583459c72` | reject | report | w3c-f-14 | W3C-R-014 | W3C-R-014 |
-| `v9008f04238a86871` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v92125f665ba987c8` | accept | report | w3c-f-gaps | W3C-R-001, W3C-R-005 | none |
-| `v92ffeb0789292808` | reject | report | w3c-f-15 | W3C-R-015 | W3C-R-015 |
-| `v9357f80ad67b7286` | accept | agent-run-metrics | arm-f-serialization | ARM-R-021 | none |
-| `v93bd3bcb57b6e753` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-011 | LCD-R-011 |
-| `v93fe9e276462b6ea` | reject | agent-run-metrics | arm-f-run | ARM-R-016 | ARM-R-016 |
-| `v97f7609c206c765b` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v983f5e4b5f7cdc29` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v9944d4e53d2325c1` | reject | agent-run-metrics | arm-f-serialization | ARM-R-017 | ARM-R-017 |
-| `v9a4bca129398f9ad` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `v9ae4fd335cc78dff` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v9b20d711c1a0b368` | accept | report | w3c-f-22 | W3C-R-022 | none |
-| `v9b5fd819ac7976bb` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `v9c3952c5f1467764` | reject | agent-run-metrics | arm-f-run | ARM-R-003 | ARM-R-003 |
-| `va10f5159a7356122` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `va1d8a3aff7580097` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `va3140cc886b694fe` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `va3cc235693ed9aa0` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `va5e6f618c7b58bf9` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `va6299cdbedfb81f8` | reject | agent-run-metrics | arm-f-steps | ARM-R-006 | ARM-R-006 |
-| `va67e7c700fd6e572` | accept | report | w3c-f-15 | W3C-R-015 | none |
-| `va80130b2557877d0` | reject | report | w3c-f-8 | W3C-R-008 | W3C-R-008 |
-| `vaa9022b28508fbff` | accept | agent-run-metrics | arm-f-steps | ARM-R-015 | none |
-| `vac4901ced8434b96` | accept | report | w3c-f-7 | W3C-R-007 | none |
-| `vac73991b7eab80be` | accept | report | w3c-f-24 | W3C-R-024 | none |
-| `vadc27fccee1d1084` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-007 | LCD-R-007 |
-| `vae5bf9e259ca9fa2` | reject | report | w3c-f-23 | W3C-R-023 | W3C-R-023 |
-| `vaefd4325cf8ba171` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vaf075fdad27ad97c` | reject | report | w3c-f-9 | W3C-R-009 | W3C-R-009 |
-| `vb0049d239061e73f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vb0c5a3492d65d1eb` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vb2f73291e8fe10d1` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vb31d26cffc802d7f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vb9efe6cec61c9489` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vba28e0271213f6ef` | accept | report | w3c-f-23 | W3C-R-023 | none |
-| `vba4433cd2a45fdd4` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vbac3c7923a48045f` | reject | agent-run-metrics | arm-f-usage | ARM-R-022 | ARM-R-022 |
-| `vbb214dabb5d9514e` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vbb34b5903d030863` | accept | report | w3c-f-15 | W3C-R-015 | none |
-| `vbcbbc065f5978092` | reject | report | w3c-f-24 | W3C-R-024 | W3C-R-024 |
-| `vbecc90485b846e5a` | accept | agent-run-metrics | arm-f-run | ARM-R-016 | none |
-| `vc0109df9efce7825` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vc103c9ebc091176a` | accept | report | w3c-f-21 | W3C-R-021 | none |
-| `vc33e992bbb6c0ddd` | accept | report | w3c-f-11 | W3C-R-011 | none |
-| `vc4cc6abd16cb7848` | reject | agent-run-metrics | arm-f-serialization | ARM-R-020 | ARM-R-020 |
-| `vc54053aab3059e9a` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vc593cdd0df015927` | accept | agent-run-metrics | arm-f-run | ARM-R-005 | none |
-| `vc60f8ca141d363b3` | accept | agent-run-metrics | arm-f-run | ARM-R-003 | none |
-| `vc66d903f67842004` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vc78c495fa2865996` | accept | agent-run-metrics | arm-f-usage | ARM-R-014 | none |
-| `vccd7d6407f77183e` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vcf73d5dd4703dd31` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vcfa49a358963e8a4` | reject | report | w3c-f-19 | W3C-R-019 | W3C-R-019 |
-| `vd10e80041b1344d6` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vd182df4e94785dcb` | reject | agent-run-metrics | arm-f-usage | ARM-R-011 | ARM-R-011 |
-| `vd443179d7d37fec0` | accept | report | w3c-f-1 | W3C-R-001 | none |
-| `vd568fb04bbfe75c7` | reject | agent-run-metrics | arm-f-run | ARM-R-002 | ARM-R-002 |
-| `vd6dde6d30a8b5f66` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vd70263ec9f011a2e` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vd9d8d4550595657e` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vda3eac1602712021` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vdd0e8bbaa7a00714` | accept | report | w3c-f-6 | W3C-R-006 | none |
-| `ve066f2cc9ab0f657` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `ve0d3587f68b26b73` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `ve0d62017a7afcbb9` | accept | report | w3c-f-2 | W3C-R-002 | none |
-| `ve25d40b143d66912` | reject | agent-run-metrics | arm-f-usage | ARM-R-009 | ARM-R-009 |
-| `ve7ec53356216c396` | reject | report | w3c-f-17 | W3C-R-017 | W3C-R-017 |
-| `ve81bc854b081493b` | accept | agent-run-metrics | arm-f-serialization | ARM-R-019 | none |
-| `ve955eb9e7db5531a` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vebd93abb8ee3a837` | reject | report | w3c-f-20 | W3C-R-020 | W3C-R-020 |
-| `ved9c03fc4eb64623` | accept | report | w3c-f-3 | W3C-R-003 | none |
-| `vedd446a69ad39c40` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `veea533d0c7f0b4f6` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-009 | none |
-| `vf085de0c74dfcad0` | accept | report | w3c-f-9 | W3C-R-009 | none |
-| `vf13537a247c05d3c` | accept | report | w3c-f-12 | W3C-R-012 | none |
-| `vf3bb8a41a6a2b3bb` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
-| `vf4fa4d406b870a94` | reject | report | w3c-f-16 | W3C-R-016 | W3C-R-016 |
-| `vf53c0cf19e40b8b7` | reject | report | w3c-f-22 | W3C-R-022 | W3C-R-022 |
-| `vf5442792fb3883dc` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-001 | none |
-| `vf5a1a13446f43395` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vf749dad865952b0e` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-001 | LCD-R-001 |
-| `vf7fa99884a005fcb` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vf913f33b40963260` | accept | report | w3c-f-13 | W3C-R-013 | none |
-| `vf94f59c1cd4d3670` | accept | report | w3c-f-disensor | W3C-R-016 | none |
-| `vfb7eae4d1aede3eb` | accept | report | w3c-f-13 | W3C-R-013 | none |
-| `vfe47c408d2abc7fb` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v0090b52048ca1f51` | accept | report | w3c-f-10 | W3C-R-010 | none |
+| `v0120d95db38b892b` | reject | agent-run-metrics | arm-f-usage | ARM-R-010 | ARM-R-010 |
+| `v04934d23180f6d9c` | accept | report | w3c-f-14 | W3C-R-014 | none |
+| `v04b7811e691bd2c9` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v050e5667630b8bf7` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v068436e239f3711a` | accept | agent-run-metrics | arm-f-run | ARM-R-005 | none |
+| `v086f61b528d28efd` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v0e286b53de78162a` | reject | report | w3c-f-8 | W3C-R-008 | W3C-R-008 |
+| `v0f620037c42bbfc3` | accept | report | w3c-f-22 | W3C-R-022 | none |
+| `v0f648c5f3080e1b1` | accept | agent-run-metrics | arm-f-steps | ARM-R-015 | none |
+| `v10aaaebb49b0bcd3` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v1158315f2ce233a8` | reject | report | w3c-f-22 | W3C-R-022 | W3C-R-022 |
+| `v12f1e7e27b3f59c5` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-006 | LCD-R-006 |
+| `v148fc59046a8548a` | accept | report | w3c-f-15 | W3C-R-015 | none |
+| `v183b37dea5ad4159` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v1910c8190bcd1b5c` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-002 | none |
+| `v191fc069115f8706` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-007 | none |
+| `v1a0f984d88bb9fe2` | accept | report | w3c-f-8 | W3C-R-008 | none |
+| `v1a5c0a7b37f5d2c4` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v1bb2e51524055d00` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v1bc07a427d07bb7f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v1c020dd1ed49874c` | reject | report | w3c-f-17 | W3C-R-017 | W3C-R-017 |
+| `v20a798b25fc2ec0b` | reject | report | w3c-f-27 | W3C-R-027 | W3C-R-027 |
+| `v20f99b9d22c842a3` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v21fe5a5de5f50124` | accept | agent-run-metrics | arm-f-serialization | ARM-R-018 | none |
+| `v22f803622ac75918` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v239dc2ee7b28a2bb` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v254933bf314c82fc` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v25ba541b9d311416` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v2652b0b04c946504` | reject | agent-run-metrics | arm-f-serialization | ARM-R-020 | ARM-R-020 |
+| `v265c2e6f0a3d31f6` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v27a01b14321f6ae5` | reject | report | w3c-f-19 | W3C-R-019 | W3C-R-019 |
+| `v28820b464a335617` | reject | report | w3c-f-15 | W3C-R-015 | W3C-R-015 |
+| `v28824a66a84f4b8c` | reject | agent-run-metrics | arm-f-usage | ARM-R-013 | ARM-R-013 |
+| `v2a251ae413920da5` | accept | report | w3c-f-19 | W3C-R-019 | none |
+| `v2a90adc95b2fbdaf` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v2b052236457b678c` | accept | agent-run-metrics | arm-f-usage | ARM-R-009 | none |
+| `v2ddb14c9194e0341` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v320406e03fff4faa` | accept | report | w3c-f-5 | W3C-R-005 | none |
+| `v32c1e0be1a7bf104` | reject | agent-run-metrics | arm-f-run | ARM-R-016 | ARM-R-016 |
+| `v32c6afab9eb5888a` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v36999d5568e9aacf` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v388dee224f53c2c1` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-005 | LCD-R-005 |
+| `v3a14f94887e53e0d` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v3add8861d36c2543` | reject | agent-run-metrics | arm-f-steps | ARM-R-008 | ARM-R-008 |
+| `v3aef8ba9ac745dbf` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v3d5079f23e498451` | accept | agent-run-metrics | arm-f-run | ARM-R-002 | none |
+| `v3fef7c8cc4ed5e4b` | reject | report | w3c-f-25 | W3C-R-025 | W3C-R-025 |
+| `v42d2d180b1c0b5b3` | accept | report | w3c-f-22 | W3C-R-022 | none |
+| `v44f7a4acc7f66fa4` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v472759709d82c585` | accept | report | w3c-f-20 | W3C-R-020 | none |
+| `v48877f27bbd03b55` | reject | report | w3c-f-18 | W3C-R-018 | W3C-R-018 |
+| `v48d22035dc3a5f54` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v494ac13464d685ee` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v4c778d3ee20deb35` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v518aa8d55ab5460b` | accept | report | w3c-f-16 | W3C-R-016 | none |
+| `v5390d3d7133f3963` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v54dea8bab0674755` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v568e8a1311ecb396` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v56b6337b612b1ee3` | accept | report | w3c-f-12 | W3C-R-012 | none |
+| `v56f37afaff2a6ca8` | accept | report | w3c-f-25 | W3C-R-025 | none |
+| `v5a2ff35648828621` | reject | report | w3c-f-9 | W3C-R-009 | W3C-R-009 |
+| `v5a678e8560a4f0f1` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v5c26b11179a2277a` | reject | report | w3c-f-23 | W3C-R-023 | W3C-R-023 |
+| `v668c618f2a50e26e` | accept | agent-run-metrics | arm-f-run | ARM-R-003 | none |
+| `v66fd68ad7d106fac` | reject | report | w3c-f-14 | W3C-R-014 | W3C-R-014 |
+| `v67727ceb5f2f7932` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v67e996a3fa03e959` | reject | report | w3c-f-22 | W3C-R-022 | W3C-R-022 |
+| `v696c5dd5918c854b` | reject | agent-run-metrics | arm-f-run | ARM-R-002 | ARM-R-002 |
+| `v6cd84ff1aea45153` | reject | report | w3c-f-20 | W3C-R-020 | W3C-R-020 |
+| `v6cfd1d72b49d8853` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v70533f1029ed78e6` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-009 | LCD-R-009 |
+| `v7257ad4efb1d0638` | accept | agent-run-metrics | arm-f-serialization | ARM-R-020 | none |
+| `v7351d22d2343dfb5` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v735efb00ce85d044` | accept | report | w3c-f-17 | W3C-R-017 | none |
+| `v737955ac1c0d9c2e` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v76c0022fb2a7f21e` | accept | report | w3c-f-25 | W3C-R-025 | none |
+| `v77f27a301818a512` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v79266aba771310af` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-011 | LCD-R-011 |
+| `v7aca350e00458527` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v7bc7c1460093e973` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-003 | LCD-R-003 |
+| `v7c22f1451e51aeb5` | reject | report | w3c-f-15 | W3C-R-015 | W3C-R-015 |
+| `v7cac3bda7403c268` | reject | report | w3c-f-5 | W3C-R-005 | W3C-R-005 |
+| `v7ead0086cb766b10` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v7ec5cc451c0c1564` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v804ca6858fa22efe` | accept | report | w3c-f-2 | W3C-R-002 | none |
+| `v81c7f6fc68ea35a7` | accept | agent-run-metrics | arm-f-serialization | ARM-R-019 | none |
+| `v8224d0f41c80f492` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v822b02c01fe9ddd2` | accept | report | w3c-f-3 | W3C-R-003 | none |
+| `v827901388ec40c23` | accept | agent-run-metrics | arm-f-totals | ARM-R-012 | none |
+| `v828ec4d8309aa2e3` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v838fe3be3393696c` | accept | agent-run-metrics | arm-f-steps | ARM-R-007 | none |
+| `v84f8c68bc5fc2810` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v85c0428fc7fdabc7` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-001 | none |
+| `v85db98532abea6d9` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-007 | LCD-R-007 |
+| `v86e1560a0d27b432` | accept | report | w3c-f-15 | W3C-R-015 | none |
+| `v88935f0b29397a80` | reject | report | w3c-f-15 | W3C-R-015 | W3C-R-015 |
+| `v8981e0830c69b869` | reject | report | w3c-f-6 | W3C-R-006 | W3C-R-006 |
+| `v8a7442b19984a1ff` | accept | report | w3c-f-7 | W3C-R-007 | none |
+| `v8a977b50ac8c5d36` | reject | report | w3c-f-4 | W3C-R-004 | W3C-R-004 |
+| `v8b06a7e78dc8d039` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v8c15455bb3d933cb` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `v8d4e61737e9ee6a6` | reject | agent-run-metrics | arm-f-serialization | ARM-R-019 | ARM-R-019 |
+| `v96087777a4afe26f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `v9815e1f08a7e0664` | reject | agent-run-metrics | arm-f-run | ARM-R-003 | ARM-R-003 |
+| `v98252c989e84999d` | reject | report | w3c-f-3 | W3C-R-003 | W3C-R-003 |
+| `v9b7c8cf7d1b9f679` | accept | report | w3c-f-26 | W3C-R-026 | none |
+| `v9c68a108ed63da63` | reject | report | w3c-f-21 | W3C-R-021 | W3C-R-021 |
+| `v9cfb2c8197757948` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-005 | none |
+| `v9dc96e6ca225e6e2` | accept | agent-run-metrics | arm-f-run | ARM-R-016 | none |
+| `v9f618dfd3e44b84a` | accept | report | w3c-f-23 | W3C-R-023 | none |
+| `va0620b488f2ff2f5` | accept | report | w3c-f-28 | W3C-R-028 | none |
+| `va18bfa567e0405b7` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `va19ba1b3f9f382bb` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `va1e910d25ebbb2c4` | accept | report | w3c-f-23 | W3C-R-023 | none |
+| `va213bada85cc9abe` | accept | report | w3c-f-13 | W3C-R-013 | none |
+| `va32bdaeb5f8aed8f` | accept | agent-run-metrics | arm-f-steps | ARM-R-006 | none |
+| `va3c277aa6743807a` | reject | report | w3c-f-24 | W3C-R-024 | W3C-R-024 |
+| `va4fc9fc8f711bd58` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `va91d537fa714f2d3` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `va934761de6c65857` | reject | agent-run-metrics | arm-f-run | ARM-R-001 | ARM-R-001 |
+| `vaac3a24b2552738b` | reject | agent-run-metrics | arm-f-serialization | ARM-R-017 | ARM-R-017 |
+| `vaad2cb64c5b0646b` | accept | report | w3c-f-6 | W3C-R-006 | none |
+| `vab06fd8893fe7da9` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vab508347e605c0af` | reject | report | w3c-f-20 | W3C-R-020 | W3C-R-020 |
+| `vac685ed4f2b7b142` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vaca8620fefade22f` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vaeb76896b202e837` | reject | report | w3c-f-13 | W3C-R-013 | W3C-R-013 |
+| `vb11134a37e7c0c2b` | reject | report | w3c-f-1 | W3C-R-001 | W3C-R-001 |
+| `vb195f23e8436fd19` | accept | report | w3c-f-13 | W3C-R-013 | none |
+| `vb1c8d4729c06472c` | accept | agent-run-metrics | arm-f-usage | ARM-R-010 | none |
+| `vb450f39bace98641` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-011 | none |
+| `vb4de5d37845a1546` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vb608f4ddfcc00a20` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-004 | LCD-R-004 |
+| `vb684dfb39487fcb1` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vb6be26b7111909cb` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vb6e8cb7973f1fab5` | accept | agent-run-metrics | arm-f-usage | ARM-R-022 | none |
+| `vb7065104515600ba` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-004 | none |
+| `vb7ec64962345ec63` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vb8c546609d4103b0` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vbb1688d0226174aa` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vbba71aa9e6a41e1c` | accept | agent-run-metrics | arm-f-serialization | ARM-R-017 | none |
+| `vbbeed17aecbe9848` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vbca0a5030104e2f3` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vbdcffc81f99b2078` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vbdf5d0dc993f1310` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vbe0d0e4267dd64af` | accept | report | w3c-f-4 | W3C-R-004 | none |
+| `vbe6937292f4f1614` | reject | report | w3c-f-10 | W3C-R-010 | W3C-R-010 |
+| `vbec908a03edd1250` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vbf88ec51ebd083b6` | accept | agent-run-metrics | arm-f-steps | ARM-R-008 | none |
+| `vc17bb5b854981008` | reject | agent-run-metrics | arm-f-usage | ARM-R-009 | ARM-R-009 |
+| `vc2cab6dea09f0a3b` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vc39c75a8c00ab957` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vc58647a590befbb7` | reject | report | w3c-f-13 | W3C-R-013 | W3C-R-013 |
+| `vc653bb099d9c5839` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vc7c310827b9dbd10` | accept | agent-run-metrics | arm-f-run | ARM-R-001 | none |
+| `vc938b2ab36cae34a` | accept | report | w3c-f-27 | W3C-R-027 | none |
+| `vcbd0eaef95bc9181` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-010 | LCD-R-010 |
+| `vcc4002f4776bac10` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vccc374459c05dd52` | reject | agent-run-metrics | arm-f-steps | ARM-R-006 | ARM-R-006 |
+| `vcd6021208e8e8a6e` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-006 | none |
+| `vcdb9ae63a12852a8` | accept | agent-run-metrics | arm-f-serialization | ARM-R-021 | none |
+| `vcf1cbb85d729dcd1` | reject | report | w3c-f-26 | W3C-R-026 | W3C-R-026 |
+| `vd02cc7abe1dbc2bf` | reject | agent-run-metrics | arm-f-usage | ARM-R-011 | ARM-R-011 |
+| `vd1eb6a3fb13eb97d` | reject | report | w3c-f-12 | W3C-R-012 | W3C-R-012 |
+| `vd27e483fe63e78c0` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vd2ae28ba9140bc89` | reject | report | w3c-f-28 | W3C-R-028 | W3C-R-028 |
+| `vd2e50306dcd6c470` | reject | report | w3c-f-23 | W3C-R-023 | W3C-R-023 |
+| `vd302fdc2d7a97e6e` | reject | agent-run-metrics | arm-f-serialization | ARM-R-018 | ARM-R-018 |
+| `vd3e84d6a85cb6a0f` | accept | report | w3c-f-24 | W3C-R-024 | none |
+| `vd4eb88d206b3abdd` | reject | report | w3c-f-16 | W3C-R-016 | W3C-R-016 |
+| `vd53bcd623743858d` | accept | agent-run-metrics | arm-f-usage | ARM-R-014 | none |
+| `vd64679c8b7f9e736` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vd7d23c0d86701fc6` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vd841f2eea4d0651e` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vd85d62c0213a9749` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vd88fd757419269aa` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-009 | none |
+| `vd8d93fd735111aa5` | accept | report | w3c-f-13 | W3C-R-013 | none |
+| `vdcb0849fc754aaea` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vdcbd067d047bfbd0` | reject | report | w3c-f-7 | W3C-R-007 | W3C-R-007 |
+| `vdec1361509de89d4` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vdf05d359490e7833` | accept | report | w3c-f-18 | W3C-R-018 | none |
+| `ve14d385f9bcbd83b` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `ve2460634487d8a8f` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `ve2b3a699bc06e53d` | reject | llm-context-discovery | lcd-f-consumer | LCD-R-008 | LCD-R-008 |
+| `ve2c7ff41cba0be5d` | reject | agent-run-metrics | arm-f-steps | ARM-R-007 | ARM-R-007 |
+| `ve3fcd2bc70913ea2` | reject | agent-run-metrics | arm-f-run | ARM-R-005 | ARM-R-005 |
+| `ve4744745405812b9` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `ve4b9c82536808f52` | reject | agent-run-metrics | arm-f-totals | ARM-R-012 | ARM-R-012 |
+| `ve53f0521c7e3a30c` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `ve5819dc9edb1f47b` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-003 | none |
+| `ve5d916a50130739e` | accept | report | w3c-f-gaps | W3C-R-001, W3C-R-005 | none |
+| `ve70386fdb6f071d3` | accept | report | w3c-f-1 | W3C-R-001 | none |
+| `ve7520b18160365d2` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `ve784e75da615e795` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `ve9cefed56bbc8359` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `ve9ebdb7db94e0b9d` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vea3ee7919ceb2e10` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vea598711b897286e` | accept | agent-run-metrics | arm-f-usage | ARM-R-011 | none |
+| `vea80ece35200e349` | accept | report | w3c-f-disensor | W3C-R-016 | none |
+| `vecd8b7bb20fed3a3` | accept | report | w3c-f-21 | W3C-R-021 | none |
+| `vecddffbd8678e5ef` | reject | agent-run-metrics | arm-f-run | ARM-R-004 | ARM-R-004 |
+| `vee997c119f09258b` | reject | report | w3c-f-11 | W3C-R-011 | W3C-R-011 |
+| `vef09761654b57a92` | reject | agent-run-metrics | arm-f-usage | ARM-R-022 | ARM-R-022 |
+| `vf0793a8c5fc26e52` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vf1e99cf0310cc1c6` | reject | agent-run-metrics | arm-f-usage | ARM-R-014 | ARM-R-014 |
+| `vf2fde28af69a1348` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vf374114fe7f28e7d` | reject | report | w3c-f-2 | W3C-R-002 | W3C-R-002 |
+| `vf3af943ff1bf7375` | reject | agent-run-metrics | arm-f-serialization | ARM-R-021 | ARM-R-021 |
+| `vf414a4c9065ad7b8` | reject | agent-run-metrics | arm-f-steps | ARM-R-015 | ARM-R-015 |
+| `vf7334aa7dcf00826` | accept | agent-run-metrics | arm-f-run | ARM-R-004 | none |
+| `vf753bb908231e0a1` | accept | llm-context-discovery | lcd-f-consumer | LCD-R-008 | none |
+| `vf86d92beb5a12905` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-002 | LCD-R-002 |
+| `vf9b5623144960dda` | accept | report | w3c-f-9 | W3C-R-009 | none |
+| `vfa24e4f45c2e826e` | accept | report | w3c-f-20 | W3C-R-020 | none |
+| `vfa79ad0a7bd957b9` | accept | report | w3c-f-11 | W3C-R-011 | none |
+| `vfbc5db1c2a012359` | reject | report | w3c-f-15 | W3C-R-015 | W3C-R-015 |
+| `vfbd7379026575f04` | accept | report | w3c-f-gaps | W3C-R-001, W3C-R-002 | none |
+| `vfbf04f56b585e3fa` | reject | report | w3c-f-disensor | W3C-R-016 | W3C-R-016 |
+| `vfeb5d1872929ab35` | accept | llm-context-discovery | lcd-f-publisher | LCD-R-010 | none |
+| `vff5545c0760d7544` | accept | agent-run-metrics | arm-f-usage | ARM-R-013 | none |
+| `vff8f75223d6658ef` | reject | llm-context-discovery | lcd-f-publisher | LCD-R-001 | LCD-R-001 |
