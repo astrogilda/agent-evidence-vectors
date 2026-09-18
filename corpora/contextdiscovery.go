@@ -184,22 +184,8 @@ func lcdRowsConsumer(document map[string]any, selected string, selectedOK bool, 
 			out.add(6)
 		}
 	}
-	rawRetrieved, _ := consumer["retrieved"].([]any)
-	var retrieved []string
-	for _, raw := range rawRetrieved {
-		if s, ok := raw.(string); ok {
-			retrieved = append(retrieved, s)
-		}
-	}
-	indexes := 0
-	for _, uri := range retrieved {
-		if resource, ok := resources[uri].(map[string]any); ok {
-			if role, _ := resource["role"].(string); role == "index" {
-				indexes++
-			}
-		}
-	}
-	if indexes > 1 {
+	retrieved := lcdRetrieved(consumer)
+	if lcdIndexCount(retrieved, resources) > 1 {
 		out.add(7)
 	}
 	resolved, _ := consumer["resolved"].(string)
@@ -216,6 +202,32 @@ func lcdRowsConsumer(document map[string]any, selected string, selectedOK bool, 
 			break
 		}
 	}
+}
+
+// lcdRetrieved: the string members of consumer.retrieved, in order.
+func lcdRetrieved(consumer map[string]any) []string {
+	rawRetrieved, _ := consumer["retrieved"].([]any)
+	var retrieved []string
+	for _, raw := range rawRetrieved {
+		if s, ok := raw.(string); ok {
+			retrieved = append(retrieved, s)
+		}
+	}
+	return retrieved
+}
+
+// lcdIndexCount: how many retrieved resources the document files under the
+// index role.
+func lcdIndexCount(retrieved []string, resources map[string]any) int {
+	indexes := 0
+	for _, uri := range retrieved {
+		if resource, ok := resources[uri].(map[string]any); ok {
+			if role, _ := resource["role"].(string); role == "index" {
+				indexes++
+			}
+		}
+	}
+	return indexes
 }
 
 func lcdRejections(document map[string]any) []string {

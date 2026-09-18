@@ -256,6 +256,30 @@ func armRowsUsage(value any, out armRejects) {
 
 func armRowsSteps(run map[string]any, out armRejects) {
 	steps := armSteps(run)
+	if !armStepsOrdered(steps) {
+		out.add(6)
+	}
+	invocations := map[string]bool{}
+	repeated := false
+	for _, step := range steps {
+		armRowsStepKind(step, out)
+		if id, ok := step["invocation_id"].(string); ok && step["kind"] == "model_invocation" {
+			if invocations[id] {
+				repeated = true
+			}
+			invocations[id] = true
+		}
+		armRowsUsage(step["usage"], out)
+	}
+	if repeated {
+		out.add(15)
+	}
+}
+
+// armStepsOrdered: indexes strictly increase and consecutive starts are both
+// strings and non-decreasing, as the Python rail reads them; a lone step with
+// no start is not out of order with anything.
+func armStepsOrdered(steps []map[string]any) bool {
 	seen := map[int64]bool{}
 	ordered := true
 	var previous int64
@@ -267,43 +291,29 @@ func armRowsSteps(run map[string]any, out armRejects) {
 		if seen[index] || (i > 0 && index < previous) {
 			ordered = false
 		}
-		// Consecutive starts must both be strings and be non-decreasing, as
-		// the Python rail reads them; a lone step with no start is not out of
-		// order with anything.
-		if i > 0 && !(previousOK && startOK && previousStart <= start) {
+		if i > 0 && (!previousOK || !startOK || previousStart > start) {
 			ordered = false
 		}
 		seen[index] = true
 		previous, previousStart, previousOK = index, start, startOK
 	}
-	if !ordered {
-		out.add(6)
-	}
-	invocations := map[string]bool{}
-	repeated := false
-	for _, step := range steps {
-		kind, _ := step["kind"].(string)
-		switch kind {
-		case "model_invocation":
-			if !isObj(step["usage"]) || !isObj(step["model"]) {
-				out.add(7)
-			}
-			if id, ok := step["invocation_id"].(string); ok {
-				if invocations[id] {
-					repeated = true
-				}
-				invocations[id] = true
-			}
-		case "tool_call":
-			_, hasUsage := step["usage"]
-			if !isObj(step["tool"]) || hasUsage {
-				out.add(8)
-			}
+	return ordered
+}
+
+// armRowsStepKind: a model invocation carries usage and a model object; a
+// tool call carries a tool object and no usage.
+func armRowsStepKind(step map[string]any, out armRejects) {
+	kind, _ := step["kind"].(string)
+	switch kind {
+	case "model_invocation":
+		if !isObj(step["usage"]) || !isObj(step["model"]) {
+			out.add(7)
 		}
-		armRowsUsage(step["usage"], out)
-	}
-	if repeated {
-		out.add(15)
+	case "tool_call":
+		_, hasUsage := step["usage"]
+		if !isObj(step["tool"]) || hasUsage {
+			out.add(8)
+		}
 	}
 }
 

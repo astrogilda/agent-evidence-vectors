@@ -166,6 +166,12 @@ func (w3cReport) checkVocabulary(m *w3cManifest, v w3cVector, known map[string]b
 	if !w3cSubjects[v.SubjectType] {
 		out.Findings = append(out.Findings, "declares subject type "+v.SubjectType)
 	}
+	w3cCheckExpectation(v, known, out)
+}
+
+// w3cCheckExpectation: the expected block must restate the member's kind and
+// name rejection rows the manifest carries and the member itself cites.
+func w3cCheckExpectation(v w3cVector, known map[string]bool, out *Member) {
 	if !w3cKinds[v.Expected.Verdict] || v.Expected.Verdict != v.Kind {
 		out.Findings = append(out.Findings, "expects a verdict that is not its kind")
 	}
@@ -283,40 +289,67 @@ func w3cList(values []string) string { return "[" + strings.Join(values, ", ") +
 
 func (w w3cReport) checkCorpus(dir string, m *w3cManifest, known map[string]bool) []string {
 	var findings []string
-	accepted, rejected, cited := map[string]bool{}, map[string]bool{}, map[string]bool{}
-	ids, files := make([]string, 0, len(m.Vectors)), make([]string, 0, len(m.Vectors))
-	measured := map[string]int{"accept": 0, "reject": 0}
+	tally := w3cTally(m)
+	if orphan := orphanTwins(tally.accepted, tally.rejected); len(orphan) > 0 {
+		findings = append(findings, "families that reject and never accept: "+w3cList(orphan))
+	}
+	if idle := declaredMinusUsed(known, tally.cited); len(idle) > 0 {
+		findings = append(findings, "requirements minted and cited by no member: "+w3cList(idle))
+	}
+	if unused := declaredMinusUsed(m.Families, tally.carried); len(unused) > 0 {
+		findings = append(findings, "families declared and carried by no member: "+w3cList(unused))
+	}
+	findings = append(findings, w3cVendoredFindings(dir, m)...)
+	if bad := countsDisagree(m.Counts, tally.measured); bad != "" {
+		findings = append(findings, bad)
+	}
+	digest, err := orderedCorpusDigest(dir, tally.ids, tally.files)
+	if err != nil {
+		findings = append(findings, err.Error())
+	} else if digest != m.CorpusDigest {
+		findings = append(findings, "corpusDigest does not match the vector files on disk")
+	}
+	return findings
+}
+
+// w3cCorpusTally is one pass over the manifest's members: which families each
+// kind carries, which requirements are cited, and the identity and file lists
+// in manifest order for the corpus digest.
+type w3cCorpusTally struct {
+	accepted, rejected, carried, cited map[string]bool
+	measured                           map[string]int
+	ids, files                         []string
+}
+
+func w3cTally(m *w3cManifest) w3cCorpusTally {
+	t := w3cCorpusTally{
+		accepted: map[string]bool{}, rejected: map[string]bool{}, carried: map[string]bool{}, cited: map[string]bool{},
+		measured: map[string]int{"accept": 0, "reject": 0},
+		ids:      make([]string, 0, len(m.Vectors)), files: make([]string, 0, len(m.Vectors)),
+	}
 	for _, v := range m.Vectors {
 		switch v.Kind {
 		case "accept":
-			accepted[v.Family] = true
+			t.accepted[v.Family] = true
 		case "reject":
-			rejected[v.Family] = true
+			t.rejected[v.Family] = true
 		}
-		if _, k := measured[v.Kind]; k {
-			measured[v.Kind]++
+		if _, k := t.measured[v.Kind]; k {
+			t.measured[v.Kind]++
+			t.carried[v.Family] = true
 		}
 		for _, r := range v.Requirements {
-			cited[r] = true
+			t.cited[r] = true
 		}
-		ids, files = append(ids, v.ID), append(files, v.File)
+		t.ids, t.files = append(t.ids, v.ID), append(t.files, v.File)
 	}
-	if orphan := orphanTwins(accepted, rejected); len(orphan) > 0 {
-		findings = append(findings, "families that reject and never accept: "+w3cList(orphan))
-	}
-	if idle := declaredMinusUsed(known, cited); len(idle) > 0 {
-		findings = append(findings, "requirements minted and cited by no member: "+w3cList(idle))
-	}
-	carried := map[string]bool{}
-	for family := range accepted {
-		carried[family] = true
-	}
-	for family := range rejected {
-		carried[family] = true
-	}
-	if unused := declaredMinusUsed(m.Families, carried); len(unused) > 0 {
-		findings = append(findings, "families declared and carried by no member: "+w3cList(unused))
-	}
+	return t
+}
+
+// w3cVendoredFindings: every vendored specification file is present and
+// matches the digest the manifest pins for it.
+func w3cVendoredFindings(dir string, m *w3cManifest) []string {
+	var findings []string
 	for _, key := range sortedKeys(m.SpecVendored) {
 		entry := m.SpecVendored[key]
 		if !existsIn(dir, entry.Path) {
@@ -327,15 +360,6 @@ func (w w3cReport) checkCorpus(dir string, m *w3cManifest, known map[string]bool
 		if err != nil || sha(body) != entry.Sha256 {
 			findings = append(findings, fmt.Sprintf("the vendored file for %s %s does not match its pinned digest", key, entry.Path))
 		}
-	}
-	if bad := countsDisagree(m.Counts, measured); bad != "" {
-		findings = append(findings, bad)
-	}
-	digest, err := orderedCorpusDigest(dir, ids, files)
-	if err != nil {
-		findings = append(findings, err.Error())
-	} else if digest != m.CorpusDigest {
-		findings = append(findings, "corpusDigest does not match the vector files on disk")
 	}
 	return findings
 }
@@ -447,20 +471,7 @@ func w3cShapeErrors(value any) []string {
 	if !ok {
 		out = append(out, "checks is not a list")
 	}
-	ids := map[string]bool{}
-	duplicate := false
-	for i, check := range checks {
-		w3cShapeCheck(check, i, &out)
-		if object, ok := check.(map[string]any); ok {
-			if id, ok := object["check"].(string); ok {
-				if ids[id] {
-					duplicate = true
-				}
-				ids[id] = true
-			}
-		}
-	}
-	if duplicate {
+	if w3cShapeList(checks, "check", w3cShapeCheck, &out) {
 		out = append(out, "two checks carry one identity")
 	}
 	var evidence []any
@@ -469,20 +480,7 @@ func w3cShapeErrors(value any) []string {
 			out = append(out, "evidence is present and is not a list")
 		}
 	}
-	eids := map[string]bool{}
-	duplicate = false
-	for i, item := range evidence {
-		w3cShapeEvidence(item, i, &out)
-		if object, ok := item.(map[string]any); ok {
-			if id, ok := object["id"].(string); ok {
-				if eids[id] {
-					duplicate = true
-				}
-				eids[id] = true
-			}
-		}
-	}
-	if duplicate {
+	if w3cShapeList(evidence, "id", w3cShapeEvidence, &out) {
 		out = append(out, "two evidence objects carry one id")
 	}
 	for _, slot := range []string{"roll-up", "check-set"} {
@@ -491,6 +489,27 @@ func w3cShapeErrors(value any) []string {
 		}
 	}
 	return out
+}
+
+// w3cShapeList runs the per-item shape check over a list and reports whether
+// two items carry one value under the identity key.
+func w3cShapeList(items []any, key string, shape func(any, int, *[]string), out *[]string) bool {
+	ids := map[string]bool{}
+	duplicate := false
+	for i, item := range items {
+		shape(item, i, out)
+		object, ok := item.(map[string]any)
+		if !ok {
+			continue
+		}
+		if id, ok := object[key].(string); ok {
+			if ids[id] {
+				duplicate = true
+			}
+			ids[id] = true
+		}
+	}
+	return duplicate
 }
 
 // ---------------------------------------------------------------------------
@@ -550,13 +569,20 @@ func w3cRowQualifiers(check map[string]any, state string, evidence map[string]ma
 		out.add(19)
 		return
 	}
+	w3cRowOtherVerdict(other, ov, dv, evidence, out)
+	w3cRowDiscrimination(disc, dv, evidence, out)
+}
+
+// w3cRowOtherVerdict: the rows the other-verdict qualifier carries on its
+// own and against the discrimination value beside it.
+func w3cRowOtherVerdict(other map[string]any, ov, dv string, evidence map[string]map[string]any, out w3cRejects) {
 	if ov == "foreclosed" && dv == "demonstrated" {
 		out.add(8)
 	}
 	if dv == "demonstrated" && (ov == "unknown" || ov == "possible-not-demonstrated") {
 		out.add(9)
 	}
-	if ov == "foreclosed" && !(isStr(other["constraint-set"]) && isStr(other["domain"])) {
+	if ov == "foreclosed" && (!isStr(other["constraint-set"]) || !isStr(other["domain"])) {
 		out.add(10)
 	}
 	if ov == "demonstrated" || ov == "foreclosed" {
@@ -564,18 +590,24 @@ func w3cRowQualifiers(check map[string]any, state string, evidence map[string]ma
 			out.add(11)
 		}
 	}
-	if dv == "demonstrated" {
-		ref, isString := disc["ref"].(string)
-		if !isString || evidence[ref] == nil {
-			out.add(11)
-			return
-		}
-		if changed, _ := evidence[ref]["changed"].(string); changed == "checker rule" {
-			out.add(12)
-		}
-		if !w3cDeltaRelated(evidence[ref]) {
-			out.add(24)
-		}
+}
+
+// w3cRowDiscrimination: a demonstrated discrimination must point at evidence
+// that is a delta observation and not a checker-rule change.
+func w3cRowDiscrimination(disc map[string]any, dv string, evidence map[string]map[string]any, out w3cRejects) {
+	if dv != "demonstrated" {
+		return
+	}
+	ref, isString := disc["ref"].(string)
+	if !isString || evidence[ref] == nil {
+		out.add(11)
+		return
+	}
+	if changed, _ := evidence[ref]["changed"].(string); changed == "checker rule" {
+		out.add(12)
+	}
+	if !w3cDeltaRelated(evidence[ref]) {
+		out.add(24)
 	}
 }
 
