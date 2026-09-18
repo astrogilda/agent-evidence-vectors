@@ -1106,6 +1106,50 @@ DELEGATED: tuple[Delegated, ...] = (
 
 
 FROZEN: tuple[Frozen, ...] = (
+    # ---- the remap figure in the corpus changelog.
+    # A changelog entry says what one pass did on the day it ran. This one
+    # records that the completing pass of that revision moved 110 anchors onto
+    # new line numbers, and the value collides with the reject count of
+    # vectors-w3c-report purely by arithmetic coincidence. Recomputing it
+    # against today's corpus would describe a remap nobody performed, which is
+    # the exact substitution this route exists to refuse.
+    Frozen(
+        "vectors/CHANGES.md",
+        "the anchors the completing pass remapped, as performed",
+        "110 `Lnnn` anchors onto the new line numbers",
+        "A count of what one historical pass moved, not a measurement of the "
+        "corpus as it stands. The corpus has grown since; the pass has not "
+        "re-run, and restating its figure against later bytes would attribute "
+        "work to a pass that never saw them.",
+    ),
+    # ---- the disensor comparison in the W3C appendix.
+    # The appendix reports what `origin/derive_pairs.py` answered on 18
+    # September against a THIRD PARTY's corpus, NicolasRocchia/disensor. It is
+    # not a figure about this repository and it is not derivable here: checking
+    # it would mean cloning somebody else's repository from inside a gate that
+    # is hermetic by design. The sentence already dates the measurement and
+    # names the script, which is what the reader needs; what it must not do is
+    # track this corpus. The appendix is generated, so the same sentence is
+    # declared twice -- once where a reader meets it and once in the generator
+    # that emits it -- and each is asserted at one occurrence, so a third copy
+    # appearing anywhere fails here.
+    Frozen(
+        "docs/W3C-V01-CONFORMANCE-APPENDIX.md",
+        "the disensor disagreement figure, as re-derived on 18 September",
+        "0 vectors disagreeing with their declared expectation",
+        "One run of a named script against an external corpus on a stated date. "
+        "It measures NicolasRocchia/disensor and nothing this repository "
+        "publishes, so it can neither be derived here nor be allowed to move "
+        "when this corpus changes.",
+    ),
+    Frozen(
+        "scripts/gen-w3c-appendix.py",
+        "the disensor disagreement figure in the appendix generator",
+        "0 vectors disagreeing with their declared expectation",
+        "The generator source of the appendix sentence above, frozen for the "
+        "same reason and asserted separately so the two cannot drift apart "
+        "without one of them failing.",
+    ),
     # ---- the figures a posted outside run carried, transcribed into RUNS.md.
     # A run figure records what somebody else's build answered on the day it
     # ran, against the corpus as it then stood. It must NOT track this corpus:
@@ -1719,6 +1763,34 @@ MASKS = tuple(
         # their own mask above; this one covers the prose that discusses them.
         r"\blines?\s+\d+\b",
         r"\bdecisions?\s+\d+",  # interpretation-registry decision ids
+        # The w3c-report rule ids. Same family as `aee-c-NN` above, and added
+        # for the reason that family's comment predicts: the digit names a rule
+        # and counts nothing, and it stayed invisible only while no published
+        # quantity equalled it. These ids run `w3c-f-1` to `w3c-f-28`, and the
+        # census reports an integer that equals the CURRENT suiteRevision -- so
+        # the collision arrived the day the counter reached 28 and landed on
+        # `w3c-f-28`, five times across the corpus index and its generator.
+        # Freezing those five would have been wrong in a way worth stating: the
+        # counter keeps moving, `w3c-f-29` collides at the next revision and
+        # `w3c-f-30` at the one after, so the freeze would have to be rewritten
+        # every revision forever while the class stayed open. An id is not a
+        # count and is not entitled to one of the five routes.
+        # Re-derive the family with:
+        #     git grep -ohE '\bw3c-f-[0-9]+\b' | sort -u
+        # The upper-case siblings `W3C-R-001` to `W3C-R-028` are zero-padded by
+        # construction and are already masked by the `\b0\d+\b` rule above.
+        r"\bw3c-f-\d+\b",
+        # A rule or a section, named by its number. Both are POSITIONS in a
+        # document, exactly like the line numbers and decision ids masked above,
+        # and both were reported the moment the revision counter reached a value
+        # one of them holds: a docstring reading "rule 28" and an appendix
+        # sentence reading "sections 3 and 4". The noun has to sit BEFORE the
+        # number, so a genuine quantity written the other way round -- "28
+        # rules", which is how every count in this repository is spelled -- is
+        # still read and still checked. That asymmetry is the whole reason these
+        # are safe, and it is the same one the line-number mask relies on.
+        r"\brules?\s+\d+\b",
+        r"\bsections?\s+\d+(?:\s+and\s+\d+)*\b",
     )
 )
 
