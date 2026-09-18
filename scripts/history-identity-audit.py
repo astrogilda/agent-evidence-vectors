@@ -42,7 +42,7 @@ def _scanner():  # type: ignore[no-untyped-def]
 
 
 def main(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--ref", default="origin/main", help="the ref to audit end to end")
     args = parser.parse_args(argv[1:])
 

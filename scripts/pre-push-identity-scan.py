@@ -285,7 +285,7 @@ def ranges_from_stdin(lines: list[str]) -> list[list[str]]:
 
 
 def main(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--range", action="append", default=[], metavar="OLD..NEW",
                         help="a revision range to scan instead of reading stdin")
     parser.add_argument("--recent", type=int, metavar="N",
