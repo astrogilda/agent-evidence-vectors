@@ -22,7 +22,9 @@ Exit 0 when every case holds; 1 on a summary of the failures.
 from __future__ import annotations
 
 import importlib.util
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -74,6 +76,26 @@ REFUSED = (
 )
 
 
+# The sibling scanner. `forbidden-word-scan.py` reads tracked CONTENT where the
+# hook above reads pushed HISTORY, and the two share one rule file, so they need
+# the same permit or the repository passes one guard and fails the other. It is
+# exercised through a file because that is its only input. Where a repository
+# does not carry it, these cases report as skipped and never as passed.
+CONTENT_SCANNER = HERE / "forbidden-word-scan.py"
+
+
+def content_refuses(line: str) -> bool:
+    """Whether the content scanner refuses a file containing `line`."""
+    with tempfile.TemporaryDirectory() as raw:
+        probe = Path(raw) / "probe.txt"
+        probe.write_text(line + "\n", encoding="utf-8")
+        done = subprocess.run(
+            [sys.executable, str(CONTENT_SCANNER), str(probe)],
+            capture_output=True, text=True, timeout=180, check=False,
+        )
+    return done.returncode != 0
+
+
 def main() -> int:
     failures: list[str] = []
     for what, line in PERMITTED:
@@ -86,9 +108,26 @@ def main() -> int:
             print(f"ok   refused    {what}")
         else:
             failures.append(f"{what}: PASSED the scanner, which widens the permit to the bare name")
+    total = len(PERMITTED) + len(REFUSED)
+    if CONTENT_SCANNER.exists():
+        for what, line in PERMITTED:
+            total += 1
+            if content_refuses(line):
+                failures.append(f"content scanner refused {what}")
+            else:
+                print(f"ok   permitted  {what} (content scanner)")
+        for what, line in REFUSED:
+            if "organisation page" in what or "repository not ours" in what:
+                continue  # a host shape, which only the history scanner rules on
+            total += 1
+            if content_refuses(line):
+                print(f"ok   refused    {what} (content scanner)")
+            else:
+                failures.append(f"content scanner PASSED {what}, widening the permit")
+    else:
+        print("skip content scanner: this repository does not carry one")
     for line in failures:
         print(f"FAIL {line}", file=sys.stderr)
-    total = len(PERMITTED) + len(REFUSED)
     print(f"{total - len(failures)}/{total} cases held")
     return 1 if failures else 0
 

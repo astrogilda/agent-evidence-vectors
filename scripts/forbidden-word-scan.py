@@ -103,6 +103,30 @@ def tracked_files() -> list[Path]:
     return [Path(n) for n in names if n]
 
 
+
+# The organisation that owns this repository is named in its own URLs, and a URL
+# cannot avoid naming its owner. The permit is a PATH permit and not a word
+# permit: the handle passes only where a slash and one of this family's three
+# repository names follow it. Everything else stays refused, including the handle
+# alone. Copied verbatim from scripts/pre-push-identity-scan.py, not imported, for
+# the reason that file gives: these guards must run with no import path to break.
+PERMITTED_PATH = re.compile(
+    bytes.fromhex("70726f626974796169").decode("ascii")
+    + r"/agent-evidence-(?:vectors|vocabulary|admission)\b",
+    re.IGNORECASE,
+)
+
+
+def permit(line: str) -> str:
+    """Blank owner-qualified repository paths, preserving every offset.
+
+    Same-length filler, so a window that starts inside the masked span can no
+    longer hash to a rule, and a second mention on the same line that is not
+    owner-qualified still reaches both passes below.
+    """
+    return PERMITTED_PATH.sub(lambda m: "." * len(m.group(0)), line)
+
+
 def main(argv: list[str]) -> int:
     salt, nocase_lengths, cased_lengths, table = load()
     targets = [Path(a) for a in argv[1:]] or tracked_files()
@@ -115,7 +139,8 @@ def main(argv: list[str]) -> int:
         except (OSError, IsADirectoryError):
             continue  # binary, gone, or a directory: nothing to tokenize
         scanned += 1
-        for number, line in enumerate(text.splitlines(), start=1):
+        for number, raw_line in enumerate(text.splitlines(), start=1):
+            line = permit(raw_line)
             reported: set[str] = set()
             # Two passes: case-insensitive entries are probed against the
             # lowercased line, case-sensitive ones against the line as written.
