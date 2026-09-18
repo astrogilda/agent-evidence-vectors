@@ -5,8 +5,8 @@ Ground truth: the four normative files vendored in `spec-vendored/`, read at
 `9d4a9da` of `GenAI-Security-Project/agent-control-standard`, each pinned by sha256 in
 `MANIFEST.json`.
 
-This corpus is 28 vectors, of which 9 a conformant verifier must
-not fail closed on and 18 it must reject.
+This corpus is 32 vectors, of which 10 a conformant verifier must
+not fail closed on and 21 it must reject.
 
 **No implementation has been run against this corpus.** There is no reference
 adapter in the specification's repository at the pinned commit, and the two
@@ -57,6 +57,9 @@ Self-check: `aee-verify vectors-acs-core/` from the repository root.
 | `ACS-R-014` | framework | `spec-vendored/hooks-9d4a9da.md:172` | `8324ae363f284044` | Frameworks MUST fire `toolCallRequest` for every action that escapes the agent's reasoning context |
 | `ACS-R-015` | deployment | `spec-vendored/trace-events-9d4a9da.md:72` | `fb05a87d8696121a` | Trace events MUST NOT block enforcement |
 | `ACS-R-016` | deployment | `spec-vendored/conformance-9d4a9da.md:75` | `407ddbcabf898311` | A deployment claiming ACS-Audit MUST populate `request_hash` |
+| `ACS-R-017` | guardian | `spec-vendored/specification-9d4a9da.md:71` | `802968dc8adb1d91` | Version mismatch terminates with `UNSUPPORTED_VERSION` |
+| `ACS-R-018` | guardian | `spec-vendored/specification-9d4a9da.md:282` | `e141df498745672d` | When the Guardian determines that the client cannot resolve `ASK`, the Guardian MUST NOT return `ASK` |
+| `ACS-R-019` | guardian | `spec-vendored/specification-9d4a9da.md:57` | `d045577eea0fab7a` | Accept `X.Y.Z` matching major version |
 
 ## Families
 
@@ -70,6 +73,7 @@ Self-check: `aee-verify vectors-acs-core/` from the repository root.
 | `acs-f-6` | an action whose observability references were removed |
 | `acs-f-7` | steps in mandate individually and out of mandate in aggregate |
 | `acs-f-8` | attributed content standing in for an authorization |
+| `acs-f-9` | a handshake or a disposition answered outside the negotiated contract |
 
 ## Deliberately out of scope
 
@@ -94,17 +98,21 @@ now is a vector rewritten when it lands.
 | `v25f01d8fe1e91bf5` | accept | acs-f-8 | ACS-R-006 | allow | none | artifact | PEER |
 | `v3c03d4e4ce213e9c` | accept | acs-f-6 | ACS-R-016 | allow | none | artifact | PEER |
 | `v3e946bcfde26bbe2` | accept | acs-f-2 | ACS-R-002 | allow | none | substrate | SELF |
+| `v412653087b92cb07` | reject | acs-f-9 | ACS-R-017 | deny | `UNSUPPORTED_VERSION` | substrate | PEER |
 | `v448a61c91554a125` | reject | acs-f-7 | ACS-R-013 | deny | `CAPABILITY_NOT_NEGOTIATED` | substrate | SELF |
 | `v661266c5c87cb206` | reject | acs-f-1 | ACS-R-013 | deny | `CAPABILITY_NOT_NEGOTIATED` | substrate | SELF |
 | `v699f3f41215849ca` | accept | acs-f-7 | ACS-R-013 | allow | none | substrate | SELF |
+| `v78927805373a6c06` | accept | acs-f-9 | ACS-R-017 | allow | none | substrate | PEER |
 | `v7b0b32fb369136c1` | reject | acs-f-8 | ACS-R-006 | deny | `CHAIN_MISMATCH` | artifact | PEER |
 | `v82b6d110b4d68e7c` | indeterminate | acs-f-3 | ACS-R-003 | unmeasurable | none | artifact | EXTERNAL |
 | `v8557c978bf12ca55` | reject | acs-f-6 | ACS-R-016 | deny | `CHAIN_MISMATCH` | artifact | PEER |
 | `va00ef569d09bf7d5` | reject | acs-f-6 | ACS-R-015 | deny | none | substrate | SELF |
 | `va0ee5d0830b0490b` | accept | acs-f-5 | ACS-R-005 | allow | none | substrate | SELF |
+| `va200b64093301e14` | reject | acs-f-9 | ACS-R-018 | deny | none | substrate | SELF |
 | `va2fea96983583972` | reject | acs-f-8 | ACS-R-010 | deny | `PROVENANCE_REQUIRED` | substrate | SELF |
 | `va6d6e952d417c5a1` | accept | acs-f-3 | ACS-R-003 | allow | none | substrate | SELF |
 | `va8eebd3334b97257` | reject | acs-f-5 | ACS-R-004 | deny | `SIGNATURE_INVALID` | substrate | SELF |
+| `vae2037ee96435463` | reject | acs-f-9 | ACS-R-019 | deny | none | substrate | PEER |
 | `vb10df32610db1173` | reject | acs-f-3 | ACS-R-003 | deny | `TIMESTAMP_OUT_OF_WINDOW` | substrate | SELF |
 | `vb87b86b4930665ca` | reject | acs-f-1 | ACS-R-001 | deny | `SIGNATURE_INVALID` | substrate | PEER |
 | `vc333473269d1b3a9` | reject | acs-f-8 | ACS-R-007 | deny | none | substrate | SELF |

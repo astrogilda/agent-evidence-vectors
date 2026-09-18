@@ -92,6 +92,7 @@ FAMILIES = {
     "acs-f-6": "an action whose observability references were removed",
     "acs-f-7": "steps in mandate individually and out of mandate in aggregate",
     "acs-f-8": "attributed content standing in for an authorization",
+    "acs-f-9": "a handshake or a disposition answered outside the negotiated contract",
 }
 
 #: One row per requirement. Each carries the verbatim normative sentence, which
@@ -240,6 +241,27 @@ REQUIREMENTS: tuple[dict, ...] = (
         "sentence": (
             "A deployment claiming ACS-Audit MUST populate `request_hash`"
         ),
+    },
+    {
+        "id": "ACS-R-017",
+        "role": "guardian",
+        "file": "specification",
+        "sentence": "Version mismatch terminates with `UNSUPPORTED_VERSION`",
+    },
+    {
+        "id": "ACS-R-018",
+        "role": "guardian",
+        "file": "specification",
+        "sentence": (
+            "When the Guardian determines that the client cannot resolve `ASK`, "
+            "the Guardian MUST NOT return `ASK`"
+        ),
+    },
+    {
+        "id": "ACS-R-019",
+        "role": "guardian",
+        "file": "specification",
+        "sentence": "Accept `X.Y.Z` matching major version",
     },
 )
 
@@ -1031,6 +1053,120 @@ def build() -> list[dict]:
         witness_scope="PEER",
         coverage="effective",
         cites="the same response with the chain head inside the signed set.",
+    )
+
+    # acs-f-9 ---------------------------------------------------------------
+    # Found by hand against the reference Guardian in the OWASP #team-genai-asi-acs-spec
+    # channel (2026-09-15 and 2026-09-16) and confirmed there as reference-implementation
+    # bugs on 2026-09-17. Each is written here as a member so the next Guardian is measured
+    # rather than read.
+    def client_hello(*versions: str) -> dict:
+        return envelope(
+            "handshake/hello",
+            params={
+                "acs_versions_supported": list(versions),
+                "methods_implemented": ["steps/toolCallRequest", "steps/toolCallResult"],
+                "transports_supported": ["http"],
+                "provenance_producer": "none",
+            },
+        )
+
+    add(
+        kind="reject",
+        family="acs-f-9",
+        requirements=["ACS-R-017"],
+        payload={
+            "request": client_hello("1.0.0"),
+            "guardian_versions_supported": ["0.1.0"],
+        },
+        verdict="deny",
+        code="UNSUPPORTED_VERSION",
+        evidence_basis="substrate",
+        witness_scope="PEER",
+        coverage="effective",
+        cites=(
+            "a ClientHello whose only advertised version shares no major with the "
+            "Guardian's. The handshake must terminate with the registry code, not "
+            "answer with a ServerHello naming a version the client never offered. "
+            "A Guardian that returns constants without reading the ClientHello "
+            "passes every hello and fails this one."
+        ),
+    )
+    add(
+        kind="accept",
+        family="acs-f-9",
+        requirements=["ACS-R-017"],
+        payload={
+            "request": client_hello("0.1.0"),
+            "guardian_versions_supported": ["0.1.0"],
+        },
+        verdict="allow",
+        code=None,
+        evidence_basis="substrate",
+        witness_scope="PEER",
+        coverage="effective",
+        cites=(
+            "the same ClientHello advertising the version the Guardian implements, "
+            "so the handshake completes. The family's refusal has a twin that "
+            "must succeed, or a Guardian refusing every hello scores full marks."
+        ),
+    )
+    add(
+        kind="reject",
+        family="acs-f-9",
+        requirements=["ACS-R-019"],
+        payload={
+            "steps": [
+                {"request": client_hello("0.1.0")},
+                {
+                    "request": envelope(
+                        "hooks/toolCallRequest",
+                        acs="1.0",
+                        request_id="22222222-2222-4222-8222-222222222222",
+                        params={"tool": {"name": "records.lookup", "arguments": {"id": "c-1"}}},
+                    )
+                },
+            ],
+            "guardian_versions_supported": ["0.1.0"],
+        },
+        verdict="deny",
+        code=None,
+        evidence_basis="substrate",
+        witness_scope="PEER",
+        coverage="effective",
+        cites=(
+            "a session negotiated at 0.1.0 whose next step carries a 1.x version. "
+            "The forward-compatibility rule accepts a version only on a matching "
+            "major, so the step is refused; the registry fixes no code for a "
+            "mismatch after the handshake, which is why none is asserted here. "
+            "The same defect as the handshake member, seen from the other side."
+        ),
+    )
+    add(
+        kind="reject",
+        family="acs-f-9",
+        requirements=["ACS-R-018"],
+        payload={
+            "request": tool_call(),
+            "approver_capability": "none",
+            "policy_verdict_before_mapping": {
+                "decision": "escalate",
+                "reason": "approval_required",
+            },
+        },
+        verdict="deny",
+        code=None,
+        evidence_basis="substrate",
+        witness_scope="SELF",
+        coverage="effective",
+        cites=(
+            "a request the policy engine escalates, sent by a client with no way "
+            "to resolve an ASK. The Guardian must substitute DEFER or DENY; an "
+            "`ask` carrying no `ask_details` is neither a decision the client can "
+            "act on nor the substitution the rule requires. A bridge that maps "
+            "escalate to ask by name and has no source for an approver or a "
+            "question emits exactly that."
+        ),
     )
 
     return members

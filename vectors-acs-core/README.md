@@ -17,6 +17,14 @@ they ran it against. The counts here describe inputs with declared
 expectations. They are not a score, and nothing in this directory is evidence
 that any implementation does anything.
 
+One run has since happened, on 2026-09-18, against the reference Guardian in
+`reference-implementations/agt` of the specification's repository at commit
+`dc26547` on `integration`, which postdates the pinned commit. It is not
+recorded in `observedRuns` because the row shape is not yet defined here, and
+a run against a Guardian validating a later schema than the one this corpus
+pins is a result about that pairing, not about the pinned specification. The
+four members of family `acs-f-9` were written from that run.
+
 ## Identifiers are minted here, and bound to a sentence
 
 The specification carries no requirement identifiers. Its normative sentences
