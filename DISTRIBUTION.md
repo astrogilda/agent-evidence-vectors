@@ -37,7 +37,7 @@ uvx agent-evidence-vectors==0.11.1 --verifier "aee-verify --json"
 From a checkout, which is the same harness read from the tree:
 
 ```bash
-git clone https://github.com/astrogilda/agent-evidence-vectors
+git clone https://github.com/probityai/agent-evidence-vectors
 cd agent-evidence-vectors && git checkout v0.11.1
 python3 packaging/run_vectors.py --verifier "aee-verify --json"
 ```
@@ -52,7 +52,7 @@ read from `AEE_SUBSTRATE_KEYS`. Any verifier that speaks it can be driven the
 same way, and that is the point of the contract existing at all.
 
 A reference consumer is public at
-[`astrogilda/agent-evidence-admission`](https://github.com/astrogilda/agent-evidence-admission):
+[`probityai/agent-evidence-admission`](https://github.com/probityai/agent-evidence-admission):
 admission rails on four policy engines, each declaring per obligation what it
 enforces, what it only approximates and what it cannot reach, with its CI
 holding them to a tagged release of this corpus, pinned by tag and by the
@@ -72,7 +72,7 @@ settle is which bytes that claim covers. These commands settle it from a cold
 start, without a maintainer's word and without this page's word.
 
 ```bash
-git clone https://github.com/astrogilda/agent-evidence-vectors && cd agent-evidence-vectors
+git clone https://github.com/probityai/agent-evidence-vectors && cd agent-evidence-vectors
 git checkout v0.11.1
 
 # 1. the digest list is what the vector files on disk hash to, recomputed
@@ -180,7 +180,7 @@ valuable there than one that agreed.
 
 | Surface | Identifier | State |
 | --- | --- | --- |
-| Source of record | `github.com/astrogilda/agent-evidence-vectors` | live |
+| Source of record | `github.com/probityai/agent-evidence-vectors` | live |
 | Go module | `github.com/astrogilda/agent-evidence-vectors`, verifier at `cmd/aee-verify` | live |
 | Releases | git tags, with a GitHub Release object per tag; `v0.11.1` is current | live |
 | Signed corpus digests | `release/CORPUS-DIGESTS.txt`, one line per corpus, with a detached signature, an RFC 3161 token and an OpenTimestamps proof beside it | live, derived |

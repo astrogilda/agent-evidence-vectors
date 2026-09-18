@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/astrogilda/agent-evidence-vectors/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/astrogilda/agent-evidence-vectors/ci.yml?branch=main&label=build" alt="build status"></a>
+  <a href="https://github.com/probityai/agent-evidence-vectors/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/probityai/agent-evidence-vectors/ci.yml?branch=main&label=build" alt="build status"></a>
   <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="license Apache-2.0">
   <a href="https://pypi.org/project/agent-evidence-vectors/"><img src="https://img.shields.io/pypi/v/agent-evidence-vectors?label=PyPI&color=3775a9" alt="agent-evidence-vectors on PyPI"></a>
   <a href="https://doi.org/10.5281/zenodo.22758687"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22758687.svg" alt="DOI 10.5281/zenodo.22758687"></a>
@@ -29,7 +29,7 @@
 Add one step to the workflow that builds your verifier:
 
 ```yaml
-- uses: astrogilda/agent-evidence-vectors@v0.11.1
+- uses: probityai/agent-evidence-vectors@v0.11.1
   with:
     verifier: ./path/to/your-verifier --json
 ```
@@ -216,7 +216,7 @@ has to work out which bytes that claim covers: without taking a maintainer's wor
 for it, and without taking this page's word. Four commands settle it.
 
 ```bash
-git clone https://github.com/astrogilda/agent-evidence-vectors && cd agent-evidence-vectors
+git clone https://github.com/probityai/agent-evidence-vectors && cd agent-evidence-vectors
 git checkout v0.11.1
 
 # 1. the digest list is what the vector files on disk hash to, recomputed

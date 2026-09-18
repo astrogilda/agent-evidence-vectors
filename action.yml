@@ -86,7 +86,7 @@ runs:
           python -m pip install --quiet "$ACTION_PATH"
         else
           python -m pip install --quiet \
-            "agent-evidence-vectors @ git+https://github.com/astrogilda/agent-evidence-vectors@${TAG}"
+            "agent-evidence-vectors @ git+https://github.com/probityai/agent-evidence-vectors@${TAG}"
         fi
         agent-evidence-vectors --list-corpora
         echo "::endgroup::"

@@ -21,7 +21,7 @@
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/astrogilda/agent-evidence-vectors",
+      "identifier": "https://github.com/probityai/agent-evidence-vectors",
       "relation": "isSupplementTo",
       "scheme": "url"
     }

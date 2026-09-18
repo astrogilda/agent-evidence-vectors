@@ -28,9 +28,9 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/astrogilda/agent-evidence-vectors"
-Repository = "https://github.com/astrogilda/agent-evidence-vectors"
-Changelog = "https://github.com/astrogilda/agent-evidence-vectors/releases"
+Homepage = "https://github.com/probityai/agent-evidence-vectors"
+Repository = "https://github.com/probityai/agent-evidence-vectors"
+Changelog = "https://github.com/probityai/agent-evidence-vectors/releases"
 
 # The one console entry point. It is named after the distribution so that
 # `uvx agent-evidence-vectors` resolves without a --from, which is the whole
