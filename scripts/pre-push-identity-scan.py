@@ -197,31 +197,37 @@ def _holds(sha: str) -> bool:
     ).returncode == 0
 
 
-def scan_range(rev_args: list[str], sidecar: Sidecar) -> tuple[int, list[str]]:
-    """Scan every commit `git log <rev_args>` reaches. Returns (commits scanned, hits)."""
-    commits = [c for c in _git("rev-list", *rev_args).split() if c]
+def _message_hits(sha: str, message: str, sidecar: Sidecar) -> list[str]:
+    """Every rule hit in one commit message, one entry per matching line and rule."""
     hits: list[str] = []
-    if not commits:
-        return 0, hits
+    for number, line in enumerate(message.splitlines(), start=1):
+        where = f"{sha[:12]} (commit message):{number}"
+        for label, rule in RULES[:1] + RULES[2:]:
+            if rule.search(line):
+                hits.append(f"{where}: {label} (text withheld)")
+        if re.search(r"(/home/[a-z]+/|/Users/[A-Za-z]+/)", line):
+            hits.append(f"{where}: absolute home directory (text withheld)")
+        for label in sidecar.labels(line):
+            hits.append(f"{where}: {label} (word withheld)")
+    return hits
 
-    # Commit messages first: three of this repository's own messages once
-    # carried a product name, and a message is not a diff line.
+
+def _scan_messages(rev_args: list[str], sidecar: Sidecar) -> list[str]:
+    """Commit messages first: three of this repository's own messages once
+    carried a product name, and a message is not a diff line."""
+    hits: list[str] = []
     for record in _git("log", "--format=%H%x00%B%x01", *rev_args).split("\x01"):
         if "\x00" not in record:
             continue
         sha, _, message = record.partition("\x00")
-        sha = sha.strip()
-        for number, line in enumerate(message.splitlines(), start=1):
-            for label, rule in RULES[:1] + RULES[2:]:
-                if rule.search(line):
-                    hits.append(f"{sha[:12]} (commit message):{number}: {label} (text withheld)")
-            if re.search(r"(/home/[a-z]+/|/Users/[A-Za-z]+/)", line):
-                hits.append(f"{sha[:12]} (commit message):{number}: absolute home directory (text withheld)")
-            for label in sidecar.labels(line):
-                hits.append(f"{sha[:12]} (commit message):{number}: {label} (word withheld)")
+        hits.extend(_message_hits(sha.strip(), message, sidecar))
+    return hits
 
-    # Then every ADDED line of every commit. `-U0` keeps context lines out of
-    # the diff so a hit is always on a line the commit itself introduced.
+
+def _scan_added_lines(rev_args: list[str], sidecar: Sidecar) -> list[str]:
+    """Every ADDED line of every commit. `-U0` keeps context lines out of the
+    diff so a hit is always on a line the commit itself introduced."""
+    hits: list[str] = []
     sha = ""
     path = ""
     number = 0
@@ -249,7 +255,15 @@ def scan_range(rev_args: list[str], sidecar: Sidecar) -> tuple[int, list[str]]:
                 hits.append(f"{where}: {label} (text withheld)")
         for label in sidecar.labels(raw[1:]):
             hits.append(f"{where}: {label} (word withheld)")
-    return len(commits), hits
+    return hits
+
+
+def scan_range(rev_args: list[str], sidecar: Sidecar) -> tuple[int, list[str]]:
+    """Scan every commit `git log <rev_args>` reaches. Returns (commits scanned, hits)."""
+    commits = [c for c in _git("rev-list", *rev_args).split() if c]
+    if not commits:
+        return 0, []
+    return len(commits), _scan_messages(rev_args, sidecar) + _scan_added_lines(rev_args, sidecar)
 
 
 def ranges_from_stdin(lines: list[str]) -> list[list[str]]:
