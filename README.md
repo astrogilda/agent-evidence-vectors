@@ -130,6 +130,23 @@ something required was never captured. The tool that produces and checks those
 records is `tools/artifact-binding/`, and `demo/four-arms.sh` runs the four
 demonstrations end to end from a fresh clone.
 
+`vectors-w3c-report/` is the conformance set for v0.1 of the per-check
+reporting format of the W3C public-agent-conformance community group: every
+rejection row of the frozen table backed by a report that must be rejected
+under it and one that must pass, the two late additions of 18 September, the
+rules the thread settled beside the table, the 42 delta-related pairs a
+participant counted in his own corpus re-cut against v0.1, and members of two
+further subject types, the Run object of `draft-arsentev-agent-run-metrics-00`
+and the discovery snapshot of `draft-arsentev-llm-context-discovery-00`. The
+rows are the group's; the texts are vendored and pinned by digest, and each
+identifier is bound to a sentence. Two readers judge it, `corpora/w3creport.go`
+and `packaging/agent_evidence_vectors/w3creport.py`, held byte-identical by
+`scripts/w3c-rails-parity-test.py`; the same Python module is the reference
+emitter that writes a v0.1 report from this harness's own report
+(`agent-evidence-vectors --emit-w3c-report`), and
+[`docs/W3C-V01-CONFORMANCE-APPENDIX.md`](docs/W3C-V01-CONFORMANCE-APPENDIX.md)
+is the appendix rendered from the manifest for the editor to reference.
+
 Neither predicate version above is typed by hand. Both are derived from the
 `predicateType` each corpus manifest declares, and `scripts/count-gate.py`
 refuses a version written here that its manifest does not support — the same

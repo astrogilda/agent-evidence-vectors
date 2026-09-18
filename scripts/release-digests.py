@@ -153,6 +153,7 @@ RECOMPUTERS: dict[str, Callable[[Path, dict[str, Any]], str]] = {
     "vectors-artifact-binding": _recompute_from_generator,
     "vectors-mcp-record-contract": _recompute_from_generator,
     "vectors-scitt-cose": _recompute_from_generator,
+    "vectors-w3c-report": _recompute_from_generator,
 }
 
 

@@ -86,6 +86,14 @@ GENERATORS = (
     # every identifier and the corpus digest are functions of bytes no person
     # can write into a table by hand.
     "vectors-aci/gen_vectors.py",
+    # The W3C per-check report corpus. Every member is a whole report whose
+    # check-set digest and identifier are functions of its bytes, and the
+    # generator refuses a member the validator does not answer as claimed.
+    "vectors-w3c-report/gen_vectors.py",
+    # The conformance appendix for the W3C report format is rendered from that
+    # corpus's manifest: every identifier in it is a function of the vectors'
+    # bytes, so it runs after the corpus generator and is owned like a vector.
+    "scripts/gen-w3c-appendix.py",
 )
 
 # Every file a generator above is responsible for, as a directory and a glob.
@@ -139,6 +147,11 @@ OWNED = (
     ("vectors-scitt-cose", "INDEX.md"),
     ("vectors-aci/deployment-members", "v*.json"),
     ("vectors-aci", "MANIFEST.json"),
+    ("vectors-w3c-report/vectors", "v*.json"),
+    ("vectors-w3c-report", "MANIFEST.json"),
+    ("vectors-w3c-report", "INDEX.md"),
+    ("vectors-w3c-report", "MUTATION-SWEEP.md"),
+    ("docs", "W3C-V01-CONFORMANCE-APPENDIX.md"),
 )
 
 # Deliberately NOT owned above, for the two reasons the header already gives.

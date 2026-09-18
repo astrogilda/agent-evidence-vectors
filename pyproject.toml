@@ -70,6 +70,7 @@ only-include = [
     "vectors-artifact-binding",
     "vectors-mcp-record-contract",
     "vectors-scitt-cose",
+    "vectors-w3c-report",
 ]
 exclude = ["**/__pycache__", "**/.build", "**/*.pyc"]
 
@@ -83,6 +84,7 @@ exclude = ["**/__pycache__", "**/.build", "**/*.pyc"]
 "vectors-artifact-binding" = "agent_evidence_vectors/corpora/vectors-artifact-binding"
 "vectors-mcp-record-contract" = "agent_evidence_vectors/corpora/vectors-mcp-record-contract"
 "vectors-scitt-cose" = "agent_evidence_vectors/corpora/vectors-scitt-cose"
+"vectors-w3c-report" = "agent_evidence_vectors/corpora/vectors-w3c-report"
 
 # `sources` rewrites directory prefixes and leaves a single file where it is,
 # so the rail module is placed by name.
@@ -101,6 +103,7 @@ only-include = [
     "vectors-artifact-binding",
     "vectors-mcp-record-contract",
     "vectors-scitt-cose",
+    "vectors-w3c-report",
     "README.md",
     "LICENSE",
     "CITATION.cff",
@@ -160,7 +163,8 @@ files = ["packaging", "vectors", "tools"]
 include = ["docs/proposals", "packaging", "scripts", "tools", "vectors",
            "vectors-aci", "vectors-acs-core", "vectors-ai-agent-action",
            "vectors-anchor-stream", "vectors-artifact-binding",
-           "vectors-mcp-record-contract", "vectors-scitt-cose"]
+           "vectors-mcp-record-contract", "vectors-scitt-cose",
+           "vectors-w3c-report"]
 
 # The reference rail is imported by the gates that drive it, and it lives in
 # packaging/ rather than on the default path, so the checker needs the same
