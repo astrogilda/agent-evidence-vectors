@@ -145,6 +145,10 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 HARNESS = ROOT / "packaging" / "run_vectors.py"
+# The mutated rails below are loaded from a temporary directory, and the rail
+# imports its report module from the package beside the original; that package
+# has to be importable from wherever the copy runs.
+sys.path.insert(0, str(ROOT / "packaging"))
 # One flat directory: a path spelling the verdict only exists while the layout
 # spells it, and this corpus deliberately stopped doing that.
 BAD724 = ROOT / "vectors" / "statements" / "v3300d78454ab852f.json"
@@ -303,7 +307,12 @@ def sha(data: bytes) -> str:
 
 
 def run(argv: list[str]) -> tuple[int, str]:
-    proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, check=False)
+    # A mutated rail runs from a temporary directory and still has to import
+    # the report package that sits beside the original.
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join(
+        p for p in (str(ROOT / "packaging"), env.get("PYTHONPATH", "")) if p)
+    proc = subprocess.run(argv, cwd=ROOT, capture_output=True, text=True, check=False, env=env)
     return proc.returncode, proc.stdout + proc.stderr
 
 

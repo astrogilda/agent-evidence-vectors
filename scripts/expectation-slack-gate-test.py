@@ -66,6 +66,11 @@ def _staged_copy(tmp: Path) -> Path:
     shutil.copy2(REPO_ROOT / GATE_REL, root / GATE_REL)
     shutil.copy2(REPO_ROOT / "packaging" / "run_vectors.py",
                  root / "packaging" / "run_vectors.py")
+    # The rail imports its report module from the package beside it, so a copy
+    # of the file alone is a rail that cannot start.
+    shutil.copytree(REPO_ROOT / "packaging" / "agent_evidence_vectors",
+                    root / "packaging" / "agent_evidence_vectors",
+                    ignore=shutil.ignore_patterns("__pycache__"))
     shutil.copy2(REPO_ROOT / MANIFEST_REL, root / MANIFEST_REL)
     for sub in ("statements",):
         src = REPO_ROOT / "vectors" / sub
