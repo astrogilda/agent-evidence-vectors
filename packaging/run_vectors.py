@@ -109,6 +109,12 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any, NamedTuple, TypeGuard
 
+# The v0.1 per-check report: its validator, the judge for its corpus, and the
+# emitter that crosswalks this harness's report into it. A sibling module of
+# this file in the wheel and beside it under packaging/ in a checkout, so the
+# import resolves the same way in both layouts.
+from agent_evidence_vectors import w3creport
+
 AEE_PREDICATE_TYPE = "https://in-toto.io/attestation/adversarial-execution-evidence/v0.7"
 STATEMENT_TYPE = "https://in-toto.io/Statement/v1"
 SAFE_INT_LIMIT = 2**53
@@ -3123,6 +3129,12 @@ def evaluate_vector_detailed(
     parity: list[str] = []
     gates = {g: "-" for g in GATE_NAMES}
     expected = (entry or {}).get("expected") or {}
+    if declared_exclusion(expected) is not None:
+        # A member whose property the specification cannot express is NOT
+        # EXERCISED: no gate is scored, and the row says why. Before this the
+        # field was written into manifests and read by nothing, so an
+        # unmeasurable member was replayed as though an answer were required.
+        return Evaluation(True, gates, reasons, parity)
     exp_verdict = expected.get("verdict") or ("valid" if kind == "accept" else "invalid")
     obs_verdict = observed["verdict"]
     obs_codes = set(observed.get("codes") or [])
@@ -3199,6 +3211,17 @@ def _eval_establishment(
             "a different question from the one this corpus asks."
         )
     return established
+
+
+def declared_exclusion(expected: dict[str, Any]) -> str | None:
+    """The reason a manifest entry declares it cannot be scored, or None.
+
+    ``expected.unmeasurableBecause`` is the declared exclusion of the v0.1
+    per-check record: such a member is reported not-exercised with this text
+    as its cause, and the pair table rejects any other state for it.
+    """
+    reason = expected.get("unmeasurableBecause")
+    return reason if isinstance(reason, str) and reason else None
 
 
 def readings_of(entry: dict[str, Any] | None) -> dict[str, str]:
@@ -3555,6 +3578,12 @@ def run_suite(args: argparse.Namespace) -> int:
         return 2
 
     manifest = load_manifest(suite_dir)
+    if manifest is not None and manifest.get("suite") == w3creport.SUITE:
+        # The W3C per-check report corpus is judged by its own validator, in
+        # the same words the Go reader prints, so the two rails can be diffed.
+        judged = w3creport.judge(suite_dir)
+        sys.stdout.write(w3creport.render(judged, w3creport.SUITE))
+        return 0 if judged.ok() else 1
     idx = manifest_index(manifest)
     # The kinds to walk come from the MANIFEST when there is one, so a kind the
     # corpus grows is replayed rather than skipped by a literal that predates
@@ -3900,6 +3929,10 @@ def _run_process_vector(
             "errors": observed.get("errors") or [],
         },
         "expected": (entry or {}).get("expected"),
+        # A declared exclusion, when the manifest entry carries one: the row
+        # was not scored, and the v0.1 emitter reports it not-exercised with
+        # this as its cause.
+        "declaredExclusion": declared_exclusion((entry or {}).get("expected") or {}),
         "inManifest": entry is not None,
         "reasons": [*ev.reasons, *ev.parity],
         "conformanceReasons": ev.reasons,
@@ -4173,6 +4206,10 @@ def _run_write_report(
                 1 for r in rows_out if r.get("reasonParity") == "FAIL"
             ),
             "suiteRefusals": suite_refusals,
+            # Rows a declared exclusion kept out of the score. Counted so a
+            # total that reads "all pass" says how many of its members were
+            # never asked.
+            "notExercised": sum(1 for r in rows_out if r.get("declaredExclusion")),
         },
         "comparisonSurface": {
             "normative": ["verdict", "result", "tierWithPinnedKey", "tierWithoutKey"],
@@ -4711,6 +4748,13 @@ def main() -> int:
         action="store_true",
         help="run the built-in reference-rail self-test and exit",
     )
+    parser.add_argument(
+        "--emit-w3c-report",
+        default=None,
+        metavar="PATH",
+        help="after the replay, also write the v0.1 per-check report of the W3C "
+        "public-agent-conformance group, crosswalked from conformance-report.json",
+    )
     args = parser.parse_args()
     if args.list_corpora:
         for name in shipped_corpora():
@@ -4725,7 +4769,23 @@ def main() -> int:
         # report written there is one nobody finds. The working directory is
         # where a relying party's CI looks for it.
         args.report = "conformance-report.json"
-    return run_suite(args)
+    status = run_suite(args)
+    if args.emit_w3c_report is not None:
+        _emit_w3c(args)
+    return status
+
+
+def _emit_w3c(args: argparse.Namespace) -> None:
+    """Write the v0.1 report beside the harness report, from the harness report."""
+    source = args.report or os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "conformance-report.json"
+    )
+    with open(source, encoding="utf-8") as handle:
+        harness = json.load(handle)
+    with open(args.emit_w3c_report, "w", encoding="utf-8") as handle:
+        json.dump(w3creport.emit(harness), handle, indent=2, sort_keys=True)
+        handle.write("\n")
+    print(f"v0.1 per-check report written to {args.emit_w3c_report}")
 
 
 if __name__ == "__main__":
