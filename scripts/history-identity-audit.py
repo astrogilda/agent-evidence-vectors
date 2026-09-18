@@ -27,11 +27,12 @@ import importlib.util
 import subprocess
 import sys
 from pathlib import Path
+from types import ModuleType
 
 SCANNER = Path(__file__).resolve().with_name("pre-push-identity-scan.py")
 
 
-def _scanner():  # type: ignore[no-untyped-def]
+def _scanner() -> ModuleType:
     spec = importlib.util.spec_from_file_location("pre_push_identity_scan", SCANNER)
     if spec is None or spec.loader is None:
         print(f"history-identity-audit: cannot load {SCANNER}", file=sys.stderr)
