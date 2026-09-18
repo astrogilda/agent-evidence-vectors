@@ -1,0 +1,70 @@
+name: identity-scan
+
+# The guards beside this one read the TREE at one revision. A string that one
+# commit adds and a later commit removes is invisible to all of them, which is
+# how four commits carrying a home directory, an internal dossier name and a
+# product name reached this repository's public history in 2026-09 with a clean
+# tip. This job scans every commit the push or pull request carries, added
+# lines and messages both, with the same rule sidecar the tree scan reads.
+#
+# The local pre-push hook runs the same script over the same range. This job
+# exists because a hook can be bypassed and core.hooksPath is per machine.
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  push-range:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # The whole history: the range below reaches back past the pushed tip,
+      # and a shallow clone would turn "could not compute the range" into a
+      # pass. The scanner exits 2 rather than 0 when that happens, but a
+      # complete clone is the cheaper way to never ask.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: every commit in the push range is free of private paths, dossier names and product names
+        env:
+          PUSH_BEFORE: ${{ github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -uo pipefail
+          # A pull request is scanned from its base; a push from the tip the
+          # remote held before it (github.event.before). A first push or a
+          # branch creation reports the all-zero sha, and a run outside
+          # Actions has neither: both fall back to the last 50 commits, which
+          # is a bound on the range, never a pass.
+          range=""
+          if [ -n "${PR_BASE:-}" ] && git cat-file -e "${PR_BASE}^{commit}" 2>/dev/null; then
+            range="${PR_BASE}..HEAD"
+          else
+            case "${PUSH_BEFORE:-}" in
+              *[!0]*)
+                if git cat-file -e "${PUSH_BEFORE}^{commit}" 2>/dev/null; then
+                  range="${PUSH_BEFORE}..HEAD"
+                fi
+                ;;
+            esac
+          fi
+          if [ -n "$range" ]; then
+            echo "scanning $range"
+            python3 scripts/pre-push-identity-scan.py --range "$range"
+          else
+            echo "no push range available; scanning the last 50 commits of HEAD"
+            python3 scripts/pre-push-identity-scan.py --recent 50
+          fi
+          status=$?
+          if [ "$status" -eq 1 ]; then
+            echo "::error::A commit in this range carries a private path, a dossier name or a product name. The tip may be clean; the history is not. Rewrite the commits."
+            exit 1
+          elif [ "$status" -ne 0 ]; then
+            echo "::error::The history scan could not run (exit $status); nothing was verified."
+            exit 1
+          fi

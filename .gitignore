@@ -40,3 +40,8 @@ __pycache__/
 # and an absent one look identical from inside.
 .build/
 .crosswalk-upstream/
+
+# Humanizer ledger sidecars: a run record that carries whatever the lane typed
+# into its notes, absolute paths and dossier names included. Never publishable.
+*.ledger.json
+*.humanizer-ledger.json

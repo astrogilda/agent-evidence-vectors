@@ -110,6 +110,44 @@ fi
 #
 # Every line is read, not just the first: one push can carry several refs. A
 # deletion carries the all-zero local SHA and names no revision to gate.
+# Read stdin ONCE and keep it: the range scan below and the per-revision gate
+# both need every line, and stdin can only be consumed one time.
+push_lines="$(cat)"
+
+# ---------------------------------------------------------------------------
+# FIRST GATE: the history of the push, not its tip.
+# ---------------------------------------------------------------------------
+# Everything below this block materialises the pushed REVISION and gates that
+# tree. A string one commit adds and a later commit removes is invisible to a
+# tree scan, and four commits carrying a home directory, an internal dossier
+# name and a product name reached this repository's public history that way
+# in 2026-09 with a clean tip. So before any tree is checked out, every commit
+# in every pushed range is scanned, added lines and messages both, by the
+# same script CI runs on the same range. It reads the working tree's copy of
+# the script on purpose: the range it scans is the history, and the guard
+# for the history is whatever guard exists now, not the one a pushed commit
+# happens to carry.
+range_scan="$src_root/scripts/pre-push-identity-scan.py"
+if [ ! -f "$range_scan" ]; then
+	echo "pre-push: ABORT -- $range_scan is missing; refusing to pass a push whose history guard is absent." >&2
+	exit 1
+fi
+if [ -n "$push_lines" ]; then
+	printf '%s\n' "$push_lines" | python3 "$range_scan" && range_status=0 || range_status=$?
+	case "$range_status" in
+	0) ;;
+	1)
+		echo "pre-push: REFUSED -- a commit in this push carries a private path, a dossier name or a product name." >&2
+		echo "pre-push: the tip may be clean; the history is not. Rewrite the commits before pushing." >&2
+		exit 1
+		;;
+	*)
+		echo "pre-push: ABORT -- the history scan could not run (exit $range_status); nothing was verified." >&2
+		exit 1
+		;;
+	esac
+fi
+
 pushed_shas=""
 saw_ref=0
 while read -r local_ref local_sha _remote_ref _remote_sha; do
@@ -147,7 +185,7 @@ while read -r local_ref local_sha _remote_ref _remote_sha; do
 	*" $local_sha "*) continue ;;
 	esac
 	pushed_shas="$pushed_shas $local_sha"
-done
+done <<< "$push_lines"
 
 # No stdin means git did not invoke this -- a hand run, or a harness. It is NOT
 # treated as "gate the working tree with a warning printed", and the choice is
