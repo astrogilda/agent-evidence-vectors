@@ -30,6 +30,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      # The scanner carries one permit: the owner handle passes where a slash
+      # and one of this family's repository names follow it, because a clone URL
+      # cannot avoid naming its owner. A permit on a refusal can only ever
+      # loosen, and a loosening nobody notices looks exactly like the control
+      # working, so the shapes it must still refuse are asserted here and
+      # outnumber the ones it allows.
+      - name: the owner permit allows a repository path and nothing else
+        run: python3 scripts/pre-push-identity-scan-test.py
       - name: every commit in the push range is free of private paths, dossier names and product names
         env:
           PUSH_BEFORE: ${{ github.event.before }}

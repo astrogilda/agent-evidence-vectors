@@ -92,6 +92,31 @@ RULES: tuple[tuple[str, re.Pattern[str]], ...] = (
 )
 
 
+# The organisation that owns these repositories is named in their own URLs, and a
+# URL cannot avoid naming its owner. The permit is therefore a PATH permit rather
+# than a word permit: the handle passes only where a slash and one of these three
+# repository names follow it, which is exactly the shape a clone URL, a badge
+# target, a citation and a package's metadata take. The handle standing alone is
+# still refused, every other form of the name is still refused, and a sentence
+# that ties the organisation to anything is refused exactly as before -- so the
+# reader of a public repository sees an owner and learns nothing from it. Held as
+# hex for the same reason the rules above are.
+PERMITTED_PATH = re.compile(
+    _hex("70726f626974796169") + r"/agent-evidence-(?:vectors|vocabulary|admission)\b",
+    re.IGNORECASE,
+)
+
+
+def permit(line: str) -> str:
+    """Blank owner-qualified repository paths, preserving every offset.
+
+    The filler is the same length as what it replaces, so a later hit on the same
+    line is still reported at its true position, and a second mention that is NOT
+    owner-qualified still reaches the rules below.
+    """
+    return PERMITTED_PATH.sub(lambda m: "." * len(m.group(0)), line)
+
+
 # ---------------------------------------------------------------------------
 # Salted-digest sidecar. `_lengths`, `_digest` and `load` are copied VERBATIM
 # from scripts/forbidden-word-scan.py in this repository so the two scanners
@@ -203,11 +228,11 @@ def _message_hits(sha: str, message: str, sidecar: Sidecar) -> list[str]:
     for number, line in enumerate(message.splitlines(), start=1):
         where = f"{sha[:12]} (commit message):{number}"
         for label, rule in RULES[:1] + RULES[2:]:
-            if rule.search(line):
+            if rule.search(permit(line)):
                 hits.append(f"{where}: {label} (text withheld)")
-        if re.search(r"(/home/[a-z]+/|/Users/[A-Za-z]+/)", line):
+        if re.search(r"(/home/[a-z]+/|/Users/[A-Za-z]+/)", permit(line)):
             hits.append(f"{where}: absolute home directory (text withheld)")
-        for label in sidecar.labels(line):
+        for label in sidecar.labels(permit(line)):
             hits.append(f"{where}: {label} (word withheld)")
     return hits
 
@@ -250,10 +275,11 @@ def _scan_added_lines(rev_args: list[str], sidecar: Sidecar) -> list[str]:
             continue
         number += 1
         where = f"{sha[:12]} {path}:{number}"
+        scanned = permit(raw)
         for label, rule in RULES:
-            if rule.search(raw):
+            if rule.search(scanned):
                 hits.append(f"{where}: {label} (text withheld)")
-        for label in sidecar.labels(raw[1:]):
+        for label in sidecar.labels(scanned[1:]):
             hits.append(f"{where}: {label} (word withheld)")
     return hits
 
