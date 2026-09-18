@@ -1,0 +1,5276 @@
+{
+  "suite": "w3c-report-v01-conformance",
+  "specName": "W3C public-agent-conformance reporting format, per-check record",
+  "specVersion": "0.1",
+  "specAuthority": "specDigest",
+  "subjectTypes": [
+    "report",
+    "agent-run-metrics",
+    "llm-context-discovery"
+  ],
+  "specVendored": {
+    "0001": {
+      "path": "spec-vendored/0001-ives-2026-09-01-coverage-block.txt",
+      "sha256": "62bafb6e88629bda0dc09c1d19982aaf831be7b8845bf80a2fb31deda676b143",
+      "author": "Kenne Ives",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0001.html"
+    },
+    "0025": {
+      "path": "spec-vendored/0025-rocchia-2026-09-13-state-cause-pair-table.txt",
+      "sha256": "2ee9306408474a6966d8294d4e641c39aa253a2ab2bb377d01abcee5c3b94e95",
+      "author": "Nicolas Rocchia",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0025.html"
+    },
+    "0036": {
+      "path": "spec-vendored/0036-arsentev-2026-09-14-discrimination-and-populations.txt",
+      "sha256": "7a034174eb5f27f8f8865f49ab6999de20157dd3906b9d158366b62cc83b7738",
+      "author": "Evgenii Arsentev",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0036.html"
+    },
+    "0043": {
+      "path": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "sha256": "76f5af49f11108fccf5d01c3710771acdb4539c8761b655b8e06bda993bb03f1",
+      "author": "Nicolas Rocchia",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0043.html"
+    },
+    "0050": {
+      "path": "spec-vendored/0050-ives-2026-09-15-recomputed-delta.txt",
+      "sha256": "1399c56136e7aa7630000f723a92169c12313ef6012eab130b3511ed2c7a5e35",
+      "author": "Kenne Ives",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0050.html"
+    },
+    "0060": {
+      "path": "spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt",
+      "sha256": "47f96e10c2ac5dc023a0dde77582331f58431cf4e8fabbb53a068a6d6a8f12bd",
+      "author": "Nicolas Rocchia",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0060.html"
+    },
+    "0062": {
+      "path": "spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt",
+      "sha256": "b92f4a6ca926eaa8514c313054cf1736524d187ce36c9b6ef6c1f5d2b19ed977",
+      "author": "Evgenii Arsentev",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0062.html"
+    },
+    "0069": {
+      "path": "spec-vendored/0069-arsentev-2026-09-18-late-additions.txt",
+      "sha256": "40153b17403b0e6594dfe00a9e9a5c01e5b978b6ce47b12a4ef0bbe31817514b",
+      "author": "Evgenii Arsentev",
+      "source": "https://lists.w3.org/Archives/Public/public-agent-conformance/2026Sep/0069.html"
+    },
+    "draft-arsentev-agent-run-metrics-00": {
+      "path": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "sha256": "0ef9e7fbc39d04bf2e245ed12b6a15eb4988d56abf3b07a65aab7861ad14d7f0",
+      "author": "Evgenii Arsentev",
+      "source": "https://datatracker.ietf.org/doc/draft-arsentev-agent-run-metrics/"
+    },
+    "draft-arsentev-llm-context-discovery-00": {
+      "path": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "sha256": "13081268c70a19e9b3f74a6f772b657c56403ce6c45623da39a188394eefd411",
+      "author": "Evgenii Arsentev",
+      "source": "https://datatracker.ietf.org/doc/draft-arsentev-llm-context-discovery/"
+    }
+  },
+  "identifierPolicy": "A requirement identifier is minted by this corpus and bound to the normative sentence by sha256 over its bytes. The texts this corpus cites carry no identifiers, and a message number or a section number names a position rather than a sentence.",
+  "codeRegistry": {
+    "state": [
+      "pass",
+      "fail",
+      "inconclusive",
+      "not-exercised",
+      "void"
+    ],
+    "cause": [
+      "not_applicable",
+      "disabled_by_policy",
+      "unsupported_input",
+      "resource_exhausted",
+      "failed",
+      "unavailable",
+      "out_of_scope",
+      "withheld",
+      "integrity-failure",
+      "availability-failure",
+      "precondition-unsatisfiable",
+      "reading-committed",
+      "reading-uncommitted",
+      "harness-failure"
+    ],
+    "other-verdict": [
+      "unknown",
+      "possible-not-demonstrated",
+      "demonstrated",
+      "foreclosed"
+    ],
+    "discrimination": [
+      "unknown",
+      "demonstrated"
+    ],
+    "negative-capable": [
+      "shown-by-run",
+      "control-failed",
+      "prior-discriminating-run",
+      "nothing"
+    ],
+    "tree-shape": [
+      "flat",
+      "rfc6962"
+    ],
+    "changed": [
+      "input artifact",
+      "checker rule",
+      "constraint"
+    ],
+    "slot": [
+      "verdict",
+      "fired-rule list",
+      "error list"
+    ],
+    "claim": [
+      "satisfied",
+      "not-satisfied",
+      "not-claimable"
+    ],
+    "run-status": [
+      "running",
+      "completed",
+      "failed",
+      "aborted"
+    ],
+    "step-kind": [
+      "model_invocation",
+      "tool_call"
+    ],
+    "redirect-status": [
+      301,
+      302,
+      307,
+      308
+    ]
+  },
+  "families": {
+    "w3c-f-1": "row 1: a non-verdict state with no cause",
+    "w3c-f-2": "row 2: void with a cause that describes a unit never examined",
+    "w3c-f-3": "row 3: not-exercised with integrity-failure",
+    "w3c-f-4": "row 4: a confinement control failed while the check ran, and the state is not void",
+    "w3c-f-5": "row 5: a declared exclusion whose state is not not-exercised",
+    "w3c-f-6": "row 6: a non-verdict state carrying a qualifier",
+    "w3c-f-7": "row 7: a verdict state carrying a cause",
+    "w3c-f-8": "row 8: other-verdict foreclosed beside discrimination demonstrated",
+    "w3c-f-9": "row 9: discrimination demonstrated beside an other-verdict that is not demonstrated",
+    "w3c-f-10": "row 10: foreclosed without its constraint set and domain",
+    "w3c-f-11": "row 11: an asserted qualifier value without its evidence reference",
+    "w3c-f-12": "row 12: discrimination demonstrated citing evidence whose changed slot is the checker",
+    "w3c-f-13": "late addition (a): a roll-up says whether its checks could have gone negative",
+    "w3c-f-14": "late addition (a): a prior discriminating run binds the check identity that survived",
+    "w3c-f-15": "late addition (b): a digest over a set binds its leaf count and names its tree shape",
+    "w3c-f-16": "declared slots: moved is contained in the declared compared set",
+    "w3c-f-17": "roll-up: the aggregate carries its complete denominator",
+    "w3c-f-18": "roll-up: the counter over carried against referenced recomputes",
+    "w3c-f-19": "closed vocabulary: a value outside a registry is not read",
+    "w3c-f-20": "carry-or-reference: a set digest that does not recompute is an integrity failure",
+    "w3c-f-21": "recomputed delta: moved is read as recomputed over the observations, not as declared",
+    "w3c-f-22": "coverage block: scope disclosure in controlled fields, with the pre-cap file count",
+    "w3c-f-23": "population denominator: a completeness claim carries the size of its population",
+    "w3c-f-24": "delta-related pair: unrelated pass and fail records do not witness discrimination",
+    "w3c-f-gaps": "the two known gaps of the reference emitter, closed: void has a slot and not-exercised carries a cause",
+    "w3c-f-disensor": "the 42 delta-related pairs of the disensor corpus at 1e36257, re-cut against v0.1",
+    "arm-f-run": "agent run metrics: the Run object's own members",
+    "arm-f-steps": "agent run metrics: the Step objects and their order",
+    "arm-f-usage": "agent run metrics: the Usage invariants and the cache-write ledger",
+    "arm-f-totals": "agent run metrics: the totals as the sum of the steps",
+    "arm-f-serialization": "agent run metrics: timestamps, identifiers, labels, cost and extensions",
+    "lcd-f-publisher": "context discovery: what the origin advertises and serves",
+    "lcd-f-consumer": "context discovery: what a consumer resolves, retrieves and attributes"
+  },
+  "origin": {
+    "repository": "NicolasRocchia/disensor",
+    "commit": "1e36257779b4933814445423188ec099a78017ee",
+    "author": "Nicolas Rocchia",
+    "checker": "disensor.rules.validate_artifact",
+    "pairingRule": "a MUST-PASS and a MUST-FAIL vector of the same schema version whose artifact objects differ in exactly one leaf path",
+    "pairs": 42,
+    "derivedBy": "origin/derive_pairs.py",
+    "data": "origin/disensor-1e36257-pairs.json",
+    "note": "The twelve rejection rows and the record definition are the author's, consolidated on the list on 2026-09-15. The pairs were counted at this commit as 42 (v0.2 4, v0.3 16, v0.4 22) and the objects emitted against them were described on 2026-09-16 and never posted, so they are re-emitted here from the same bytes under the same recipe: each observation referenced by commit, vector and digest, moved recomputed from the two."
+  },
+  "mutationSweep": {
+    "file": "MUTATION-SWEEP.md",
+    "rows": 57,
+    "leaks": 0
+  },
+  "observedRuns": [],
+  "requirements": [
+    {
+      "id": "W3C-R-001",
+      "row": "1",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 35,
+      "sentence": "a non-verdict state with no cause",
+      "sentenceDigest": "87893835a3e134511a7e36cfac22625860d0266aafdf00c0458be7e98f62db60",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-002",
+      "row": "2",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 37,
+      "sentence": "void with not_applicable, out_of_scope or withheld",
+      "sentenceDigest": "05fb9274ff0859d9374173449c90b3498422210ac295321a8d4357816428b3d8",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-003",
+      "row": "3",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 39,
+      "sentence": "not-exercised with integrity-failure",
+      "sentenceDigest": "587e9bc351daaed25ce2f9a832d39574a3ff48b85d5c1555d919b92351507f19",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-004",
+      "row": "4",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 41,
+      "sentence": "a confinement control that failed while the check ran",
+      "sentenceDigest": "32dd6b74795b02bd6d153210154987cfe955360ed839d5d1346576b02e8a88ed",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-005",
+      "row": "5",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 44,
+      "sentence": "a declared exclusion with any state but not-exercised",
+      "sentenceDigest": "ed9007c6e8a11eb28207d6c158fa29727e01b2556188b2d768f973e5c6e2e680",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-006",
+      "row": "6",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 46,
+      "sentence": "a non-verdict state carrying either qualifier",
+      "sentenceDigest": "4ef6f3c9383ae4543122f50bbba43f8dd94dbb68a496eb8786d1000928f9b55d",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-007",
+      "row": "7",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 48,
+      "sentence": "a verdict state carrying a cause",
+      "sentenceDigest": "831dc816ea23fa26b14116513c67fe62b8d8b04baf22b57faf834c4f01a0d525",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-008",
+      "row": "8",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 50,
+      "sentence": "other-verdict foreclosed with discrimination demonstrated",
+      "sentenceDigest": "2c6f812fc2752889c8f52461c4482c128438391c9e0c1dd79d72ed288eaa16ec",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-009",
+      "row": "9",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 53,
+      "sentence": "discrimination demonstrated with other-verdict unknown",
+      "sentenceDigest": "111e3eb11cdcc313283e3ca795112dcb490f3f551a7930f0d3a6c67578c0adc2",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-010",
+      "row": "10",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 56,
+      "sentence": "foreclosed without a constraint set and a domain",
+      "sentenceDigest": "139eba59f4dc4345b39be809c1a65bec3d30efc5155f9f2919bf047361812026",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-011",
+      "row": "11",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 60,
+      "sentence": "an asserted value without its evidence reference",
+      "sentenceDigest": "f68cd56a997a57731a35e0a9f6e3b310b8af147eff7b3e3c1d99ec47370d54ba",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-012",
+      "row": "12",
+      "file": "0043",
+      "vendored": "spec-vendored/0043-rocchia-2026-09-15-consolidated-table.txt",
+      "line": 64,
+      "sentence": "whose changed slot is the checker",
+      "sentenceDigest": "d2268e7db1d50fe5595af659aacea49991b53dc81f88c1183cd058c2f93b943f",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-013",
+      "row": "(a) roll-up",
+      "file": "0069",
+      "vendored": "spec-vendored/0069-arsentev-2026-09-18-late-additions.txt",
+      "line": 8,
+      "sentence": "a roll-up states whether the checks it aggregates\nwere capable of a negative verdict",
+      "sentenceDigest": "f73fd10347201018fdfc185021ab8ef72e504c0877300698421af70b611074e1",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-014",
+      "row": "(a) prior run",
+      "file": "0069",
+      "vendored": "spec-vendored/0069-arsentev-2026-09-18-late-additions.txt",
+      "line": 15,
+      "sentence": "a prior discriminating run only counts where check identity survives across\nruns",
+      "sentenceDigest": "2da5682dbbb4be1f6010cb06ba210144f97946d38a7c47674eddeeff441fa27e",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-015",
+      "row": "(b) set binding",
+      "file": "0069",
+      "vendored": "spec-vendored/0069-arsentev-2026-09-18-late-additions.txt",
+      "line": 20,
+      "sentence": "digest match establishes a set only when the count of leaves is bound too,\nand a report says which tree shape it uses",
+      "sentenceDigest": "c6fe2b8552666e81fb1455f0b805ef65b742b72f5127e531fe20d9be1f7b566d",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-016",
+      "row": "declared slots",
+      "file": "0062",
+      "vendored": "spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt",
+      "line": 31,
+      "sentence": "an object whose moved is not contained in its declared set is\nrejected",
+      "sentenceDigest": "303d488c14eed0d207c37d54685a7fd6f38d7658a2695ca205e8e8df2e20b50a",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-017",
+      "row": "roll-up denominator",
+      "file": "0060",
+      "vendored": "spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt",
+      "line": 13,
+      "sentence": "never emitted without its complete denominator",
+      "sentenceDigest": "526d7694de57f6c5e4ad2f145de4cb005d7f39e1f102778e90985e1da8664489",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-018",
+      "row": "roll-up counter",
+      "file": "0060",
+      "vendored": "spec-vendored/0060-rocchia-2026-09-16-freeze-list.txt",
+      "line": 17,
+      "sentence": "the counter over carried against referenced",
+      "sentenceDigest": "31c3dfd19fc59147af4ad1984565bc9299a7f19a561610094b39b31fe9c837c8",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-019",
+      "row": "closed vocabulary",
+      "file": "0025",
+      "vendored": "spec-vendored/0025-rocchia-2026-09-13-state-cause-pair-table.txt",
+      "line": 32,
+      "sentence": "because free text does not aggregate",
+      "sentenceDigest": "1b376a60d7520ff7cf26cd68304cf80935d586054c99f377ddb81269ee4a672b",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-020",
+      "row": "reference mismatch",
+      "file": "0062",
+      "vendored": "spec-vendored/0062-arsentev-2026-09-17-editor-freeze-list.txt",
+      "line": 13,
+      "sentence": "resolves with a mismatch (an integrity failure)",
+      "sentenceDigest": "af507f1056e619da00a30a095b1380c0e993330564ee11b2cceea1cac9bda59d",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-021",
+      "row": "recomputed delta",
+      "file": "0050",
+      "vendored": "spec-vendored/0050-ives-2026-09-15-recomputed-delta.txt",
+      "line": 9,
+      "sentence": "they read moved\nas recomputed from the two observations the object names",
+      "sentenceDigest": "bc4afdb28cee9c303b285d1218b55f743402c3074a9259dadee7e5715abef443",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-022",
+      "row": "coverage block",
+      "file": "0001",
+      "vendored": "spec-vendored/0001-ives-2026-09-01-coverage-block.txt",
+      "line": 11,
+      "sentence": "a sampled / full_coverage flag\nwith the count of scannable files recorded before the per-repo cap",
+      "sentenceDigest": "50c6f490bcf092b22e0e01d4a9a23d62667cd052125b38c171e9658fa5885ec9",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-023",
+      "row": "population denominator",
+      "file": "0036",
+      "vendored": "spec-vendored/0036-arsentev-2026-09-14-discrimination-and-populations.txt",
+      "line": 23,
+      "sentence": "a claim over an empty population is reported as not claimable, not as\nsatisfied",
+      "sentenceDigest": "04fa2499c017be72a2e714a25b8fa6cf90f38a12d8823624c064e804a9e3d40e",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "W3C-R-024",
+      "row": "delta-related pair",
+      "file": "0036",
+      "vendored": "spec-vendored/0036-arsentev-2026-09-14-discrimination-and-populations.txt",
+      "line": 68,
+      "sentence": "Unrelated pass and fail records in one corpus must not qualify",
+      "sentenceDigest": "d75ca465cf824295adb070272b96a55fdbc26cd1324df3781d9397a5f104e8e1",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-001",
+      "row": "5.1",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 1188,
+      "sentence": "Reporter MUST emit \"1\" while conforming to this specification",
+      "sentenceDigest": "f313511759b2f6ce53a3c2fbe9c358e197ad9e2472b158124f926b933b9ab2e7",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-002",
+      "row": "3.1",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 460,
+      "sentence": "The \"end\" member MUST be present when \"status\" is \"completed\",\n   \"failed\" or \"aborted\", and MUST NOT be present when \"status\" is\n   \"running\"",
+      "sentenceDigest": "a82c8c4e90b439d647c39c7100aa0723870598fad5d18784d535001b25b42c5d",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-003",
+      "row": "3.1",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 462,
+      "sentence": "When present, \"end\" MUST NOT be earlier than \"start\"",
+      "sentenceDigest": "1651e4aa28aef3c5a2f75b9825b6feda3fe0759001a0adc549e48744151314fc",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-004",
+      "row": "3.1",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 464,
+      "sentence": "a Reporter MUST NOT emit\n   a value other than the four listed",
+      "sentenceDigest": "532a0c7a01289d79d63037d06005f3fb9ea2dc3064fe0cce3648a0d23789a272",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-005",
+      "row": "3.1",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 471,
+      "sentence": "When the \"steps\" array is present, \"step_count\" MUST be\n   greater than or equal to the length of that array",
+      "sentenceDigest": "b0245f78d559c0cf578849c2b5af7591889c7236bb0f1c1600b6b510584208a5",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-006",
+      "row": "3.2",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 538,
+      "sentence": "Within one Run, \"index\" values MUST be unique and MUST be assigned in\n   the order in which Steps began",
+      "sentenceDigest": "de2c45f5dcc4d136e746c9364db127a58e1202ac879b8a0b02603b8f38f1dc39",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-007",
+      "row": "3.2",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 543,
+      "sentence": "When \"kind\" is \"model_invocation\", the \"usage\" and \"model\" members\n   MUST be present",
+      "sentenceDigest": "bb47f3459eea16f13b47e98e155287c8cb6be2e878fe4b47206e382044c1bd35",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-008",
+      "row": "3.2",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 544,
+      "sentence": "When \"kind\" is \"tool_call\", the \"tool\" member MUST\n   be present and the \"usage\" member MUST NOT be present",
+      "sentenceDigest": "cbf735970617d21d44084a817479bf780006413b0b18465617cd5c28c2ee6a20",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-009",
+      "row": "3.4",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 713,
+      "sentence": "All members of a Usage object MUST be non-negative integers",
+      "sentenceDigest": "0748102d1586a9c5c6dd10c77ae1bc7c6622fdbbb2a28d76aae56b398ca796a5",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-010",
+      "row": "3.4",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 721,
+      "sentence": "\"cache_read_tokens\" is a subset of \"input_tokens\" and therefore\n       MUST be less than or equal to it",
+      "sentenceDigest": "912e608876053400653b7748ae63ee4395d33748533a0e76221fa8cd1dfd661b",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-011",
+      "row": "3.4",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 743,
+      "sentence": "\"cache_read_tokens\" and \"cache_write_tokens\"\n       denote disjoint subsets of \"input_tokens\" and their sum MUST be\n       less than or equal to \"input_tokens\"",
+      "sentenceDigest": "ab264faa892721d21537cb57a3cec5e7350e24d1692584a0fa42af93d2fbefb9",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-012",
+      "row": "3.4",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 790,
+      "sentence": "\"totals\" object MUST be, member by member, the sum of the\n   corresponding members of every Step's Usage object",
+      "sentenceDigest": "e6b6a4c51dfe30f73dbe35a666c6d15caa47c660cd6bbe17b982116ce907dee9",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-013",
+      "row": "3.5",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 813,
+      "sentence": "One\n   \"lifetime\" value MUST NOT appear in more than one element of the same\n   array",
+      "sentenceDigest": "89119163b621c7744e76d9adfd1c139c3b9da1d7f0963f7f219d8f32446d8b3e",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-014",
+      "row": "3.5",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 817,
+      "sentence": "The sum of the \"tokens\" members of \"cache_writes\" MUST equal the\n   \"cache_write_tokens\" member of the same Usage object",
+      "sentenceDigest": "17816ade45921f0d564b31cb96c30ccaaa2bca4bd18fc6bf5a0fa7faeb7a3388",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-015",
+      "row": "3.3",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 640,
+      "sentence": "A Reporter MUST NOT\n   emit two Steps of one Run with the same \"invocation_id\"",
+      "sentenceDigest": "0883bbd19a6530198f67c08de07b729e1780172a58c39450e46c06ddf287a5d3",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-016",
+      "row": "3.6",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 875,
+      "sentence": "A Run that emits \"root_run_id\" and has no\n      parent MUST set it equal to its own \"run_id\"",
+      "sentenceDigest": "546781f078f7e248de2a58fa3ea2e5cafaf6f017024bc735e835a15b680b0c79",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-017",
+      "row": "3.7",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 961,
+      "sentence": "The \"amount\" member MUST be a JSON string matching the ABNF [RFC5234]\n   rule",
+      "sentenceDigest": "f15b1c8c7a0cfe451f2fac098f52daeabf79118857efbbb71316e3a2352df127",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-018",
+      "row": "3.12",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 1032,
+      "sentence": "Its value MUST be a JSON object whose members all\n   have string values",
+      "sentenceDigest": "4d1f574a3f6c898334beb1927b46b8977873d8d4501cbd8d9f07b39683455636",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-019",
+      "row": "5",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 1150,
+      "sentence": "Timestamps MUST be strings conforming to the \"date-time\" production\n   of [RFC3339].  They MUST use the \"Z\" time offset",
+      "sentenceDigest": "af8a371a7c03ddaa7bab2e21f87c448fcf867eb9bdb28cd1f080e313fed5c93e",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-020",
+      "row": "5",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 1158,
+      "sentence": "MUST be non-empty strings of at most 128\n   characters",
+      "sentenceDigest": "f45b4290574244a8adf2bb4a4b2cfdd86d15f0f2d290cdf5352ac356aa64f400",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-021",
+      "row": "5.1",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 1184,
+      "sentence": "A Reporter MUST NOT use an unprefixed member\n   name for a purpose other than the one specified here",
+      "sentenceDigest": "a9283399f2f72c8c0edb2d1f8b16e62e36c052da4afe995fb96e05c7b0d5a093",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "ARM-R-022",
+      "row": "3.4",
+      "file": "draft-arsentev-agent-run-metrics-00",
+      "vendored": "spec-vendored/draft-arsentev-agent-run-metrics-00.txt",
+      "line": 735,
+      "sentence": "\"reasoning_tokens\" is a subset of \"output_tokens\" and\n       therefore MUST be less than or equal to it",
+      "sentenceDigest": "77239d6671db6001950c7575a76c5e211f7534ffe37544d6cc91ba416be0e7d9",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-001",
+      "row": "3.1",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 424,
+      "sentence": "A context file MUST NOT be served with a \"Content-Type\" of \"text/\n   html\"",
+      "sentenceDigest": "dea0684290a3e21a56e521ce7731c8f22f09f878fad305d5abc572331f4ee08f",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-002",
+      "row": "3.2",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 453,
+      "sentence": "A discovery mechanism defined in Section 4 MUST point at an index\n      resource, never directly at a detail resource",
+      "sentenceDigest": "993eae7ed8a98e13d99b96319f9f5a093bb19b02e8ca201b1ea6a1a718ddf784",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-003",
+      "row": "4.1",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 509,
+      "sentence": "A publisher advertising a context file through this mechanism MUST\n   arrange that a GET request for \"/.well-known/llm-context\" on the\n   origin returns either",
+      "sentenceDigest": "b75a01b97d9995489084ebf7a95d474444daa9096913b3984385e66ba90b3a15",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-004",
+      "row": "4.3",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 582,
+      "sentence": "Its value MUST be an absolute\n   URI",
+      "sentenceDigest": "cbf9300432d9646394bfdf929b3c63fcf4c3a44e7a30ac5d35908b0401514da8",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-005",
+      "row": "4.3",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 621,
+      "sentence": "A publisher MUST NOT use this record to advertise a context file\n   whose retrieval the same robots.txt disallows",
+      "sentenceDigest": "6c62b556add0487c804860bf2575843b03ef6ce980193743174b9e9525ab9768",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-006",
+      "row": "4.4",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 630,
+      "sentence": "a consumer MUST\n   apply the following precedence, highest first",
+      "sentenceDigest": "bc76905fa3c30441abc6d9846b6b17772a33601f031ebf8f89864ae2c22241d3",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-007",
+      "row": "4.4",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 641,
+      "sentence": "A consumer MUST NOT retrieve more than one index resource per origin\n   per retrieval cycle",
+      "sentenceDigest": "9303b76c717a46a4a9f539578e99cbe8df68b36e9038a1cb5ddee91c469ea034",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-008",
+      "row": "7.2",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 816,
+      "sentence": "A consumer MUST NOT attribute the content of a cross-origin index\n   resource to the advertising origin",
+      "sentenceDigest": "de7f08a1b2a8a663026fd5f430dbbe0518c25229d16c2771dfe2e6b7f105eddc",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-009",
+      "row": "7.4",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 852,
+      "sentence": "A consumer MUST impose its own ceiling on the size of any retrieved\n   context file",
+      "sentenceDigest": "6bf3ffe5624cb4d358dec561baaf470c9fcae5dca14fc5cd04aa5407d5c09859",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-010",
+      "row": "3.3",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 480,
+      "sentence": "the response MUST carry an appropriate \"Content-Language\"",
+      "sentenceDigest": "1f8ceb1482c75131837bf10bcdf3fc92fca73cbcccb8a5d1ebd196c6b08a7036",
+      "specVersion": "0.1"
+    },
+    {
+      "id": "LCD-R-011",
+      "row": "4.4",
+      "file": "draft-arsentev-llm-context-discovery-00",
+      "vendored": "spec-vendored/draft-arsentev-llm-context-discovery-00.txt",
+      "line": 645,
+      "sentence": "a consumer MUST evaluate the exclusion\n   rules of [RFC9309] against the index resource's URI before retrieving\n   it",
+      "sentenceDigest": "1cb26bd4e4ca552680f7869d661f9975eb25a7e70fc245c004e13888474ff530",
+      "specVersion": "0.1"
+    }
+  ],
+  "counts": {
+    "accept": 106,
+    "reject": 104
+  },
+  "corpusDigest": "10cd37c44e59b81e48141505c6cbd478789b6513b8b94346f78167907d067272",
+  "note": "A member is a whole subject: a v0.1 report, a Run object, or a discovery snapshot. Each reject member is rejected under exactly one requirement and has an accepting twin in its family, so a validator that refuses every subject scores zero rather than full marks.",
+  "vectors": [
+    {
+      "id": "v0164c803c34c3c4c",
+      "kind": "reject",
+      "file": "vectors/v0164c803c34c3c4c.json",
+      "family": "w3c-f-21",
+      "requirements": [
+        "W3C-R-021"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-021"
+        ]
+      },
+      "cites": "fail with A beside fail with B, moved declared as the verdict: read the field and it passes, recompute the delta and it is rejected"
+    },
+    {
+      "id": "v02b5aa1c6f152cb8",
+      "kind": "accept",
+      "file": "vectors/v02b5aa1c6f152cb8.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/schema_debt_without_id",
+          "field": "findings/0/final_state"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v02ca1b3fce47e3ca",
+      "kind": "reject",
+      "file": "vectors/v02ca1b3fce47e3ca.json",
+      "family": "w3c-f-13",
+      "requirements": [
+        "W3C-R-013"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-013"
+        ]
+      },
+      "cites": "shown-by-run asserted on a run whose counts show no non-pass"
+    },
+    {
+      "id": "v0320e079760670a9",
+      "kind": "reject",
+      "file": "vectors/v0320e079760670a9.json",
+      "family": "arm-f-totals",
+      "requirements": [
+        "ARM-R-012"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-012"
+        ]
+      },
+      "cites": "totals that are not the sum of the Steps' usage"
+    },
+    {
+      "id": "v04c9ebbce835c688",
+      "kind": "accept",
+      "file": "vectors/v04c9ebbce835c688.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/r9_clear_url_in_minimized",
+          "field": "event/repository"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v05639d5c3c8c0748",
+      "kind": "reject",
+      "file": "vectors/v05639d5c3c8c0748.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_full_empty_findings",
+          "fail": "v0.4/r10_empty_list_with_nonzero_total",
+          "field": "metrics/counts/total_findings"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v05d60efad92ebaf8",
+      "kind": "reject",
+      "file": "vectors/v05d60efad92ebaf8.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-019"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-019"
+        ]
+      },
+      "cites": "timestamps carrying a local offset"
+    },
+    {
+      "id": "v066b4ec60aeb45ea",
+      "kind": "accept",
+      "file": "vectors/v066b4ec60aeb45ea.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-022"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "reasoning tokens equal to the output"
+    },
+    {
+      "id": "v0802ba8c1adfd735",
+      "kind": "accept",
+      "file": "vectors/v0802ba8c1adfd735.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/r4_same_family",
+          "field": "actors/reviewers/0/family"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v095044ecfd531f0e",
+      "kind": "accept",
+      "file": "vectors/v095044ecfd531f0e.json",
+      "family": "w3c-f-18",
+      "requirements": [
+        "W3C-R-018"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "one carried against one referenced, as the evidence holds them"
+    },
+    {
+      "id": "v096b392478fcf6fe",
+      "kind": "reject",
+      "file": "vectors/v096b392478fcf6fe.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-014"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-014"
+        ]
+      },
+      "cites": "a ledger that does not sum to the aggregate counter"
+    },
+    {
+      "id": "v0a35d1d5e36bf503",
+      "kind": "reject",
+      "file": "vectors/v0a35d1d5e36bf503.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/schema_minimized_extensions_prose_key",
+          "field": "extensions/nota del incidente en claro"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v0b7303efe873ba5e",
+      "kind": "reject",
+      "file": "vectors/v0b7303efe873ba5e.json",
+      "family": "w3c-f-3",
+      "requirements": [
+        "W3C-R-003"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-003"
+        ]
+      },
+      "cites": "a not-exercised record whose cause is a failure of evidence it never examined"
+    },
+    {
+      "id": "v0b91eaac1cdcc248",
+      "kind": "reject",
+      "file": "vectors/v0b91eaac1cdcc248.json",
+      "family": "w3c-f-15",
+      "requirements": [
+        "W3C-R-015"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-015"
+        ]
+      },
+      "cites": "a leaf count that does not equal the checks the report carries"
+    },
+    {
+      "id": "v0beb3b74beb99bf1",
+      "kind": "accept",
+      "file": "vectors/v0beb3b74beb99bf1.json",
+      "family": "w3c-f-13",
+      "requirements": [
+        "W3C-R-013"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a run that already shows a non-pass, so the counts carry the answer"
+    },
+    {
+      "id": "v0de121457dabc092",
+      "kind": "accept",
+      "file": "vectors/v0de121457dabc092.json",
+      "family": "w3c-f-8",
+      "requirements": [
+        "W3C-R-008"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "foreclosed with discrimination left unknown"
+    },
+    {
+      "id": "v0e100bb5f5f9b549",
+      "kind": "accept",
+      "file": "vectors/v0e100bb5f5f9b549.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/r0_no_human_arbiter",
+          "field": "actors/human_arbiter/present"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v0e31d851b22cf706",
+      "kind": "reject",
+      "file": "vectors/v0e31d851b22cf706.json",
+      "family": "w3c-f-18",
+      "requirements": [
+        "W3C-R-018"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-018"
+        ]
+      },
+      "cites": "the counter says two referenced while one observation is carried"
+    },
+    {
+      "id": "v134763ca9f01867c",
+      "kind": "reject",
+      "file": "vectors/v134763ca9f01867c.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-005"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-005"
+        ]
+      },
+      "cites": "a robots record advertising a file the same robots.txt disallows"
+    },
+    {
+      "id": "v13a01b0473aa7595",
+      "kind": "accept",
+      "file": "vectors/v13a01b0473aa7595.json",
+      "family": "w3c-f-14",
+      "requirements": [
+        "W3C-R-014"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same prior run binding the check identity that survived across runs"
+    },
+    {
+      "id": "v143660ae522c83b7",
+      "kind": "reject",
+      "file": "vectors/v143660ae522c83b7.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-004"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-004"
+        ]
+      },
+      "cites": "a status outside the closed enumeration"
+    },
+    {
+      "id": "v1916a6ce919c9c5d",
+      "kind": "reject",
+      "file": "vectors/v1916a6ce919c9c5d.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_declared_degraded_round",
+          "fail": "v0.4/r13_item_references_missing_reviewer",
+          "field": "residue/items/0/reviewer_ref"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v1b2f5cbd6e1c2bd6",
+      "kind": "accept",
+      "file": "vectors/v1b2f5cbd6e1c2bd6.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-011"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same advertisement left unretrieved because the exclusion covers it"
+    },
+    {
+      "id": "v1c875fc4c36aa06d",
+      "kind": "reject",
+      "file": "vectors/v1c875fc4c36aa06d.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-013"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-013"
+        ]
+      },
+      "cites": "one lifetime value in two elements of the ledger"
+    },
+    {
+      "id": "v1d69f990f88ee513",
+      "kind": "reject",
+      "file": "vectors/v1d69f990f88ee513.json",
+      "family": "w3c-f-2",
+      "requirements": [
+        "W3C-R-002"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-002"
+        ]
+      },
+      "cites": "a void record whose cause says the unit was never examined"
+    },
+    {
+      "id": "v1e8ac2d635dba457",
+      "kind": "reject",
+      "file": "vectors/v1e8ac2d635dba457.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/schema_minimized_extensions_prose_key",
+          "field": "extensions/nota del incidente en claro"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v1f14e5858f61534b",
+      "kind": "reject",
+      "file": "vectors/v1f14e5858f61534b.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-006"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-006"
+        ]
+      },
+      "cites": "the well-known target taken while a Link relation was in hand"
+    },
+    {
+      "id": "v1f6745a7841076d0",
+      "kind": "accept",
+      "file": "vectors/v1f6745a7841076d0.json",
+      "family": "arm-f-totals",
+      "requirements": [
+        "ARM-R-012"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "totals recomputed member by member from every Step"
+    },
+    {
+      "id": "v1f766b6f6eab757b",
+      "kind": "accept",
+      "file": "vectors/v1f766b6f6eab757b.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r0_no_human_arbiter",
+          "field": "actors/human_arbiter/present"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v20aff5acca86c219",
+      "kind": "accept",
+      "file": "vectors/v20aff5acca86c219.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-001"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the version this specification assigns, \"1\""
+    },
+    {
+      "id": "v20cc6cdd082e0e45",
+      "kind": "accept",
+      "file": "vectors/v20cc6cdd082e0e45.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-008"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a tool call carrying its tool and no usage"
+    },
+    {
+      "id": "v226c47602e7c328a",
+      "kind": "accept",
+      "file": "vectors/v226c47602e7c328a.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-020"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "an identifier of exactly the longest permitted length"
+    },
+    {
+      "id": "v234281fbdc8cf63d",
+      "kind": "reject",
+      "file": "vectors/v234281fbdc8cf63d.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-008"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-008"
+        ]
+      },
+      "cites": "a tool call with no tool member"
+    },
+    {
+      "id": "v236138ba2b69c385",
+      "kind": "accept",
+      "file": "vectors/v236138ba2b69c385.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r4_no_decorrelation",
+          "field": "actors/reviewers/0/family"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v244f25416a939dab",
+      "kind": "accept",
+      "file": "vectors/v244f25416a939dab.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_full_empty_findings",
+          "fail": "v0.4/r6_counts_without_findings",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v24d2ed3c70934115",
+      "kind": "reject",
+      "file": "vectors/v24d2ed3c70934115.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/r4_same_family",
+          "field": "actors/reviewers/0/family"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v28404c7cebd1aa87",
+      "kind": "accept",
+      "file": "vectors/v28404c7cebd1aa87.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r5_level_a_gap_without_lead",
+          "field": "event/criticality_level"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v28ed5f74569195f7",
+      "kind": "reject",
+      "file": "vectors/v28ed5f74569195f7.json",
+      "family": "w3c-f-13",
+      "requirements": [
+        "W3C-R-013"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-013"
+        ]
+      },
+      "cites": "an all-pass roll-up with the field absent: silence, which the text disallows"
+    },
+    {
+      "id": "v296d1a74025adc1c",
+      "kind": "accept",
+      "file": "vectors/v296d1a74025adc1c.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-011"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "reads and writes summing to the input"
+    },
+    {
+      "id": "v2a00957a7f256025",
+      "kind": "accept",
+      "file": "vectors/v2a00957a7f256025.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_declared_degraded_round",
+          "fail": "v0.4/r13_item_references_missing_reviewer",
+          "field": "residue/items/0/reviewer_ref"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v2a84fd527effc283",
+      "kind": "reject",
+      "file": "vectors/v2a84fd527effc283.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r2_template_marker",
+          "field": "actors/reviewers/0/model"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v2aec9aae50bd3992",
+      "kind": "reject",
+      "file": "vectors/v2aec9aae50bd3992.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_full_empty_findings",
+          "fail": "v0.3/r10_empty_list_with_nonzero_total",
+          "field": "metrics/counts/total_findings"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v2c385e784e0bac52",
+      "kind": "accept",
+      "file": "vectors/v2c385e784e0bac52.json",
+      "family": "w3c-f-20",
+      "requirements": [
+        "W3C-R-020"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the root recomputed over exactly the three leaves the count binds"
+    },
+    {
+      "id": "v2d246349f0051a1c",
+      "kind": "reject",
+      "file": "vectors/v2d246349f0051a1c.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/schema_item_reference_not_declared",
+          "field": "residue/items/0/finding_ref"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v2ec19f234a21c62f",
+      "kind": "accept",
+      "file": "vectors/v2ec19f234a21c62f.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-005"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a robots record advertising a file its exclusion rules allow"
+    },
+    {
+      "id": "v2ec6bcd8fa774fbc",
+      "kind": "reject",
+      "file": "vectors/v2ec6bcd8fa774fbc.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-007"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-007"
+        ]
+      },
+      "cites": "a model invocation with no model member"
+    },
+    {
+      "id": "v2fc9dabfe555dd2a",
+      "kind": "accept",
+      "file": "vectors/v2fc9dabfe555dd2a.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-004"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "one of the four listed values"
+    },
+    {
+      "id": "v3019a3f576b2feaa",
+      "kind": "accept",
+      "file": "vectors/v3019a3f576b2feaa.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-006"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "indexes unique and in start order"
+    },
+    {
+      "id": "v31b1b47ae148af1f",
+      "kind": "reject",
+      "file": "vectors/v31b1b47ae148af1f.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r13_finding_attributed_to_nobody",
+          "field": "findings/0/origin"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v321b67cda11cd67d",
+      "kind": "reject",
+      "file": "vectors/v321b67cda11cd67d.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r6_inflated_count",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v337f2e7acc229d39",
+      "kind": "accept",
+      "file": "vectors/v337f2e7acc229d39.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-002"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a running Run, which carries no end"
+    },
+    {
+      "id": "v34d068d7913a006d",
+      "kind": "accept",
+      "file": "vectors/v34d068d7913a006d.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/schema_item_reference_not_declared",
+          "field": "residue/items/0/finding_ref"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v35f9c4d0fac828df",
+      "kind": "reject",
+      "file": "vectors/v35f9c4d0fac828df.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-001"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-001"
+        ]
+      },
+      "cites": "a version other than \"1\""
+    },
+    {
+      "id": "v36840e71fe0f6f69",
+      "kind": "reject",
+      "file": "vectors/v36840e71fe0f6f69.json",
+      "family": "w3c-f-10",
+      "requirements": [
+        "W3C-R-010"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-010"
+        ]
+      },
+      "cites": "foreclosed with neither a constraint set nor a domain"
+    },
+    {
+      "id": "v36d216e75e2526d3",
+      "kind": "reject",
+      "file": "vectors/v36d216e75e2526d3.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/r9_clear_url_in_minimized",
+          "field": "event/repository"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v36fe3597c4a38c48",
+      "kind": "reject",
+      "file": "vectors/v36fe3597c4a38c48.json",
+      "family": "w3c-f-23",
+      "requirements": [
+        "W3C-R-023"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-023"
+        ]
+      },
+      "cites": "the zero-verdict run: evidence completeness claimed satisfied over a population of none"
+    },
+    {
+      "id": "v3749565d86ca5c4a",
+      "kind": "accept",
+      "file": "vectors/v3749565d86ca5c4a.json",
+      "family": "w3c-f-19",
+      "requirements": [
+        "W3C-R-019"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same cause as a registry value with the text carried as detail"
+    },
+    {
+      "id": "v3949a35e22b64a4d",
+      "kind": "accept",
+      "file": "vectors/v3949a35e22b64a4d.json",
+      "family": "w3c-f-gaps",
+      "requirements": [
+        "W3C-R-001",
+        "W3C-R-002"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the emitter's void slot populated by a rail that did not run, with the exit as cause"
+    },
+    {
+      "id": "v3bd7c51c7aa62b13",
+      "kind": "reject",
+      "file": "vectors/v3bd7c51c7aa62b13.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-015"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-015"
+        ]
+      },
+      "cites": "two Steps of one Run with the same invocation identifier"
+    },
+    {
+      "id": "v3c96293f578f1b72",
+      "kind": "accept",
+      "file": "vectors/v3c96293f578f1b72.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-007"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a model invocation carrying usage and model"
+    },
+    {
+      "id": "v3c97c572e8c9f739",
+      "kind": "accept",
+      "file": "vectors/v3c97c572e8c9f739.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-007"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "one index retrieved, plus a detail resource it links to"
+    },
+    {
+      "id": "v3cacf9884fdadcbd",
+      "kind": "reject",
+      "file": "vectors/v3cacf9884fdadcbd.json",
+      "family": "w3c-f-4",
+      "requirements": [
+        "W3C-R-004"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-004"
+        ]
+      },
+      "cites": "a confinement control failed while the check ran and the record still reports fail"
+    },
+    {
+      "id": "v3ce86915f6ee7b7e",
+      "kind": "reject",
+      "file": "vectors/v3ce86915f6ee7b7e.json",
+      "family": "w3c-f-12",
+      "requirements": [
+        "W3C-R-012"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-012"
+        ]
+      },
+      "cites": "discrimination cites an object whose changed slot is the checker: attribution in a discrimination cell"
+    },
+    {
+      "id": "v44df6ea141d977e3",
+      "kind": "accept",
+      "file": "vectors/v44df6ea141d977e3.json",
+      "family": "w3c-f-22",
+      "requirements": [
+        "W3C-R-022"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a full scan, which needs no scanned count beside the scannable one"
+    },
+    {
+      "id": "v466ace50ae1bbbc0",
+      "kind": "reject",
+      "file": "vectors/v466ace50ae1bbbc0.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-018"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-018"
+        ]
+      },
+      "cites": "a label whose value is not a string"
+    },
+    {
+      "id": "v468366f762a8bdf4",
+      "kind": "accept",
+      "file": "vectors/v468366f762a8bdf4.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-013"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "each lifetime once, summing to the aggregate"
+    },
+    {
+      "id": "v468d3d041713bf7d",
+      "kind": "reject",
+      "file": "vectors/v468d3d041713bf7d.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/schema_interpretive_without_human_attention",
+          "field": "residue/items/1/refutation_type"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v4833c3b1ab7dceef",
+      "kind": "reject",
+      "file": "vectors/v4833c3b1ab7dceef.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/schema_minimized_extensions_clear_text",
+          "field": "extensions/com.example.note"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v490f13fcc91800c2",
+      "kind": "accept",
+      "file": "vectors/v490f13fcc91800c2.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r6_inflated_count",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v4acd588a3c0cc94e",
+      "kind": "accept",
+      "file": "vectors/v4acd588a3c0cc94e.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_full_empty_findings",
+          "fail": "v0.3/r10_empty_list_with_nonzero_total",
+          "field": "metrics/counts/total_findings"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v4c65aa9f3b8e431b",
+      "kind": "reject",
+      "file": "vectors/v4c65aa9f3b8e431b.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-005"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-005"
+        ]
+      },
+      "cites": "a step count smaller than the steps array"
+    },
+    {
+      "id": "v500e95527f03d635",
+      "kind": "reject",
+      "file": "vectors/v500e95527f03d635.json",
+      "family": "w3c-f-15",
+      "requirements": [
+        "W3C-R-015"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-015"
+        ]
+      },
+      "cites": "a set digest with no leaf count: a match establishes nothing"
+    },
+    {
+      "id": "v50ef3e4bd9f138bc",
+      "kind": "accept",
+      "file": "vectors/v50ef3e4bd9f138bc.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-004"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a robots record with an absolute URI, the name compared case-insensitively"
+    },
+    {
+      "id": "v51667084eded3199",
+      "kind": "accept",
+      "file": "vectors/v51667084eded3199.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r2_template_marker",
+          "field": "actors/reviewers/0/model"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v5187613995b28f33",
+      "kind": "reject",
+      "file": "vectors/v5187613995b28f33.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-010"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-010"
+        ]
+      },
+      "cites": "cached reads exceeding the input tokens they are a subset of"
+    },
+    {
+      "id": "v532f7ce5761b5119",
+      "kind": "reject",
+      "file": "vectors/v532f7ce5761b5119.json",
+      "family": "w3c-f-22",
+      "requirements": [
+        "W3C-R-022"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-022"
+        ]
+      },
+      "cites": "a sampled scan with no count of scannable files, so the partial flag hides its size"
+    },
+    {
+      "id": "v57c34a0d07c3f4b4",
+      "kind": "reject",
+      "file": "vectors/v57c34a0d07c3f4b4.json",
+      "family": "w3c-f-7",
+      "requirements": [
+        "W3C-R-007"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-007"
+        ]
+      },
+      "cites": "a pass carrying a cause"
+    },
+    {
+      "id": "v57e0040ff0ad8028",
+      "kind": "reject",
+      "file": "vectors/v57e0040ff0ad8028.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_declared_degraded_round",
+          "fail": "v0.4/r4_same_model_declared_as_distinct",
+          "field": "actors/reviewers/0/model"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v5821b8f0393e7bda",
+      "kind": "reject",
+      "file": "vectors/v5821b8f0393e7bda.json",
+      "family": "w3c-f-5",
+      "requirements": [
+        "W3C-R-005"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-005"
+        ]
+      },
+      "cites": "a declared exclusion reported as a pass"
+    },
+    {
+      "id": "v58a46ac55b803155",
+      "kind": "reject",
+      "file": "vectors/v58a46ac55b803155.json",
+      "family": "w3c-f-1",
+      "requirements": [
+        "W3C-R-001"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-001"
+        ]
+      },
+      "cites": "an inconclusive record with no cause slot"
+    },
+    {
+      "id": "v58f8859669e43d97",
+      "kind": "accept",
+      "file": "vectors/v58f8859669e43d97.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-002"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "every mechanism pointing at the index"
+    },
+    {
+      "id": "v59d76289515e9386",
+      "kind": "reject",
+      "file": "vectors/v59d76289515e9386.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-004"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-004"
+        ]
+      },
+      "cites": "a robots record whose value is a relative reference"
+    },
+    {
+      "id": "v59d7c0268acaec8c",
+      "kind": "accept",
+      "file": "vectors/v59d7c0268acaec8c.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r2_generic_marker",
+          "field": "residue/items/0/description"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v5bd6bf20b3a439e7",
+      "kind": "reject",
+      "file": "vectors/v5bd6bf20b3a439e7.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-021"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-021"
+        ]
+      },
+      "cites": "an unprefixed member the specification does not define"
+    },
+    {
+      "id": "v5ca57343666ee192",
+      "kind": "accept",
+      "file": "vectors/v5ca57343666ee192.json",
+      "family": "w3c-f-4",
+      "requirements": [
+        "W3C-R-004"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same run reported void, the only state the pair table allows it"
+    },
+    {
+      "id": "v5f4b5733c5575b9f",
+      "kind": "reject",
+      "file": "vectors/v5f4b5733c5575b9f.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/r0_no_human_arbiter",
+          "field": "actors/human_arbiter/present"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v5fa1792bbc9887c1",
+      "kind": "reject",
+      "file": "vectors/v5fa1792bbc9887c1.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-008"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-008"
+        ]
+      },
+      "cites": "a cross-origin index attributed to the advertising origin"
+    },
+    {
+      "id": "v5fc98bb46ae0c270",
+      "kind": "reject",
+      "file": "vectors/v5fc98bb46ae0c270.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r4_no_decorrelation",
+          "field": "actors/reviewers/0/family"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v6027f56ef7676a5d",
+      "kind": "reject",
+      "file": "vectors/v6027f56ef7676a5d.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-003"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-003"
+        ]
+      },
+      "cites": "a well-known request answered with neither the index nor a redirect"
+    },
+    {
+      "id": "v61b7b88845756190",
+      "kind": "reject",
+      "file": "vectors/v61b7b88845756190.json",
+      "family": "w3c-f-6",
+      "requirements": [
+        "W3C-R-006"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-006"
+        ]
+      },
+      "cites": "an inconclusive record carrying an other-verdict slot"
+    },
+    {
+      "id": "v62ba14cf314c1762",
+      "kind": "reject",
+      "file": "vectors/v62ba14cf314c1762.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/r9_text_leak_in_minimized",
+          "field": "findings/0/title"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v6775108beb739acf",
+      "kind": "accept",
+      "file": "vectors/v6775108beb739acf.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r4_no_decorrelation",
+          "field": "actors/reviewers/0/family"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v67fa8be2bfc39fc3",
+      "kind": "reject",
+      "file": "vectors/v67fa8be2bfc39fc3.json",
+      "family": "w3c-f-11",
+      "requirements": [
+        "W3C-R-011"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-011"
+        ]
+      },
+      "cites": "demonstrated asserted with no evidence reference"
+    },
+    {
+      "id": "v6886f2dea5b8d30c",
+      "kind": "accept",
+      "file": "vectors/v6886f2dea5b8d30c.json",
+      "family": "w3c-f-23",
+      "requirements": [
+        "W3C-R-023"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "each claim carrying the count of the population it quantifies over"
+    },
+    {
+      "id": "v6a468aead6a0997c",
+      "kind": "accept",
+      "file": "vectors/v6a468aead6a0997c.json",
+      "family": "w3c-f-17",
+      "requirements": [
+        "W3C-R-017"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the denominator recomputed from the records"
+    },
+    {
+      "id": "v6ad97761064d2e7f",
+      "kind": "accept",
+      "file": "vectors/v6ad97761064d2e7f.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-008"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the cross-origin index attributed to the origin that serves it"
+    },
+    {
+      "id": "v6c32781926fcdd5c",
+      "kind": "accept",
+      "file": "vectors/v6c32781926fcdd5c.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/schema_invalid_commit",
+          "field": "event/head_commit"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v6d1bd6df443e2fc5",
+      "kind": "accept",
+      "file": "vectors/v6d1bd6df443e2fc5.json",
+      "family": "w3c-f-10",
+      "requirements": [
+        "W3C-R-010"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "foreclosed naming both, by identifier"
+    },
+    {
+      "id": "v6d6b62187cfc99ef",
+      "kind": "accept",
+      "file": "vectors/v6d6b62187cfc99ef.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-006"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the Link relation taken first, as the precedence lists it"
+    },
+    {
+      "id": "v6ea8de1e96eaa2e7",
+      "kind": "reject",
+      "file": "vectors/v6ea8de1e96eaa2e7.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/schema_debt_without_id",
+          "field": "findings/0/final_state"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v6ec17de3ba07cb6b",
+      "kind": "reject",
+      "file": "vectors/v6ec17de3ba07cb6b.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-010"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-010"
+        ]
+      },
+      "cites": "a negotiated response with no Content-Language"
+    },
+    {
+      "id": "v702752d4edc33185",
+      "kind": "reject",
+      "file": "vectors/v702752d4edc33185.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/r6_counts_do_not_close",
+          "field": "metrics/counts/total_findings"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v732ec2a879e6f405",
+      "kind": "reject",
+      "file": "vectors/v732ec2a879e6f405.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/schema_minimized_extensions_clear_text",
+          "field": "extensions/com.example.note"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v745e2452410fd4fa",
+      "kind": "accept",
+      "file": "vectors/v745e2452410fd4fa.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-018"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "labels with string values"
+    },
+    {
+      "id": "v74785d5a33f1eadb",
+      "kind": "accept",
+      "file": "vectors/v74785d5a33f1eadb.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/r9_clear_url_in_minimized",
+          "field": "event/repository"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v748108bc07240595",
+      "kind": "accept",
+      "file": "vectors/v748108bc07240595.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-010"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a negotiated response naming its language"
+    },
+    {
+      "id": "v750f005fde7f2658",
+      "kind": "reject",
+      "file": "vectors/v750f005fde7f2658.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/r9_clear_url_in_minimized",
+          "field": "event/repository"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v756f896b8328c22f",
+      "kind": "reject",
+      "file": "vectors/v756f896b8328c22f.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/schema_invalid_commit",
+          "field": "event/head_commit"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v75a3e8e255520a6f",
+      "kind": "accept",
+      "file": "vectors/v75a3e8e255520a6f.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_full_empty_findings",
+          "fail": "v0.4/r10_empty_list_with_nonzero_total",
+          "field": "metrics/counts/total_findings"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v75b42fab65afc397",
+      "kind": "accept",
+      "file": "vectors/v75b42fab65afc397.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/schema_minimized_extensions_prose_key",
+          "field": "extensions/nota del incidente en claro"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v76384d66512cc6a4",
+      "kind": "accept",
+      "file": "vectors/v76384d66512cc6a4.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-017"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "an amount as a decimal string"
+    },
+    {
+      "id": "v76eff81a9ab7e6dd",
+      "kind": "accept",
+      "file": "vectors/v76eff81a9ab7e6dd.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r2_template_marker",
+          "field": "actors/reviewers/0/model"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v78d66a8e657c2772",
+      "kind": "accept",
+      "file": "vectors/v78d66a8e657c2772.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-010"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "cached reads equal to the input tokens"
+    },
+    {
+      "id": "v7b61413822815cfb",
+      "kind": "accept",
+      "file": "vectors/v7b61413822815cfb.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-003"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a 404, which advertises nothing by this mechanism and is not an error"
+    },
+    {
+      "id": "v802e4cd278a0fbd2",
+      "kind": "reject",
+      "file": "vectors/v802e4cd278a0fbd2.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-002"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-002"
+        ]
+      },
+      "cites": "a mechanism pointing at a detail resource"
+    },
+    {
+      "id": "v80a61d35636233e0",
+      "kind": "reject",
+      "file": "vectors/v80a61d35636233e0.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/schema_invalid_commit",
+          "field": "event/head_commit"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v80e52166b6a54bab",
+      "kind": "reject",
+      "file": "vectors/v80e52166b6a54bab.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-009"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-009"
+        ]
+      },
+      "cites": "a consumer with no ceiling on what it will retrieve"
+    },
+    {
+      "id": "v8357c7ec77007bab",
+      "kind": "accept",
+      "file": "vectors/v8357c7ec77007bab.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_full_empty_findings",
+          "fail": "v0.3/r6_counts_without_findings",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v84b862295e8bd427",
+      "kind": "accept",
+      "file": "vectors/v84b862295e8bd427.json",
+      "family": "w3c-f-5",
+      "requirements": [
+        "W3C-R-005"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a declared exclusion reported as not-exercised with its cause"
+    },
+    {
+      "id": "v85031f0b2100719d",
+      "kind": "reject",
+      "file": "vectors/v85031f0b2100719d.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_full_empty_findings",
+          "fail": "v0.4/r6_counts_without_findings",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v86a6eabef30e4ba5",
+      "kind": "accept",
+      "file": "vectors/v86a6eabef30e4ba5.json",
+      "family": "w3c-f-16",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the error list declared compared, so moved is contained; no row reads the opaque slot"
+    },
+    {
+      "id": "v89900ec30e1dfe82",
+      "kind": "accept",
+      "file": "vectors/v89900ec30e1dfe82.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r13_duplicate_residue_id",
+          "field": "residue/items/1/id"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v8ab485d5b009b46c",
+      "kind": "accept",
+      "file": "vectors/v8ab485d5b009b46c.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-009"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a zero counter, which is a non-negative integer"
+    },
+    {
+      "id": "v8c712e7583459c72",
+      "kind": "reject",
+      "file": "vectors/v8c712e7583459c72.json",
+      "family": "w3c-f-14",
+      "requirements": [
+        "W3C-R-014"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-014"
+        ]
+      },
+      "cites": "a prior run offered with no binding of which declared checks survived into it"
+    },
+    {
+      "id": "v9008f04238a86871",
+      "kind": "reject",
+      "file": "vectors/v9008f04238a86871.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r12_unverified_hardening_without_its_item",
+          "field": "actors/reviewers/0/hardening"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v92125f665ba987c8",
+      "kind": "accept",
+      "file": "vectors/v92125f665ba987c8.json",
+      "family": "w3c-f-gaps",
+      "requirements": [
+        "W3C-R-001",
+        "W3C-R-005"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a declared exclusion read from a manifest's unmeasurableBecause, reported not-exercised with that reason as cause"
+    },
+    {
+      "id": "v92ffeb0789292808",
+      "kind": "reject",
+      "file": "vectors/v92ffeb0789292808.json",
+      "family": "w3c-f-15",
+      "requirements": [
+        "W3C-R-015"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-015"
+        ]
+      },
+      "cites": "a prior run referenced as a set of observations with no count and no shape"
+    },
+    {
+      "id": "v9357f80ad67b7286",
+      "kind": "accept",
+      "file": "vectors/v9357f80ad67b7286.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-021"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same member under the extension prefix"
+    },
+    {
+      "id": "v93bd3bcb57b6e753",
+      "kind": "reject",
+      "file": "vectors/v93bd3bcb57b6e753.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-011"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-011"
+        ]
+      },
+      "cites": "an advertised index retrieved without evaluating the exclusion that covers it"
+    },
+    {
+      "id": "v93fe9e276462b6ea",
+      "kind": "reject",
+      "file": "vectors/v93fe9e276462b6ea.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-016"
+        ]
+      },
+      "cites": "a root run identifier that is not the Run's own, with no parent"
+    },
+    {
+      "id": "v97f7609c206c765b",
+      "kind": "reject",
+      "file": "vectors/v97f7609c206c765b.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r13_duplicate_residue_id",
+          "field": "residue/items/1/id"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v983f5e4b5f7cdc29",
+      "kind": "accept",
+      "file": "vectors/v983f5e4b5f7cdc29.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_declared_degraded_round",
+          "fail": "v0.4/r4_degraded_round_in_level_a",
+          "field": "event/criticality_level"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v9944d4e53d2325c1",
+      "kind": "reject",
+      "file": "vectors/v9944d4e53d2325c1.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-017"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-017"
+        ]
+      },
+      "cites": "an amount that does not match the decimal rule"
+    },
+    {
+      "id": "v9a4bca129398f9ad",
+      "kind": "reject",
+      "file": "vectors/v9a4bca129398f9ad.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r5_level_a_gap_without_lead",
+          "field": "event/criticality_level"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "v9ae4fd335cc78dff",
+      "kind": "accept",
+      "file": "vectors/v9ae4fd335cc78dff.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/schema_minimized_extensions_prose_key",
+          "field": "extensions/nota del incidente en claro"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v9b20d711c1a0b368",
+      "kind": "accept",
+      "file": "vectors/v9b20d711c1a0b368.json",
+      "family": "w3c-f-22",
+      "requirements": [
+        "W3C-R-022"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the coverage block with every controlled field and the pre-cap count"
+    },
+    {
+      "id": "v9b5fd819ac7976bb",
+      "kind": "accept",
+      "file": "vectors/v9b5fd819ac7976bb.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/schema_minimized_extensions_clear_text",
+          "field": "extensions/com.example.note"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "v9c3952c5f1467764",
+      "kind": "reject",
+      "file": "vectors/v9c3952c5f1467764.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-003"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-003"
+        ]
+      },
+      "cites": "an end earlier than the start"
+    },
+    {
+      "id": "va10f5159a7356122",
+      "kind": "reject",
+      "file": "vectors/va10f5159a7356122.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r1_nonexistent_reference",
+          "field": "residue/items/0/finding_ref"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "va1d8a3aff7580097",
+      "kind": "reject",
+      "file": "vectors/va1d8a3aff7580097.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r2_template_marker",
+          "field": "actors/reviewers/0/model"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "va3140cc886b694fe",
+      "kind": "accept",
+      "file": "vectors/va3140cc886b694fe.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_declared_degraded_round",
+          "fail": "v0.4/r4_same_model_declared_as_distinct",
+          "field": "actors/reviewers/0/model"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "va3cc235693ed9aa0",
+      "kind": "accept",
+      "file": "vectors/va3cc235693ed9aa0.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r1_nonexistent_reference",
+          "field": "residue/items/0/finding_ref"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "va5e6f618c7b58bf9",
+      "kind": "accept",
+      "file": "vectors/va5e6f618c7b58bf9.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r0_no_human_arbiter",
+          "field": "actors/human_arbiter/present"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "va6299cdbedfb81f8",
+      "kind": "reject",
+      "file": "vectors/va6299cdbedfb81f8.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-006"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-006"
+        ]
+      },
+      "cites": "index values not assigned in the order the Steps began"
+    },
+    {
+      "id": "va67e7c700fd6e572",
+      "kind": "accept",
+      "file": "vectors/va67e7c700fd6e572.json",
+      "family": "w3c-f-15",
+      "requirements": [
+        "W3C-R-015"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the check set bound under the RFC 6962 tree shape, with its count"
+    },
+    {
+      "id": "va80130b2557877d0",
+      "kind": "reject",
+      "file": "vectors/va80130b2557877d0.json",
+      "family": "w3c-f-8",
+      "requirements": [
+        "W3C-R-008"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-008"
+        ]
+      },
+      "cites": "foreclosed and demonstrated on one record, which cannot both hold"
+    },
+    {
+      "id": "vaa9022b28508fbff",
+      "kind": "accept",
+      "file": "vectors/vaa9022b28508fbff.json",
+      "family": "arm-f-steps",
+      "requirements": [
+        "ARM-R-015"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "each invocation identified once"
+    },
+    {
+      "id": "vac4901ced8434b96",
+      "kind": "accept",
+      "file": "vectors/vac4901ced8434b96.json",
+      "family": "w3c-f-7",
+      "requirements": [
+        "W3C-R-007"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pass with no cause slot"
+    },
+    {
+      "id": "vac73991b7eab80be",
+      "kind": "accept",
+      "file": "vectors/vac73991b7eab80be.json",
+      "family": "w3c-f-24",
+      "requirements": [
+        "W3C-R-024"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair related by a stated delta under one pinned checker, constraints and domain"
+    },
+    {
+      "id": "vadc27fccee1d1084",
+      "kind": "reject",
+      "file": "vectors/vadc27fccee1d1084.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-007"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-007"
+        ]
+      },
+      "cites": "two index resources retrieved from one origin in one cycle"
+    },
+    {
+      "id": "vae5bf9e259ca9fa2",
+      "kind": "reject",
+      "file": "vectors/vae5bf9e259ca9fa2.json",
+      "family": "w3c-f-23",
+      "requirements": [
+        "W3C-R-023"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-023"
+        ]
+      },
+      "cites": "an accounting claim over a population the report does not carry"
+    },
+    {
+      "id": "vaefd4325cf8ba171",
+      "kind": "accept",
+      "file": "vectors/vaefd4325cf8ba171.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/schema_interpretive_without_human_attention",
+          "field": "residue/items/1/refutation_type"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vaf075fdad27ad97c",
+      "kind": "reject",
+      "file": "vectors/vaf075fdad27ad97c.json",
+      "family": "w3c-f-9",
+      "requirements": [
+        "W3C-R-009"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-009"
+        ]
+      },
+      "cites": "discrimination demonstrated while the other verdict is only possible"
+    },
+    {
+      "id": "vb0049d239061e73f",
+      "kind": "reject",
+      "file": "vectors/vb0049d239061e73f.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r2_generic_marker",
+          "field": "residue/items/0/description"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vb0c5a3492d65d1eb",
+      "kind": "accept",
+      "file": "vectors/vb0c5a3492d65d1eb.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/r9_text_leak_in_minimized",
+          "field": "findings/0/title"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vb2f73291e8fe10d1",
+      "kind": "accept",
+      "file": "vectors/vb2f73291e8fe10d1.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r6_inflated_count",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vb31d26cffc802d7f",
+      "kind": "reject",
+      "file": "vectors/vb31d26cffc802d7f.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r2_generic_marker",
+          "field": "residue/items/0/description"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vb9efe6cec61c9489",
+      "kind": "accept",
+      "file": "vectors/vb9efe6cec61c9489.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_minimized_profile",
+          "fail": "v0.3/schema_minimized_extensions_clear_text",
+          "field": "extensions/com.example.note"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vba28e0271213f6ef",
+      "kind": "accept",
+      "file": "vectors/vba28e0271213f6ef.json",
+      "family": "w3c-f-23",
+      "requirements": [
+        "W3C-R-023"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same run reporting the empty population as not claimable"
+    },
+    {
+      "id": "vba4433cd2a45fdd4",
+      "kind": "reject",
+      "file": "vectors/vba4433cd2a45fdd4.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r5_level_a_gap_without_lead",
+          "field": "event/criticality_level"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vbac3c7923a48045f",
+      "kind": "reject",
+      "file": "vectors/vbac3c7923a48045f.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-022"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-022"
+        ]
+      },
+      "cites": "reasoning tokens exceeding the output they are a subset of"
+    },
+    {
+      "id": "vbb214dabb5d9514e",
+      "kind": "reject",
+      "file": "vectors/vbb214dabb5d9514e.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/r9_text_leak_in_minimized",
+          "field": "findings/0/title"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vbb34b5903d030863",
+      "kind": "accept",
+      "file": "vectors/vbb34b5903d030863.json",
+      "family": "w3c-f-15",
+      "requirements": [
+        "W3C-R-015"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the check set bound under the flat shape, with its count"
+    },
+    {
+      "id": "vbcbbc065f5978092",
+      "kind": "reject",
+      "file": "vectors/vbcbbc065f5978092.json",
+      "family": "w3c-f-24",
+      "requirements": [
+        "W3C-R-024"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-024"
+        ]
+      },
+      "cites": "discrimination demonstrated by a pass and a fail with no stated delta between them"
+    },
+    {
+      "id": "vbecc90485b846e5a",
+      "kind": "accept",
+      "file": "vectors/vbecc90485b846e5a.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a parentless Run naming itself as root"
+    },
+    {
+      "id": "vc0109df9efce7825",
+      "kind": "accept",
+      "file": "vectors/vc0109df9efce7825.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r5_level_a_gap_without_lead",
+          "field": "event/criticality_level"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vc103c9ebc091176a",
+      "kind": "accept",
+      "file": "vectors/vc103c9ebc091176a.json",
+      "family": "w3c-f-21",
+      "requirements": [
+        "W3C-R-021"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same two observations with moved recomputed: the fired-rule list moved and the verdict did not"
+    },
+    {
+      "id": "vc33e992bbb6c0ddd",
+      "kind": "accept",
+      "file": "vectors/vc33e992bbb6c0ddd.json",
+      "family": "w3c-f-11",
+      "requirements": [
+        "W3C-R-011"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "demonstrated with the reference that carries it"
+    },
+    {
+      "id": "vc4cc6abd16cb7848",
+      "kind": "reject",
+      "file": "vectors/vc4cc6abd16cb7848.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-020"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-020"
+        ]
+      },
+      "cites": "an empty run identifier"
+    },
+    {
+      "id": "vc54053aab3059e9a",
+      "kind": "reject",
+      "file": "vectors/vc54053aab3059e9a.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r6_inflated_count",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vc593cdd0df015927",
+      "kind": "accept",
+      "file": "vectors/vc593cdd0df015927.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-005"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a step count larger than the array, which accounts for omitted Steps"
+    },
+    {
+      "id": "vc60f8ca141d363b3",
+      "kind": "accept",
+      "file": "vectors/vc60f8ca141d363b3.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-003"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "an end after the start"
+    },
+    {
+      "id": "vc66d903f67842004",
+      "kind": "reject",
+      "file": "vectors/vc66d903f67842004.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r0_no_human_arbiter",
+          "field": "actors/human_arbiter/present"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vc78c495fa2865996",
+      "kind": "accept",
+      "file": "vectors/vc78c495fa2865996.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-014"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the ledger omitted where the source does not reconcile"
+    },
+    {
+      "id": "vccd7d6407f77183e",
+      "kind": "reject",
+      "file": "vectors/vccd7d6407f77183e.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/schema_interpretive_without_human_attention",
+          "field": "residue/items/1/refutation_type"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vcf73d5dd4703dd31",
+      "kind": "accept",
+      "file": "vectors/vcf73d5dd4703dd31.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r13_finding_attributed_to_nobody",
+          "field": "findings/0/origin"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vcfa49a358963e8a4",
+      "kind": "reject",
+      "file": "vectors/vcfa49a358963e8a4.json",
+      "family": "w3c-f-19",
+      "requirements": [
+        "W3C-R-019"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-019"
+        ]
+      },
+      "cites": "a cause written as free text in place of a disposition"
+    },
+    {
+      "id": "vd10e80041b1344d6",
+      "kind": "accept",
+      "file": "vectors/vd10e80041b1344d6.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r12_unverified_hardening_without_its_item",
+          "field": "actors/reviewers/0/hardening"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vd182df4e94785dcb",
+      "kind": "reject",
+      "file": "vectors/vd182df4e94785dcb.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-011"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-011"
+        ]
+      },
+      "cites": "reads and writes that together exceed the input they partition"
+    },
+    {
+      "id": "vd443179d7d37fec0",
+      "kind": "accept",
+      "file": "vectors/vd443179d7d37fec0.json",
+      "family": "w3c-f-1",
+      "requirements": [
+        "W3C-R-001"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same record carrying the reading the rail committed to as its cause"
+    },
+    {
+      "id": "vd568fb04bbfe75c7",
+      "kind": "reject",
+      "file": "vectors/vd568fb04bbfe75c7.json",
+      "family": "arm-f-run",
+      "requirements": [
+        "ARM-R-002"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-002"
+        ]
+      },
+      "cites": "a completed Run with no end"
+    },
+    {
+      "id": "vd6dde6d30a8b5f66",
+      "kind": "reject",
+      "file": "vectors/vd6dde6d30a8b5f66.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/schema_debt_without_id",
+          "field": "findings/0/final_state"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vd70263ec9f011a2e",
+      "kind": "reject",
+      "file": "vectors/vd70263ec9f011a2e.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_full_empty_findings",
+          "fail": "v0.3/r6_counts_without_findings",
+          "field": "metrics/counts/valid/incorporated"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vd9d8d4550595657e",
+      "kind": "reject",
+      "file": "vectors/vd9d8d4550595657e.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r4_no_decorrelation",
+          "field": "actors/reviewers/0/family"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vda3eac1602712021",
+      "kind": "accept",
+      "file": "vectors/vda3eac1602712021.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/schema_debt_without_id",
+          "field": "findings/0/final_state"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vdd0e8bbaa7a00714",
+      "kind": "accept",
+      "file": "vectors/vdd0e8bbaa7a00714.json",
+      "family": "w3c-f-6",
+      "requirements": [
+        "W3C-R-006"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a fail record carrying the same slot, which a verdict state may"
+    },
+    {
+      "id": "ve066f2cc9ab0f657",
+      "kind": "reject",
+      "file": "vectors/ve066f2cc9ab0f657.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_declared_degraded_round",
+          "fail": "v0.4/r4_degraded_round_in_level_a",
+          "field": "event/criticality_level"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "ve0d3587f68b26b73",
+      "kind": "accept",
+      "file": "vectors/ve0d3587f68b26b73.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_minimized_profile",
+          "fail": "v0.4/r9_text_leak_in_minimized",
+          "field": "findings/0/title"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "ve0d62017a7afcbb9",
+      "kind": "accept",
+      "file": "vectors/ve0d62017a7afcbb9.json",
+      "family": "w3c-f-2",
+      "requirements": [
+        "W3C-R-002"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a void record whose cause is an integrity failure of examined evidence"
+    },
+    {
+      "id": "ve25d40b143d66912",
+      "kind": "reject",
+      "file": "vectors/ve25d40b143d66912.json",
+      "family": "arm-f-usage",
+      "requirements": [
+        "ARM-R-009"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "ARM-R-009"
+        ]
+      },
+      "cites": "a negative counter"
+    },
+    {
+      "id": "ve7ec53356216c396",
+      "kind": "reject",
+      "file": "vectors/ve7ec53356216c396.json",
+      "family": "w3c-f-17",
+      "requirements": [
+        "W3C-R-017"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-017"
+        ]
+      },
+      "cites": "an exercised count that includes the not-exercised check"
+    },
+    {
+      "id": "ve81bc854b081493b",
+      "kind": "accept",
+      "file": "vectors/ve81bc854b081493b.json",
+      "family": "arm-f-serialization",
+      "requirements": [
+        "ARM-R-019"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "agent-run-metrics",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "timestamps in the Z offset"
+    },
+    {
+      "id": "ve955eb9e7db5531a",
+      "kind": "accept",
+      "file": "vectors/ve955eb9e7db5531a.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/schema_interpretive_without_human_attention",
+          "field": "residue/items/1/refutation_type"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vebd93abb8ee3a837",
+      "kind": "reject",
+      "file": "vectors/vebd93abb8ee3a837.json",
+      "family": "w3c-f-20",
+      "requirements": [
+        "W3C-R-020"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-020"
+        ]
+      },
+      "cites": "a root computed over the leaf set with its last leaf repeated: the count says three and the digest does not recompute"
+    },
+    {
+      "id": "ved9c03fc4eb64623",
+      "kind": "accept",
+      "file": "vectors/ved9c03fc4eb64623.json",
+      "family": "w3c-f-3",
+      "requirements": [
+        "W3C-R-003"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same record with a cause that describes a unit left out of the count"
+    },
+    {
+      "id": "vedd446a69ad39c40",
+      "kind": "reject",
+      "file": "vectors/vedd446a69ad39c40.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r1_nonexistent_reference",
+          "field": "residue/items/0/finding_ref"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "veea533d0c7f0b4f6",
+      "kind": "accept",
+      "file": "vectors/veea533d0c7f0b4f6.json",
+      "family": "lcd-f-consumer",
+      "requirements": [
+        "LCD-R-009"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a consumer that bounds a retrieval"
+    },
+    {
+      "id": "vf085de0c74dfcad0",
+      "kind": "accept",
+      "file": "vectors/vf085de0c74dfcad0.json",
+      "family": "w3c-f-9",
+      "requirements": [
+        "W3C-R-009"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "discrimination demonstrated beside the other verdict demonstrated by the same evidence"
+    },
+    {
+      "id": "vf13537a247c05d3c",
+      "kind": "accept",
+      "file": "vectors/vf13537a247c05d3c.json",
+      "family": "w3c-f-12",
+      "requirements": [
+        "W3C-R-012"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same cell citing an object whose changed slot is the input artifact"
+    },
+    {
+      "id": "vf3bb8a41a6a2b3bb",
+      "kind": "reject",
+      "file": "vectors/vf3bb8a41a6a2b3bb.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "the pair as emitted on 2026-09-16: moved names the error list the checker produced, which the compared vocabulary does not hold, so the object is rejected under the declared-slot rule",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/r0_no_human_arbiter",
+          "field": "actors/human_arbiter/present"
+        },
+        "cause": "moved asserts the recompute-opaque error list outside the declared compared set"
+      }
+    },
+    {
+      "id": "vf4fa4d406b870a94",
+      "kind": "reject",
+      "file": "vectors/vf4fa4d406b870a94.json",
+      "family": "w3c-f-16",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-016"
+        ]
+      },
+      "cites": "moved names the error list and the declared compared set does not hold it"
+    },
+    {
+      "id": "vf53c0cf19e40b8b7",
+      "kind": "reject",
+      "file": "vectors/vf53c0cf19e40b8b7.json",
+      "family": "w3c-f-22",
+      "requirements": [
+        "W3C-R-022"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "W3C-R-022"
+        ]
+      },
+      "cites": "a database snapshot with no date"
+    },
+    {
+      "id": "vf5442792fb3883dc",
+      "kind": "accept",
+      "file": "vectors/vf5442792fb3883dc.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-001"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the well-known resource served as Markdown"
+    },
+    {
+      "id": "vf5a1a13446f43395",
+      "kind": "accept",
+      "file": "vectors/vf5a1a13446f43395.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.2/valid_real_02_diff_gate",
+          "fail": "v0.2/r6_counts_do_not_close",
+          "field": "metrics/counts/total_findings"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vf749dad865952b0e",
+      "kind": "reject",
+      "file": "vectors/vf749dad865952b0e.json",
+      "family": "lcd-f-publisher",
+      "requirements": [
+        "LCD-R-001"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "llm-context-discovery",
+      "expected": {
+        "verdict": "reject",
+        "rejects": [
+          "LCD-R-001"
+        ]
+      },
+      "cites": "the well-known resource served as HTML"
+    },
+    {
+      "id": "vf7fa99884a005fcb",
+      "kind": "accept",
+      "file": "vectors/vf7fa99884a005fcb.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.3/valid_diff_gate",
+          "fail": "v0.3/schema_invalid_commit",
+          "field": "event/head_commit"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vf913f33b40963260",
+      "kind": "accept",
+      "file": "vectors/vf913f33b40963260.json",
+      "family": "w3c-f-13",
+      "requirements": [
+        "W3C-R-013"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "nothing, which is a permitted answer"
+    },
+    {
+      "id": "vf94f59c1cd4d3670",
+      "kind": "accept",
+      "file": "vectors/vf94f59c1cd4d3670.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r1_nonexistent_reference",
+          "field": "residue/items/0/finding_ref"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    },
+    {
+      "id": "vfb7eae4d1aede3eb",
+      "kind": "accept",
+      "file": "vectors/vfb7eae4d1aede3eb.json",
+      "family": "w3c-f-13",
+      "requirements": [
+        "W3C-R-013"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "a control built to fail that did fail, over the run's own declared checks"
+    },
+    {
+      "id": "vfe47c408d2abc7fb",
+      "kind": "accept",
+      "file": "vectors/vfe47c408d2abc7fb.json",
+      "family": "w3c-f-disensor",
+      "requirements": [
+        "W3C-R-016"
+      ],
+      "specVersion": "0.1",
+      "subjectType": "report",
+      "expected": {
+        "verdict": "accept",
+        "rejects": []
+      },
+      "cites": "the same pair re-cut against v0.1: moved recomputed over the declared slots, the verdict in it, both observations referenced by commit, vector and digest",
+      "origin": {
+        "repository": "NicolasRocchia/disensor",
+        "commit": "1e36257779b4933814445423188ec099a78017ee",
+        "author": "Nicolas Rocchia",
+        "pair": {
+          "pass": "v0.4/valid_diff_gate",
+          "fail": "v0.4/r2_generic_marker",
+          "field": "residue/items/0/description"
+        },
+        "cause": "none: moved is contained in the declared set and the verdict moved"
+      }
+    }
+  ]
+}

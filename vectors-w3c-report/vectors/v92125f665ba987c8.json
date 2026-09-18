@@ -1,0 +1,58 @@
+{
+  "expected": {
+    "rejects": [],
+    "verdict": "accept"
+  },
+  "family": "w3c-f-gaps",
+  "id": "v92125f665ba987c8",
+  "kind": "accept",
+  "requirements": [
+    "W3C-R-001",
+    "W3C-R-005"
+  ],
+  "specVersion": "0.1",
+  "subject": {
+    "check-set": {
+      "leaf-count": 2,
+      "sha256": "5e22ab35568a9a139b177fd9009615ff80c5bc14ea24845589f5da1bc6f2a946",
+      "tree-shape": "flat"
+    },
+    "checks": [
+      {
+        "check": "c-pass",
+        "state": "pass"
+      },
+      {
+        "cause": {
+          "code": "precondition-unsatisfiable",
+          "detail": "the specification carries no revocation mechanism at the pinned commit"
+        },
+        "check": "acs-revoked-mandate",
+        "declared-exclusion": true,
+        "state": "not-exercised"
+      }
+    ],
+    "domain": {
+      "description": "the run's declared domain, referenced by identifier",
+      "id": "d-run"
+    },
+    "evidence": [],
+    "format": "public-agent-conformance/report/v0.1",
+    "roll-up": {
+      "carried": 0,
+      "declared": 2,
+      "exercised": 1,
+      "fail": 0,
+      "inconclusive": 0,
+      "negative-capable": {
+        "kind": "nothing"
+      },
+      "not-exercised": 1,
+      "pass": 1,
+      "referenced": 0,
+      "void": 0
+    }
+  },
+  "subjectType": "report",
+  "suite": "w3c-report-v01-conformance"
+}

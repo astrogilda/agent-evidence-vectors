@@ -150,6 +150,7 @@ func writeFile(t *testing.T, dir, rel, body string) {
 
 func TestEveryFindingIsReachable(t *testing.T) {
 	cases := append(anchorFindings(), acsFindings()...)
+	cases = append(cases, w3cFindings()...)
 	cases = append(cases, mcpFindings()...)
 	cases = append(cases, bindingFindings()...)
 	cases = append(cases, agentActionFindings()...)
@@ -473,6 +474,57 @@ func acsFindings() []findingCase {
 				firstRowWhere(t, m, kindIs("reject"))["kind"] = "accept"
 			})
 		}, "the vector file and the manifest disagree about kind"},
+	}
+}
+
+func w3cFindings() []findingCase {
+	const dir = "vectors-w3c-report"
+	return []findingCase{
+		{"w3c/counts", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) {
+				m["counts"] = map[string]any{"accept": 1.0, "reject": 1.0}
+			})
+		}, "counts disagree"},
+		{"w3c/corpus-digest", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) { m["corpusDigest"] = strings.Repeat("0", 64) })
+		}, "corpusDigest does not match the vector files on disk"},
+		{"w3c/vendored-digest", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) {
+				vendored := m["specVendored"].(map[string]any)
+				for _, entry := range vendored {
+					entry.(map[string]any)["sha256"] = strings.Repeat("0", 64)
+				}
+			})
+		}, "does not match its pinned digest"},
+		{"w3c/requirement-sentence-gone", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) {
+				rows := m["requirements"].([]any)
+				rows[0].(map[string]any)["sentence"] = "a sentence no vendored copy carries"
+			})
+		}, "quotes a sentence the vendored copy no longer carries"},
+		{"w3c/wrong-row", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) {
+				row := firstRowWhere(t, m, kindIs("reject"))
+				row["requirements"] = []any{"W3C-R-012"}
+				setDeep(t, row, []any{"W3C-R-012"}, "expected", "rejects")
+			})
+		}, "the validator rejects under"},
+		{"w3c/two-rows", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) {
+				row := firstRowWhere(t, m, kindIs("reject"))
+				setDeep(t, row, []any{"W3C-R-001", "W3C-R-002"}, "expected", "rejects")
+			})
+		}, "does not name exactly one row"},
+		{"w3c/subject-type", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) {
+				firstRowWhere(t, m, kindIs("reject"))["subjectType"] = "poem"
+			})
+		}, "declares subject type"},
+		{"w3c/file-gone", dir, func(t *testing.T, d string) {
+			editManifest(t, d, func(m map[string]any) {
+				removeFile(t, d, firstRowWhere(t, m, kindIs("reject"))["file"].(string))
+			})
+		}, "the manifest names a vector file that does not exist"},
 	}
 }
 

@@ -1,0 +1,75 @@
+{
+  "expected": {
+    "rejects": [],
+    "verdict": "accept"
+  },
+  "family": "w3c-f-23",
+  "id": "vba28e0271213f6ef",
+  "kind": "accept",
+  "requirements": [
+    "W3C-R-023"
+  ],
+  "specVersion": "0.1",
+  "subject": {
+    "check-set": {
+      "leaf-count": 2,
+      "sha256": "a29a183f186ba7034c9266b25de0f7f7c242276b3e29ffb4cb1436cab5a176b5",
+      "tree-shape": "flat"
+    },
+    "checks": [
+      {
+        "cause": {
+          "code": "out_of_scope",
+          "detail": "excluded by the run's declaration"
+        },
+        "check": "c-excluded",
+        "declared-exclusion": true,
+        "state": "not-exercised"
+      },
+      {
+        "cause": {
+          "code": "out_of_scope"
+        },
+        "check": "c-excluded-2",
+        "declared-exclusion": true,
+        "state": "not-exercised"
+      }
+    ],
+    "domain": {
+      "description": "the run's declared domain, referenced by identifier",
+      "id": "d-run"
+    },
+    "evidence": [],
+    "format": "public-agent-conformance/report/v0.1",
+    "roll-up": {
+      "carried": 0,
+      "completeness": {
+        "accounting": {
+          "claim": "satisfied",
+          "population": 2
+        },
+        "evidence": {
+          "claim": "not-claimable",
+          "population": 0
+        },
+        "execution": {
+          "claim": "not-satisfied",
+          "population": 2
+        }
+      },
+      "declared": 2,
+      "exercised": 0,
+      "fail": 0,
+      "inconclusive": 0,
+      "negative-capable": {
+        "kind": "nothing"
+      },
+      "not-exercised": 2,
+      "pass": 0,
+      "referenced": 0,
+      "void": 0
+    }
+  },
+  "subjectType": "report",
+  "suite": "w3c-report-v01-conformance"
+}

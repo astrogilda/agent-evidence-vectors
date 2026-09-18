@@ -1,0 +1,56 @@
+{
+  "expected": {
+    "rejects": [],
+    "verdict": "accept"
+  },
+  "family": "w3c-f-1",
+  "id": "vd443179d7d37fec0",
+  "kind": "accept",
+  "requirements": [
+    "W3C-R-001"
+  ],
+  "specVersion": "0.1",
+  "subject": {
+    "check-set": {
+      "leaf-count": 2,
+      "sha256": "4575e4b56a68f0c8bf721bdb59d1e3b36d7887df02ff79d9abd11a24b2ba4ee8",
+      "tree-shape": "flat"
+    },
+    "checks": [
+      {
+        "check": "c-pass",
+        "state": "pass"
+      },
+      {
+        "cause": {
+          "code": "reading-committed",
+          "condition": "record-undecodable"
+        },
+        "check": "c-inconclusive",
+        "state": "inconclusive"
+      }
+    ],
+    "domain": {
+      "description": "the run's declared domain, referenced by identifier",
+      "id": "d-run"
+    },
+    "evidence": [],
+    "format": "public-agent-conformance/report/v0.1",
+    "roll-up": {
+      "carried": 0,
+      "declared": 2,
+      "exercised": 2,
+      "fail": 0,
+      "inconclusive": 1,
+      "negative-capable": {
+        "kind": "nothing"
+      },
+      "not-exercised": 0,
+      "pass": 1,
+      "referenced": 0,
+      "void": 0
+    }
+  },
+  "subjectType": "report",
+  "suite": "w3c-report-v01-conformance"
+}

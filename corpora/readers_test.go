@@ -46,6 +46,8 @@ var corpusCases = []corpusCase{
 	// key is "file" as for a statement and the bytes flipped are a manifest the
 	// deployment publishes.
 	{dir: "vectors-aci", memberFileKey: "file"},
+	// A member of the W3C report corpus is one whole v0.1 report in one file.
+	{dir: "vectors-w3c-report", memberFileKey: "file"},
 }
 
 func corpusPath(dir string) string { return filepath.Join("..", dir) }
