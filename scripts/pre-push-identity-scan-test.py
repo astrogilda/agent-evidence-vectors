@@ -25,6 +25,7 @@ import importlib.util
 import subprocess
 import sys
 import tempfile
+from collections.abc import Callable, Sequence
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -68,7 +69,10 @@ REFUSED = (
     ("the handle ending a sentence", f"the owner is {OWNER}."),
     ("an organisation page, which is not a repository URL", f"https://github.com/{OWNER}"),
     ("the company word alone", f"built by {COMPANY} in 2026"),
-    ("the company word beside a permitted path", f"{OWNER}/agent-evidence-vectors run by {COMPANY}"),
+    (
+        "the company word beside a permitted path",
+        f"{OWNER}/agent-evidence-vectors run by {COMPANY}",
+    ),
     ("the website in a sentence", f"see {SITE} for more"),
     ("the website inside a link", f"[docs](https://{SITE}/predicate/v1/)"),
     ("the website bare", SITE),
@@ -91,39 +95,58 @@ def content_refuses(line: str) -> bool:
         probe.write_text(line + "\n", encoding="utf-8")
         done = subprocess.run(
             [sys.executable, str(CONTENT_SCANNER), str(probe)],
-            capture_output=True, text=True, timeout=180, check=False,
+            capture_output=True,
+            text=True,
+            timeout=180,
+            check=False,
         )
     return done.returncode != 0
 
 
+def _run_cases(
+    refuses: Callable[[str], bool],
+    permitted: Sequence[tuple[str, str]],
+    refused_cases: Sequence[tuple[str, str]],
+    label: str,
+) -> tuple[int, list[str]]:
+    """Run one scanner over both populations, and return its count and failures.
+
+    The count is of cases that RAN, never of the list handed in: a skipped
+    loop must not report full coverage, which is what an earlier version did
+    when a mutation emptied the loop and it still printed every case held.
+
+    Both scanners are checked against the same cases, so the loop was written
+    twice and `main` went over the complexity ceiling. The bodies were already
+    identical apart from which scanner was called and what the line said.
+    """
+    bad: list[str] = []
+    ran = 0
+    for what, line in permitted:
+        ran += 1
+        if refuses(line):
+            bad.append(f"{what}{label}: refused, but the permit exists for this shape")
+        else:
+            print(f"ok   permitted  {what}{label}")
+    for what, line in refused_cases:
+        ran += 1
+        if refuses(line):
+            print(f"ok   refused    {what}{label}")
+        else:
+            bad.append(f"{what}{label}: PASSED, which widens the permit to the bare name")
+    return ran, bad
+
+
 def main() -> int:
-    failures: list[str] = []
-    for what, line in PERMITTED:
-        if refused(line):
-            failures.append(f"{what}: refused, but the permit exists for exactly this shape")
-        else:
-            print(f"ok   permitted  {what}")
-    for what, line in REFUSED:
-        if refused(line):
-            print(f"ok   refused    {what}")
-        else:
-            failures.append(f"{what}: PASSED the scanner, which widens the permit to the bare name")
-    total = len(PERMITTED) + len(REFUSED)
+    total, failures = _run_cases(refused, PERMITTED, REFUSED, "")
     if CONTENT_SCANNER.exists():
-        for what, line in PERMITTED:
-            total += 1
-            if content_refuses(line):
-                failures.append(f"content scanner refused {what}")
-            else:
-                print(f"ok   permitted  {what} (content scanner)")
-        for what, line in REFUSED:
-            if "organisation page" in what or "repository not ours" in what:
-                continue  # a host shape, which only the history scanner rules on
-            total += 1
-            if content_refuses(line):
-                print(f"ok   refused    {what} (content scanner)")
-            else:
-                failures.append(f"content scanner PASSED {what}, widening the permit")
+        # A host shape is a URL, which only the history scanner rules on.
+        host_only = ("organisation page", "repository not ours")
+        for_content = [
+            (what, line) for what, line in REFUSED if not any(h in what for h in host_only)
+        ]
+        more, bad = _run_cases(content_refuses, PERMITTED, for_content, " (content scanner)")
+        total += more
+        failures += bad
     else:
         print("skip content scanner: this repository does not carry one")
     for line in failures:
